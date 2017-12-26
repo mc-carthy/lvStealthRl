@@ -3,7 +3,7 @@ local Vector2 = require("src.utils.Vector2")
 local enemy = {}
 
 local update = function(self, dt)
-    local rotSpeed = 360
+    local rotSpeed = 36
     self.rot = self.rot + rotSpeed * dt
 
     if self.rot > 360 then self.rot = 0 end
@@ -14,7 +14,17 @@ local draw = function(self)
     love.graphics.circle("fill", self.x, self.y, 10)
 
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
+    local viewAngleX1, viewAngleY1 = Vector2.pointFromRotDist(self.rot - self.viewAngle / 2, self.viewDist)
+    local viewAngleX2, viewAngleY2 = Vector2.pointFromRotDist(self.rot + self.viewAngle / 2, self.viewDist)
+
+    love.graphics.setColor(191, 0, 0, 127)
+    love.graphics.arc("fill", self.x, self.y, self.viewDist, -math.rad(self.rot + self.viewAngle / 2), -math.rad(self.rot - self.viewAngle / 2))
+
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.line(self.x, self.y, self.x + viewAngleX1, self.y + viewAngleY1)
+    love.graphics.line(self.x, self.y, self.x + viewAngleX2, self.y + viewAngleY2)
     love.graphics.line(self.x, self.y, self.x + focusX, self.y + focusY)
+
 end
 
 enemy.create = function(x, y, rot)
@@ -22,8 +32,9 @@ enemy.create = function(x, y, rot)
 
     inst.x = x or 0
     inst.y = y or 0
-    inst.rot = rot or 0
+    inst.rot = rot or 180
     inst.viewDist = 100
+    inst.viewAngle = 120
 
     inst.update = update
     inst.draw = draw
