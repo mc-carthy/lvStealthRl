@@ -23,6 +23,9 @@ local getInput = function(self)
         inputY = inputY / 1.41
     end
 
+    self.mouseX, self.mouseY = love.mouse.getPosition()
+    self.rot = Vector2.angle(self.x, self.y, self.mouseX, self.mouseY)
+
     self.moveX = inputX * self.speed
     self.moveY = inputY * self.speed
 end
@@ -37,6 +40,12 @@ end
 local draw = function(self)
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("fill", self.x, self.y, self.r)
+
+
+    if DEBUG then
+        love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
+        love.graphics.print(self.rot, 10, 10)
+    end
 end
 
 player.create = function(x, y)
@@ -44,6 +53,9 @@ player.create = function(x, y)
 
     inst.x = x
     inst.y = y
+    inst.mouseX = 0
+    inst.mouseY = 0
+    inst.rot = 0
     inst.r = 10
     inst.speed = 150
     inst.moveX = 0

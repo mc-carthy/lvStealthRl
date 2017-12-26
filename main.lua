@@ -1,5 +1,7 @@
 local Player = require("src.entities.Player")
 
+DEBUG = true
+
 local xSize
 local ySize
 local cellSize = 40
@@ -39,7 +41,9 @@ function drawGrid()
             else
                 love.graphics.setColor(220, 220, 220)
             end
-            love.graphics.rectangle('fill', (x - 1) * cellSize, (y - 1) * cellSize, cellDrawSize, cellDrawSize)
+            if DEBUG then
+                love.graphics.rectangle('fill', (x - 1) * cellSize, (y - 1) * cellSize, cellDrawSize, cellDrawSize)
+            end
         end
     end
 end
