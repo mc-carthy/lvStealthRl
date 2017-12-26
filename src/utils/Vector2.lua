@@ -23,4 +23,11 @@ function V.normalised(x, y)
     return nx, ny
 end
 
+function V.pointFromRotDist(rot, dist)
+    local x = dist * math.cos(math.rad(rot))
+    local y = dist * -math.sin(math.rad(rot))
+
+    return x, y
+end
+
 return V

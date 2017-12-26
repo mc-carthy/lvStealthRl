@@ -1,4 +1,5 @@
 local Player = require("src.entities.Player")
+local Enemy = require("src.entities.Enemy")
 
 DEBUG = true
 
@@ -10,6 +11,7 @@ local cellDrawSize = cellSize - border
 local currentGrid
 
 local player
+local enemy
 
 function love.load()
     xSize = love.graphics.getWidth() / cellSize
@@ -17,6 +19,7 @@ function love.load()
     love.graphics.setBackgroundColor(255, 255, 255, 255)
 
     player = Player.create(50, 50)
+    enemy = Enemy.create(100, 50)
 
     grid = {}
     for x = 1, xSize do
@@ -53,6 +56,7 @@ function love.update(dt)
         love.event.quit()
     end
 
+    enemy:update(dt)
     player:update(dt)
 
     grid_x, grid_y = worldSpaceToGrid(player.x, player.y)
@@ -60,5 +64,6 @@ end
 
 function love.draw()
     drawGrid()
+    enemy:draw()
     player:draw()
 end
