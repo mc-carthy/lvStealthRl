@@ -4,8 +4,8 @@ local Enemy = require("src.entities.Enemy")
 
 DEBUG = true
 
-local currentGrid
 
+local grid
 local player
 local enemy
 
@@ -17,16 +17,6 @@ function love.load()
     grid = Grid.create()
 end
 
-function worldSpaceToGrid(x, y)
-    gridx = math.floor(x / cellSize) + 1
-    gridy = math.floor(y / cellSize) + 1
-    return gridx, gridy
-end
-
-function drawGrid()
-
-end
-
 function love.update(dt)
     if love.keyboard.isDown("escape") then
         love.event.quit()
@@ -34,8 +24,7 @@ function love.update(dt)
 
     enemy:update(dt)
     player:update(dt)
-
-    -- grid_x, grid_y = worldSpaceToGrid(player.x, player.y)
+    grid:update(dt, player)
 end
 
 function love.draw()

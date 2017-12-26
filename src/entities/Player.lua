@@ -30,6 +30,10 @@ local getInput = function(self)
     self.moveY = inputY * self.speed
 end
 
+local getPosition = function(self)
+    return self.x, self.y
+end
+
 local update = function(self, dt)
     self:getInput()
 
@@ -62,6 +66,7 @@ player.create = function(x, y)
     inst.moveY = 0
 
     inst.getInput = getInput
+    inst.getPosition = getPosition
     inst.update = update
     inst.draw = draw
 
