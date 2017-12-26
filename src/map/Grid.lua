@@ -1,8 +1,8 @@
-local Player = require("src.entities.Player")
+local EntityManager = require("src.entities.EntityManager")
 
 local grid = {}
 
-local playerX, playerY
+local playerX, playerY = 0, 0
 
 local worldSpaceToGrid = function(self, x, y)
     gridx = math.floor(x / self.cellSize) + 1

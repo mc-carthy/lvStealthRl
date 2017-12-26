@@ -67,6 +67,7 @@ player.create = function(x, y)
 
     inst.getInput = getInput
     inst.getPosition = getPosition
+    
     inst.update = update
     inst.draw = draw
 

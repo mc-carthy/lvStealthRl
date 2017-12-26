@@ -1,4 +1,5 @@
 local Grid = require("src.map.Grid")
+local EntityManager = require("src.entities.EntityManager")
 local Player = require("src.entities.Player")
 local Enemy = require("src.entities.Enemy")
 
@@ -6,14 +7,16 @@ DEBUG = true
 
 
 local grid
+local entityManager
 local player
 local enemy
 
 function love.load()
     love.graphics.setBackgroundColor(255, 255, 255, 255)
 
-    player = Player.create(50, 50)
-    enemy = Enemy.create(100, 50)
+    entityManager = EntityManager.create()
+    entityManager:addEntity(Player.create(50, 50))
+    entityManager:addEntity(Enemy.create(100, 50))
     grid = Grid.create()
 end
 
@@ -22,13 +25,11 @@ function love.update(dt)
         love.event.quit()
     end
 
-    enemy:update(dt)
-    player:update(dt)
-    grid:update(dt, player)
+    entityManager:update(dt)
+    grid:update(dt, entityManager:getPlayer())
 end
 
 function love.draw()
     grid:draw()
-    enemy:draw()
-    player:draw()
+    entityManager:draw()
 end
