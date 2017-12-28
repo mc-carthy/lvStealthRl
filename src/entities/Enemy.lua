@@ -1,4 +1,5 @@
 local Vector2 = require("src.utils.Vector2")
+local Col = require("src.utils.CircleCollider")
 
 local enemy = {}
 
@@ -11,7 +12,7 @@ end
 
 local draw = function(self)
     love.graphics.setColor(191, 0, 0)
-    love.graphics.circle("fill", self.x, self.y, 10)
+    love.graphics.circle("fill", self.x, self.y, self.radius)
 
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
     local viewAngleX1, viewAngleY1 = Vector2.pointFromRotDist(self.rot - self.viewAngle / 2, self.viewDist)
@@ -30,8 +31,11 @@ end
 enemy.create = function(x, y, rot)
     local inst = {}
 
+    inst.tag = "enemy"
     inst.x = x or 0
     inst.y = y or 0
+    inst.radius = 10
+    inst.col = Col.create(x, y, inst.radius)
     inst.rot = rot or 180
     inst.viewDist = 100
     inst.viewAngle = 120

@@ -6,7 +6,7 @@ local player = {}
 local mouseButtonDown = false
 
 local createBullet = function(self)
-    local bullet = Bullet.create(self.x, self.y, self.rot, 100)
+    local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 100)
     self.entityManager:addEntity(bullet)
 end
 
@@ -74,6 +74,7 @@ end
 player.create = function(entityManager, x, y)
     local inst = {}
 
+    inst.tag = "player"
     inst.x = x
     inst.y = y
     inst.entityManager = entityManager

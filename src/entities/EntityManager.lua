@@ -11,7 +11,7 @@ end
 local getPlayer = function(self)
     for _, entity in ipairs(self:getEntities()) do
         -- TODO: Come up with a better way of identifying the player, tags maybe?
-        if entity.getInput then print("true") return entity end
+        if entity.getInput then return entity end
     end
 end
 
