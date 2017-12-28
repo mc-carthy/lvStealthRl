@@ -15,12 +15,22 @@ local getPlayer = function(self)
     end
 end
 
+local _cleanUpDoneEntities = function(self)
+    for i = #self.entities, 1, -1 do
+        local e = self.entities[i]
+        if e.done then
+            table.remove(self.entities, i)
+        end
+    end
+end
+
 local update = function(self, dt)
     for i = 1, #self.entities do
         if self.entities[i].update then
             self.entities[i]:update(dt)
         end
     end
+    _cleanUpDoneEntities(self)
 end
 
 local draw = function(self)

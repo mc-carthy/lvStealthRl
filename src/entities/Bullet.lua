@@ -3,20 +3,24 @@ local Col = require("src.utils.CircleCollider")
 
 local bullet = {}
 
+local _collisionCheck = function(self)
+    for i = 1, #self.entityManager.entities do
+        local other = self.entityManager.entities[i]
+        if other.tag == "enemy" and other.col then
+            if self.col:trigger(other.col) then
+                print("Collision!")
+                self.done = true
+            end
+        end
+    end
+end
+
 local update = function(self, dt)
     local dx, dy = Vector2.pointFromRotDist(self.rot, self.speed * dt)
     self.x = self.x + dx
     self.y = self.y + dy
     self.col:update(self.x, self.y)
-
-    for i = 1, #self.entityManager.entities do
-        local other = self.entityManager.entities[i]
-        if other ~= self and other.col then
-            if self.col:trigger(other.col) then
-                print("Collision!")
-            end
-        end
-    end
+    _collisionCheck(self)
 end
 
 local draw = function(self)
@@ -35,6 +39,7 @@ bullet.create = function(entityManager, x, y, rot, speed)
     inst.col = Col.create(x, y, inst.radius)
     inst.rot = rot
     inst.speed = speed
+    inst.done = nil
 
     inst.update = update
     inst.draw = draw
