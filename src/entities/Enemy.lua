@@ -3,6 +3,10 @@ local Col = require("src.utils.CircleCollider")
 
 local enemy = {}
 
+local takeDamage = function(self)
+    self.done = true
+end
+
 local update = function(self, dt)
     local rotSpeed = 36
     self.rot = self.rot + rotSpeed * dt
@@ -40,6 +44,7 @@ enemy.create = function(x, y, rot)
     inst.viewDist = 100
     inst.viewAngle = 120
 
+    inst.takeDamage = takeDamage
     inst.update = update
     inst.draw = draw
 

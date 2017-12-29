@@ -9,7 +9,7 @@ end
 
 local trigger = function(self, other)
     local c2cDist = V.magnitude(math.abs(self.x - other.x), math.abs(self.y - other.y))
-    return c2cDist < (self.radius + other.radius) / 2
+    return c2cDist < self.radius + other.radius
 end
 
 C.create = function(x, y, radius)

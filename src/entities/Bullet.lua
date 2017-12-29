@@ -8,8 +8,8 @@ local _collisionCheck = function(self)
         local other = self.entityManager.entities[i]
         if other.tag == "enemy" and other.col then
             if self.col:trigger(other.col) then
-                print("Collision!")
                 self.done = true
+                if other.takeDamage then other:takeDamage() end
             end
         end
     end
@@ -39,7 +39,7 @@ bullet.create = function(entityManager, x, y, rot, speed)
     inst.col = Col.create(x, y, inst.radius)
     inst.rot = rot
     inst.speed = speed
-    inst.done = nil
+    inst.done = false
 
     inst.update = update
     inst.draw = draw
