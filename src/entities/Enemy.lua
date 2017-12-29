@@ -7,11 +7,29 @@ local takeDamage = function(self)
     self.done = true
 end
 
-local update = function(self, dt)
-    local rotSpeed = 36
-    self.rot = self.rot + rotSpeed * dt
+local _chasePlayer = function(self, dt)
+    local player = self.entityManager:getPlayer()
+    local rot = Vector2.angle(self.x, self.y, player.x, player.y)
+    local dx, dy = Vector2.pointFromRotDist(rot, self.moveSpeed * dt)
 
-    if self.rot > 360 then self.rot = 0 end
+    self.x = self.x + dx
+    self.y = self.y + dy
+    self.rot = rot
+end
+
+local _updateCollider = function(self)
+    self.col:update(self.x, self.y)
+end
+
+local update = function(self, dt)
+    -- local rotSpeed = 36
+    -- self.rot = self.rot + rotSpeed * dt
+    -- if self.rot > 360 then self.rot = 0 end
+
+    _updateCollider(self)
+    if self.canSeePlayer then
+        _chasePlayer(self, dt)
+    end
 end
 
 local draw = function(self)
@@ -32,10 +50,11 @@ local draw = function(self)
 
 end
 
-enemy.create = function(x, y, rot)
+enemy.create = function(entityManager, x, y, rot)
     local inst = {}
 
     inst.tag = "enemy"
+    inst.entityManager = entityManager
     inst.x = x or 0
     inst.y = y or 0
     inst.radius = 10
@@ -43,6 +62,8 @@ enemy.create = function(x, y, rot)
     inst.rot = rot or 180
     inst.viewDist = 100
     inst.viewAngle = 120
+    inst.canSeePlayer = true
+    inst.moveSpeed = 100
 
     inst.takeDamage = takeDamage
     inst.update = update

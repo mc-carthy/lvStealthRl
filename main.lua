@@ -16,7 +16,7 @@ function love.load()
 
     entityManager = EntityManager.create()
     entityManager:addEntity(Player.create(entityManager, 50, 50))
-    entityManager:addEntity(Enemy.create(100, 50))
+    entityManager:addEntity(Enemy.create(entityManager, 100, 50))
     grid = Grid.create()
 end
 
