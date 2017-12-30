@@ -10,19 +10,27 @@ local createBullet = function(self)
     self.entityManager:addEntity(bullet)
 end
 
+local getSpeedMultiplier = function(self)
+    return self.speedMultiplier
+end
+
 local getInput = function(self)
     local inputX = 0
     local inputY = 0
-    if love.keyboard.isDown("d") and not love.keyboard.isDown("left") then
+    if (love.keyboard.isDown("d") or love.keyboard.isDown("right")) and
+    not (love.keyboard.isDown("a") or love.keyboard.isDown("left")) then
         inputX = 1
     end
-    if love.keyboard.isDown("a") and not love.keyboard.isDown("right") then
+    if (love.keyboard.isDown("a") or love.keyboard.isDown("left")) and
+    not (love.keyboard.isDown("d") or love.keyboard.isDown("right")) then
         inputX = -1
     end
-    if love.keyboard.isDown("s") and not love.keyboard.isDown("up") then
+    if (love.keyboard.isDown("s") or love.keyboard.isDown("down")) and
+    not (love.keyboard.isDown("w") or love.keyboard.isDown("up")) then
         inputY = 1
     end
-    if love.keyboard.isDown("w") and not love.keyboard.isDown("down") then
+    if (love.keyboard.isDown("w") or love.keyboard.isDown("up")) and
+    not (love.keyboard.isDown("s") or love.keyboard.isDown("down")) then
         inputY = -1
     end
 
@@ -30,6 +38,17 @@ local getInput = function(self)
         inputX = inputX / 1.41
         inputY = inputY / 1.41
     end
+
+    if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
+        self.speedMultiplier = self.crouchSpeedMultiplier
+    elseif love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") then
+        self.speedMultiplier = self.runSpeedMultiplier
+    else
+        self.speedMultiplier = 1
+    end
+
+    self.moveX = inputX * self.nominalSpeed * self.speedMultiplier
+    self.moveY = inputY * self.nominalSpeed * self.speedMultiplier
 
     local buttonPressed = love.mouse.isDown(1)
 
@@ -44,9 +63,6 @@ local getInput = function(self)
 
     self.mouseX, self.mouseY = love.mouse.getPosition()
     self.rot = Vector2.angle(self.x, self.y, self.mouseX, self.mouseY)
-
-    self.moveX = inputX * self.speed
-    self.moveY = inputY * self.speed
 end
 
 local getPosition = function(self)
@@ -67,7 +83,8 @@ local draw = function(self)
 
     if DEBUG then
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
-        love.graphics.print(self.rot, 10, 10)
+        love.graphics.print(math.floor(self.rot), 10, 10)
+        love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 50, 10)
     end
 end
 
@@ -82,12 +99,16 @@ player.create = function(entityManager, x, y)
     inst.mouseY = 0
     inst.rot = 0
     inst.r = 10
-    inst.speed = 150
+    inst.nominalSpeed = 150
+    inst.speedMultiplier = 1
+    inst.crouchSpeedMultiplier = 0.5
+    inst.runSpeedMultiplier = 1.5
     inst.moveX = 0
     inst.moveY = 0
 
     inst.getInput = getInput
     inst.getPosition = getPosition
+    inst.getSpeedMultiplier = getSpeedMultiplier
 
     inst.update = update
     inst.draw = draw

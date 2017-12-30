@@ -26,6 +26,9 @@ local _updateCollider = function(self)
 end
 
 local update = function(self, dt)
+    local player = self.entityManager:getPlayer()
+
+    self.viewDist = self.nominalViewDist * player:getSpeedMultiplier()
     -- local rotSpeed = 36
     -- self.rot = self.rot + rotSpeed * dt
     -- if self.rot > 360 then self.rot = 0 end
@@ -33,7 +36,6 @@ local update = function(self, dt)
     _updateCollider(self)
 
 
-    local player = self.entityManager:getPlayer()
     local playerInViewDist = Vector2.magnitude(self.x - player.x, self.y - player.y) < self.viewDist
 
     angleToPlayer = Vector2.angle(self.x, self.y, player.x, player.y)
@@ -91,6 +93,7 @@ enemy.create = function(entityManager, x, y, rot)
     inst.col = Col.create(x, y, inst.radius)
     inst.rot = rot or 180
     inst.viewDist = 100
+    inst.nominalViewDist = 200
     inst.viewAngle = 120
     inst.canSeePlayer = true
     inst.moveSpeed = 100
