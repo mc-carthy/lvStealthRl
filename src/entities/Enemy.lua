@@ -1,4 +1,5 @@
 local Vector2 = require("src.utils.Vector2")
+local Math = require("src.utils.Math")
 local Col = require("src.utils.CircleCollider")
 
 local enemy = {}
@@ -6,6 +7,7 @@ local enemy = {}
 local angleToPlayer = nil
 local playerInViewAngle = nil
 local relativeAngleToPlayer = nil
+local nearRotThreshold = 5
 
 local takeDamage = function(self)
     self.done = true
@@ -16,9 +18,16 @@ local _chasePlayer = function(self, dt)
     local rot = Vector2.angle(self.x, self.y, player.x, player.y)
     local dx, dy = Vector2.pointFromRotDist(rot, self.moveSpeed * dt)
 
+    self.targetRot = rot
+    if math.abs((self.targetRot - self.rot) % 360) > nearRotThreshold then
+        dRot = Math.sign(self.targetRot - self.rot) * self.rotSpeed * dt
+        self.rot = self.rot + dRot
+    else
+        self.rot = rot
+    end
+
     self.x = self.x + dx
     self.y = self.y + dy
-    self.rot = rot
 end
 
 local _updateCollider = function(self)
@@ -92,6 +101,8 @@ enemy.create = function(entityManager, x, y, rot)
     inst.radius = 10
     inst.col = Col.create(x, y, inst.radius)
     inst.rot = rot or 180
+    inst.targetRot = nil
+    inst.rotSpeed = 100
     inst.viewDist = 100
     inst.nominalViewDist = 200
     inst.viewAngle = 120
