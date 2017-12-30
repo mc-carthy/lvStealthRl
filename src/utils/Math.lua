@@ -10,4 +10,12 @@ function M.sign(value)
     end
 end
 
+function M.clamp(low, n, high)
+    return math.min(math.max(low, n), high)
+end
+
+function M.lerp(a,b,t)
+    return (1-t)*a + t*b
+end
+
 return M

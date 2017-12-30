@@ -1,4 +1,5 @@
 local Vector2 = require("src.utils.Vector2")
+local Math = require("src.utils.Math")
 local Bullet = require("src.entities.Bullet")
 
 local player = {}
@@ -40,11 +41,11 @@ local getInput = function(self)
     end
 
     if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
-        self.speedMultiplier = self.crouchSpeedMultiplier
+        self.speedMultiplier = Math.lerp(self.speedMultiplier, self.crouchSpeedMultiplier, self.moveSpeedDampening)
     elseif love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") then
-        self.speedMultiplier = self.runSpeedMultiplier
+        self.speedMultiplier = Math.lerp(self.speedMultiplier, self.runSpeedMultiplier, self.moveSpeedDampening)
     else
-        self.speedMultiplier = 1
+        self.speedMultiplier = Math.lerp(self.speedMultiplier, 1, self.moveSpeedDampening)
     end
 
     self.moveX = inputX * self.nominalSpeed * self.speedMultiplier
@@ -79,9 +80,12 @@ end
 local draw = function(self)
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("fill", self.x, self.y, self.r)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.circle("line", self.x, self.y, self.r)
 
 
     if DEBUG then
+        love.graphics.setColor(0, 0, 0)
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
         love.graphics.print(math.floor(self.rot), 10, 10)
         love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 50, 10)
@@ -103,6 +107,7 @@ player.create = function(entityManager, x, y)
     inst.speedMultiplier = 1
     inst.crouchSpeedMultiplier = 0.5
     inst.runSpeedMultiplier = 1.5
+    inst.moveSpeedDampening = 0.2
     inst.moveX = 0
     inst.moveY = 0
 

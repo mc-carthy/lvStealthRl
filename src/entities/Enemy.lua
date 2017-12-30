@@ -67,9 +67,6 @@ local update = function(self, dt)
 end
 
 local draw = function(self)
-    love.graphics.setColor(191, 0, 0)
-    love.graphics.circle("fill", self.x, self.y, self.radius)
-
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
     local viewAngleX1, viewAngleY1 = Vector2.pointFromRotDist(self.rot - self.viewAngle / 2, self.viewDist)
     local viewAngleX2, viewAngleY2 = Vector2.pointFromRotDist(self.rot + self.viewAngle / 2, self.viewDist)
@@ -78,9 +75,14 @@ local draw = function(self)
     love.graphics.arc("fill", self.x, self.y, self.viewDist, -math.rad(self.rot + self.viewAngle / 2), -math.rad(self.rot - self.viewAngle / 2))
 
     love.graphics.setColor(0, 0, 0)
-    love.graphics.line(self.x, self.y, self.x + viewAngleX1, self.y + viewAngleY1)
-    love.graphics.line(self.x, self.y, self.x + viewAngleX2, self.y + viewAngleY2)
-    love.graphics.line(self.x, self.y, self.x + focusX, self.y + focusY)
+    -- love.graphics.line(self.x, self.y, self.x + viewAngleX1, self.y + viewAngleY1)
+    -- love.graphics.line(self.x, self.y, self.x + viewAngleX2, self.y + viewAngleY2)
+    -- love.graphics.line(self.x, self.y, self.x + focusX, self.y + focusY)
+
+    love.graphics.setColor(191, 0, 0)
+    love.graphics.circle("fill", self.x, self.y, self.radius)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.circle("line", self.x, self.y, self.radius)
 
     if DEBUG then
         love.graphics.print("Angle to player: " .. angleToPlayer, 10, 30)
