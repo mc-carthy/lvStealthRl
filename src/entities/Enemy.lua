@@ -3,6 +3,10 @@ local Col = require("src.utils.CircleCollider")
 
 local enemy = {}
 
+local angleToPlayer = nil
+local playerInViewAngle = nil
+local relativeAngleToPlayer = nil
+
 local takeDamage = function(self)
     self.done = true
 end
@@ -27,6 +31,25 @@ local update = function(self, dt)
     -- if self.rot > 360 then self.rot = 0 end
 
     _updateCollider(self)
+
+
+    local player = self.entityManager:getPlayer()
+    local playerInViewDist = Vector2.magnitude(self.x - player.x, self.y - player.y) < self.viewDist
+
+    angleToPlayer = Vector2.angle(self.x, self.y, player.x, player.y)
+
+    -- TODO: Tidy up this angle check
+    relativeAngleToPlayer = (angleToPlayer - self.rot)
+    if relativeAngleToPlayer < 0 then relativeAngleToPlayer = relativeAngleToPlayer + 360 end
+    if relativeAngleToPlayer > 180 then relativeAngleToPlayer = -relativeAngleToPlayer + 360 end
+    playerInViewAngle = relativeAngleToPlayer < self.viewAngle / 2
+
+    if playerInViewDist and playerInViewAngle then
+        self.canSeePlayer = true
+    else
+        self.canSeePlayer = false
+    end
+
     if self.canSeePlayer then
         _chasePlayer(self, dt)
     end
@@ -47,6 +70,13 @@ local draw = function(self)
     love.graphics.line(self.x, self.y, self.x + viewAngleX1, self.y + viewAngleY1)
     love.graphics.line(self.x, self.y, self.x + viewAngleX2, self.y + viewAngleY2)
     love.graphics.line(self.x, self.y, self.x + focusX, self.y + focusY)
+
+    if DEBUG then
+        love.graphics.print("Angle to player: " .. angleToPlayer, 10, 30)
+        love.graphics.print("Facing angle: " .. self.rot, 10, 50)
+        love.graphics.print("Relative angle to player: " .. relativeAngleToPlayer, 10, 70)
+        love.graphics.print("Player in view angle: " .. tostring(playerInViewAngle), 10, 90)
+    end
 
 end
 
