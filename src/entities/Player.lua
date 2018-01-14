@@ -68,7 +68,7 @@ local getInput = function(self)
     self.rot = Vector2.angle(self.x, self.y, self.mouseX, self.mouseY)
 end
 
-local checkCollisionWithGrid = function(self)
+local isCollidingWithGrid = function(self)
     local currentX, currentY = self:getPosition()
     local dPos = { x = self.moveX, y = self.moveY }
     local grid = self.entityManager:getGrid()
@@ -79,12 +79,10 @@ local checkCollisionWithGrid = function(self)
         local nextGridSpaceX, nextGridSpaceY = grid.worldSpaceToGrid(grid, self.nextX + col.x, self.nextY + col.y)
         if not grid:isWalkable(nextGridSpaceX, nextGridSpaceY) then
         -- if not grid:isWalkable(self.gridX, self.gridY) then
-            self.isColliding = true
-        else
-            self.isColliding = false
+            return true
         end
-        if self.isColliding then break end
     end
+    return false
 end
 
 local getPosition = function(self)
@@ -94,21 +92,15 @@ end
 local update = function(self, dt)
     self:getInput()
 
-    self:checkCollisionWithGrid()
-
-    self.x = self.x + self.moveX * dt
-    self.y = self.y + self.moveY * dt
+    if not self:isCollidingWithGrid() then
+        self.x = self.x + self.moveX * dt
+        self.y = self.y + self.moveY * dt
+    end
 end
 
 local draw = function(self)
-    love.graphics.setColor(0, 0, 0)
-    if self.isColliding then
-        love.graphics.setColor(0, 191, 191)
-    end
+    love.graphics.setColor(0, 255, 0)
     love.graphics.circle("fill", self.x, self.y, self.r)
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.circle("line", self.x, self.y, self.r)
-
 
     if playerDebugFlag then
         love.graphics.setColor(63, 63, 63)
@@ -145,7 +137,7 @@ player.create = function(entityManager, x, y)
         { x = inst.r,  y = inst.r  }
     }
 
-    inst.checkCollisionWithGrid = checkCollisionWithGrid
+    inst.isCollidingWithGrid = isCollidingWithGrid
     inst.getInput = getInput
     inst.getPosition = getPosition
     inst.getSpeedMultiplier = getSpeedMultiplier

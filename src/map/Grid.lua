@@ -31,9 +31,9 @@ local draw = function(self)
     for x = 1, self.xSize do
         for y = 1, self.ySize do
             if x == playerX and y == playerY then
-                love.graphics.setColor(0, 255, 0, 255)
+                love.graphics.setColor(0, 127, 0, 255)
             else
-                love.graphics.setColor(220, 220, 220)
+                love.graphics.setColor(127, 127, 127)
             end
             if not self[x][y].walkable then
                 love.graphics.setColor(0, 0, 0)
