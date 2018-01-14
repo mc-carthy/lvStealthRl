@@ -12,6 +12,13 @@ local _collisionCheck = function(self)
                 if other.takeDamage then other:takeDamage() end
             end
         end
+        if other.tag == "grid" then
+            local grid = other
+            local gridX, gridY = grid.worldSpaceToGrid(grid, self.x, self.y)
+            if not grid[gridX][gridY].walkable then
+                self.done = true
+            end
+        end
     end
 end
 
@@ -24,6 +31,7 @@ local update = function(self, dt)
 end
 
 local draw = function(self)
+    love.graphics.setColor(255, 255, 255)
     love.graphics.circle("fill", self.x, self.y, self.radius)
 end
 
