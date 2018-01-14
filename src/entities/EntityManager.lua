@@ -54,6 +54,7 @@ entityManager.create = function()
     inst.addEntity = addEntity
     inst.getEntities = getEntities
     inst.getPlayer = getPlayer
+    inst.getGrid = getGrid
 
     inst.update = update
     inst.draw = draw

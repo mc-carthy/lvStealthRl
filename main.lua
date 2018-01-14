@@ -3,8 +3,7 @@ local EntityManager = require("src.entities.EntityManager")
 local Player = require("src.entities.Player")
 local Enemy = require("src.entities.Enemy")
 
-DEBUG = true
-
+DEBUG = false
 
 local grid
 local entityManager

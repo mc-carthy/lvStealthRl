@@ -4,6 +4,8 @@ local Col = require("src.utils.CircleCollider")
 
 local enemy = {}
 
+local enemyDebugFlag = false
+
 local angleToPlayer = nil
 local playerInViewAngle = nil
 local relativeAngleToPlayer = nil
@@ -84,7 +86,7 @@ local draw = function(self)
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("line", self.x, self.y, self.radius)
 
-    if DEBUG then
+    if enemyDebugFlag then
         love.graphics.print("Angle to player: " .. angleToPlayer, 10, 30)
         love.graphics.print("Facing angle: " .. self.rot, 10, 50)
         love.graphics.print("Relative angle to player: " .. relativeAngleToPlayer, 10, 70)

@@ -4,6 +4,8 @@ local Bullet = require("src.entities.Bullet")
 
 local player = {}
 
+local playerDebugFlag = true
+
 local mouseButtonDown = false
 
 local createBullet = function(self)
@@ -66,6 +68,19 @@ local getInput = function(self)
     self.rot = Vector2.angle(self.x, self.y, self.mouseX, self.mouseY)
 end
 
+local checkCollisionWithGrid = function(self)
+    local currentX, currentY = self:getPosition()
+    local dPos = { x = self.moveX, y = self.moveY }
+    local grid = self.entityManager:getGrid()
+    self.gridX, self.gridY = grid.worldSpaceToGrid(grid, currentX, currentY)
+    local nextGridSpaceX, nextGridSpaceY = grid.worldSpaceToGrid(grid, currentX + dPos.x, currentY + dPos.y)
+    if not grid:isWalkable(self.gridX, self.gridY) then
+        self.isColliding = true
+    else
+        self.isColliding = false
+    end
+end
+
 local getPosition = function(self)
     return self.x, self.y
 end
@@ -73,22 +88,28 @@ end
 local update = function(self, dt)
     self:getInput()
 
+    self:checkCollisionWithGrid()
+
     self.x = self.x + self.moveX * dt
     self.y = self.y + self.moveY * dt
 end
 
 local draw = function(self)
     love.graphics.setColor(0, 0, 0)
+    if self.isColliding then
+        love.graphics.setColor(0, 191, 191)
+    end
     love.graphics.circle("fill", self.x, self.y, self.r)
     love.graphics.setColor(255, 255, 255)
     love.graphics.circle("line", self.x, self.y, self.r)
 
 
-    if DEBUG then
-        love.graphics.setColor(0, 0, 0)
+    if playerDebugFlag then
+        love.graphics.setColor(63, 63, 63)
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
-        love.graphics.print(math.floor(self.rot), 10, 10)
-        love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 50, 10)
+        love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 10, 10)
+        love.graphics.print("Player rotation: " .. math.floor(self.rot), 10, 30)
+        love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 10, 50)
     end
 end
 
@@ -110,7 +131,9 @@ player.create = function(entityManager, x, y)
     inst.moveSpeedDampening = 0.2
     inst.moveX = 0
     inst.moveY = 0
+    inst.isColliding = false
 
+    inst.checkCollisionWithGrid = checkCollisionWithGrid
     inst.getInput = getInput
     inst.getPosition = getPosition
     inst.getSpeedMultiplier = getSpeedMultiplier
