@@ -73,11 +73,17 @@ local checkCollisionWithGrid = function(self)
     local dPos = { x = self.moveX, y = self.moveY }
     local grid = self.entityManager:getGrid()
     self.gridX, self.gridY = grid.worldSpaceToGrid(grid, currentX, currentY)
-    local nextGridSpaceX, nextGridSpaceY = grid.worldSpaceToGrid(grid, currentX + dPos.x, currentY + dPos.y)
-    if not grid:isWalkable(self.gridX, self.gridY) then
-        self.isColliding = true
-    else
-        self.isColliding = false
+    self.nextX = self.x + dPos.x * _DT
+    self.nextY = self.y + dPos.y * _DT
+    for _, col in ipairs(self.cornerOffsets) do
+        local nextGridSpaceX, nextGridSpaceY = grid.worldSpaceToGrid(grid, self.nextX + col.x, self.nextY + col.y)
+        if not grid:isWalkable(nextGridSpaceX, nextGridSpaceY) then
+        -- if not grid:isWalkable(self.gridX, self.gridY) then
+            self.isColliding = true
+        else
+            self.isColliding = false
+        end
+        if self.isColliding then break end
     end
 end
 
@@ -132,6 +138,12 @@ player.create = function(entityManager, x, y)
     inst.moveX = 0
     inst.moveY = 0
     inst.isColliding = false
+    inst.cornerOffsets = {
+        { x = inst.r,  y = -inst.r },
+        { x = -inst.r, y = -inst.r },
+        { x = -inst.r, y = inst.r  },
+        { x = inst.r,  y = inst.r  }
+    }
 
     inst.checkCollisionWithGrid = checkCollisionWithGrid
     inst.getInput = getInput
