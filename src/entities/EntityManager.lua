@@ -10,8 +10,13 @@ end
 
 local getPlayer = function(self)
     for _, entity in ipairs(self:getEntities()) do
-        -- TODO: Come up with a better way of identifying the player, tags maybe?
         if entity.tag == "player" then return entity end
+    end
+end
+
+local getGrid = function(self)
+    for _, entity in ipairs(self:getEntities()) do
+        if entity.tag == "grid" then return entity end
     end
 end
 

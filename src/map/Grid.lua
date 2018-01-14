@@ -12,7 +12,8 @@ local worldSpaceToGrid = function(self, x, y)
     return gridx, gridy
 end
 
-local update = function(self, dt, player)
+local update = function(self, dt)
+    local player = self.entityManager:getPlayer()
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
 end
 
@@ -34,9 +35,11 @@ local draw = function(self)
     end
 end
 
-grid.create = function()
+grid.create = function(entityManager)
     local inst = {}
 
+    inst.tag = "grid"
+    inst.entityManager = entityManager
     inst.cellSize = 40
     local border = 2
     inst.cellDrawSize = inst.cellSize - border

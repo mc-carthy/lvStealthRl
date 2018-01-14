@@ -15,9 +15,9 @@ function love.load()
     love.graphics.setBackgroundColor(255, 255, 255, 255)
 
     entityManager = EntityManager.create()
+    entityManager:addEntity(Grid.create(entityManager))
     entityManager:addEntity(Player.create(entityManager, 50, 50))
     entityManager:addEntity(Enemy.create(entityManager, 100, 50))
-    grid = Grid.create()
 end
 
 function love.update(dt)
@@ -26,10 +26,9 @@ function love.update(dt)
     end
 
     entityManager:update(dt)
-    grid:update(dt, entityManager:getPlayer())
 end
 
 function love.draw()
-    grid:draw()
+    -- TODO: Add sorting layer function to control which items get drawn in front
     entityManager:draw()
 end
