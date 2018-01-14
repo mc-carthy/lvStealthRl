@@ -8,6 +8,27 @@ local grid_rng = love.math.newRandomGenerator(os.time())
 
 local playerX, playerY = 0, 0
 
+local _generateGrid = function(self)
+    for x = 1, self.xSize do
+        self[x] = {}
+        for y = 1, self.ySize do
+            self[x][y] = {}
+            self[x][y].walkable = true
+        end
+    end
+end
+
+local _populateGrid = function(self)
+    for x = 1, self.xSize do
+        for y = 1, self.ySize do
+            local prob = grid_rng:random(100)
+            if prob >= 85 then
+                self[x][y].walkable = false
+            end
+        end
+    end
+end
+
 local worldSpaceToGrid = function(self, x, y)
     gridx = math.floor(x / self.cellSize) + 1
     gridy = math.floor(y / self.cellSize) + 1
@@ -55,19 +76,8 @@ grid.create = function(entityManager)
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize
     inst.ySize = love.graphics.getHeight() / inst.cellSize
-
-    for x = 1, inst.xSize do
-        inst[x] = {}
-        for y = 1, inst.ySize do
-            inst[x][y] = {}
-            local prob = grid_rng:random(100)
-            if prob >= 85 then
-                inst[x][y].walkable = false
-            else
-                inst[x][y].walkable = true
-            end
-        end
-    end
+    _generateGrid(inst)
+    _populateGrid(inst)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
