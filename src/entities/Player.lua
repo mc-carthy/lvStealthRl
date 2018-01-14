@@ -78,11 +78,10 @@ local move = function(self, dt)
 end
 
 local horizontalCollision = function(self, dt)
-    self.nextX = self.x + self.moveX * dt
     -- Horizontal colisions
-    for _, col in ipairs(self.cornerOffsets) do
-        local nextGridSpaceX, _ = self.grid.worldSpaceToGrid(self.grid, self.nextX + col.x, self.y + col.y)
-        if not self.grid:isWalkable(nextGridSpaceX, self.gridY) then
+    for i, col in ipairs(self.cornerOffsets) do
+        local nextGridSpaceX, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x + self.moveX * dt + col.x, self.y + col.y)
+        if not self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) then
             return true
         end
     end
@@ -90,11 +89,10 @@ local horizontalCollision = function(self, dt)
 end
 
 local verticalCollision = function(self, dt)
-    self.nextY = self.y + self.moveY * dt
-    -- Horizontal colisions
-    for _, col in ipairs(self.cornerOffsets) do
-        local _, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x + col.x, self.nextY + col.y)
-        if not self.grid:isWalkable(self.gridX, nextGridSpaceY) then
+    -- Vertical colisions
+    for i, col in ipairs(self.cornerOffsets) do
+        local nextGridSpaceX, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x - col.x, self.y + self.moveY * dt - col.y)
+        if not self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) then
             return true
         end
     end
@@ -106,11 +104,12 @@ local getPosition = function(self)
 end
 
 local update = function(self, dt)
+    self.dt = dt
     self:getInput()
 
-    self:move(dt)
-
     self.gridX, self.gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
+
+    self:move(dt)
 end
 
 local draw = function(self)
@@ -123,6 +122,11 @@ local draw = function(self)
         love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 10, 10)
         love.graphics.print("Player rotation: " .. math.floor(self.rot), 10, 30)
         love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 10, 50)
+
+        for _, col in ipairs(self.cornerOffsets) do
+            love.graphics.setColor(191, 0, 191, 255)
+            love.graphics.circle("fill", self.x + self.moveX * self.dt + col.x, self.y + self.moveY * self.dt + col.y, 5)
+        end
         
     end
 end
@@ -139,7 +143,7 @@ player.create = function(entityManager, x, y)
     inst.mouseY = 0
     inst.rot = 0
     inst.r = 10
-    inst.nominalSpeed = 150
+    inst.nominalSpeed = 100
     inst.speedMultiplier = 1
     inst.crouchSpeedMultiplier = 0.5
     inst.runSpeedMultiplier = 1.5
