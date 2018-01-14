@@ -5,7 +5,6 @@ local Enemy = require("src.entities.Enemy")
 
 DEBUG = false
 
-_DT = 0
 
 local grid
 local entityManager
@@ -25,7 +24,6 @@ function love.update(dt)
     if love.keyboard.isDown("escape") then
         love.event.quit()
     end
-    _DT = dt
 
     entityManager:update(dt)
 end

@@ -68,17 +68,33 @@ local getInput = function(self)
     self.rot = Vector2.angle(self.x, self.y, self.mouseX, self.mouseY)
 end
 
-local isCollidingWithGrid = function(self)
-    local currentX, currentY = self:getPosition()
-    local dPos = { x = self.moveX, y = self.moveY }
-    local grid = self.entityManager:getGrid()
-    self.gridX, self.gridY = grid.worldSpaceToGrid(grid, currentX, currentY)
-    self.nextX = self.x + dPos.x * _DT
-    self.nextY = self.y + dPos.y * _DT
+local move = function(self, dt)
+    if not self:horizontalCollision(dt) then
+        self.x = self.x + self.moveX * dt
+    end
+    if not self:verticalCollision(dt) then
+        self.y = self.y + self.moveY * dt
+    end
+end
+
+local horizontalCollision = function(self, dt)
+    self.nextX = self.x + self.moveX * dt
+    -- Horizontal colisions
     for _, col in ipairs(self.cornerOffsets) do
-        local nextGridSpaceX, nextGridSpaceY = grid.worldSpaceToGrid(grid, self.nextX + col.x, self.nextY + col.y)
-        if not grid:isWalkable(nextGridSpaceX, nextGridSpaceY) then
-        -- if not grid:isWalkable(self.gridX, self.gridY) then
+        local nextGridSpaceX, _ = self.grid.worldSpaceToGrid(self.grid, self.nextX + col.x, self.y + col.y)
+        if not self.grid:isWalkable(nextGridSpaceX, self.gridY) then
+            return true
+        end
+    end
+    return false
+end
+
+local verticalCollision = function(self, dt)
+    self.nextY = self.y + self.moveY * dt
+    -- Horizontal colisions
+    for _, col in ipairs(self.cornerOffsets) do
+        local _, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x + col.x, self.nextY + col.y)
+        if not self.grid:isWalkable(self.gridX, nextGridSpaceY) then
             return true
         end
     end
@@ -92,10 +108,9 @@ end
 local update = function(self, dt)
     self:getInput()
 
-    if not self:isCollidingWithGrid() then
-        self.x = self.x + self.moveX * dt
-        self.y = self.y + self.moveY * dt
-    end
+    self:move(dt)
+
+    self.gridX, self.gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
 end
 
 local draw = function(self)
@@ -108,6 +123,7 @@ local draw = function(self)
         love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 10, 10)
         love.graphics.print("Player rotation: " .. math.floor(self.rot), 10, 30)
         love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 10, 50)
+        
     end
 end
 
@@ -118,6 +134,7 @@ player.create = function(entityManager, x, y)
     inst.x = x
     inst.y = y
     inst.entityManager = entityManager
+    inst.grid = inst.entityManager:getGrid()
     inst.mouseX = 0
     inst.mouseY = 0
     inst.rot = 0
@@ -129,7 +146,6 @@ player.create = function(entityManager, x, y)
     inst.moveSpeedDampening = 0.2
     inst.moveX = 0
     inst.moveY = 0
-    inst.isColliding = false
     inst.cornerOffsets = {
         { x = inst.r,  y = -inst.r },
         { x = -inst.r, y = -inst.r },
@@ -137,7 +153,9 @@ player.create = function(entityManager, x, y)
         { x = inst.r,  y = inst.r  }
     }
 
-    inst.isCollidingWithGrid = isCollidingWithGrid
+    inst.move = move
+    inst.horizontalCollision = horizontalCollision
+    inst.verticalCollision = verticalCollision
     inst.getInput = getInput
     inst.getPosition = getPosition
     inst.getSpeedMultiplier = getSpeedMultiplier
