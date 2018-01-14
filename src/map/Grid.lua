@@ -2,6 +2,8 @@ local EntityManager = require("src.entities.EntityManager")
 
 local grid = {}
 
+local grid_rng = love.math.newRandomGenerator(os.time())
+
 local playerX, playerY = 0, 0
 
 local worldSpaceToGrid = function(self, x, y)
@@ -22,6 +24,9 @@ local draw = function(self)
             else
                 love.graphics.setColor(220, 220, 220)
             end
+            if not self[x][y].walkable then
+                love.graphics.setColor(0, 0, 0)
+            end
             if DEBUG then
                 love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
             end
@@ -41,7 +46,13 @@ grid.create = function()
     for x = 1, inst.xSize do
         inst[x] = {}
         for y = 1, inst.ySize do
-            inst[x][y] = false
+            inst[x][y] = {}
+            local prob = grid_rng:random(100)
+            if prob >= 85 then
+                inst[x][y].walkable = false
+            else
+                inst[x][y].walkable = true
+            end
         end
     end
 
