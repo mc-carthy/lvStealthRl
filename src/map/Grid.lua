@@ -8,6 +8,7 @@ local gridDebugFlag = true
 local grid_rng = love.math.newRandomGenerator(os.time())
 
 local playerX, playerY = 0, 0
+local viewDist = 22
 
 local _generateGrid = function(self)
     for x = 1, self.xSize do
@@ -28,7 +29,6 @@ local _populateGrid = function(self)
             --     self[x][y].walkable = false
             -- end
             if celAutGrid[x][y] then
-                print(x .. "-" .. y)
                 self[x][y].walkable = false
             end
         end
@@ -66,7 +66,9 @@ local draw = function(self)
                 love.graphics.setColor(0, 0, 0)
             end
             if gridDebugFlag then
-                love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+                if x < viewDist + playerX and x > playerX - viewDist and y < viewDist + playerY and y > playerY - viewDist then
+                    love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+                end
             end
         end
     end
@@ -77,11 +79,15 @@ grid.create = function(entityManager)
 
     inst.tag = "grid"
     inst.entityManager = entityManager
-    inst.cellSize = 10
+    inst.cellSize = 20
+    inst.worldScaleInScreens = 8
     local border = 2
     inst.cellDrawSize = inst.cellSize - border
-    inst.xSize = love.graphics.getWidth() / inst.cellSize
-    inst.ySize = love.graphics.getHeight() / inst.cellSize
+    inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
+    inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
+
+    -- inst.xSize = 300
+    -- inst.ySize = 300
     _generateGrid(inst)
     _populateGrid(inst)
 

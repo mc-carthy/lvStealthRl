@@ -1,9 +1,9 @@
 local celAut = {}
 
-local cellSize = 5
+local cellSize = 20
 local border = 1
 local cellDrawSize = cellSize - border
-local wallChance = 480
+local wallChance = 450
 local mapBorderThickness = 2
 local rng = love.math.newRandomGenerator(os.time())
 

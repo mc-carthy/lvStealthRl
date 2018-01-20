@@ -1,3 +1,4 @@
+local Camera = require("src.utils.Camera")
 local Vector2 = require("src.utils.Vector2")
 local Math = require("src.utils.Math")
 local Bullet = require("src.entities.Bullet")
@@ -64,7 +65,8 @@ local getInput = function(self)
         mouseButtonDown = false
     end
 
-    self.mouseX, self.mouseY = love.mouse.getPosition()
+    -- self.mouseX, self.mouseY = love.mouse.getPosition()
+    self.mouseX, self.mouseY = Camera:mousePosition()
     self.rot = Vector2.angle(self.x, self.y, self.mouseX, self.mouseY)
 end
 
