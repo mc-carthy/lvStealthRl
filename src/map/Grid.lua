@@ -77,7 +77,7 @@ grid.create = function(entityManager)
 
     inst.tag = "grid"
     inst.entityManager = entityManager
-    inst.cellSize = 40
+    inst.cellSize = 10
     local border = 2
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize
