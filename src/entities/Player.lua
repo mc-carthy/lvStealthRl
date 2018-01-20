@@ -123,10 +123,10 @@ local draw = function(self)
         love.graphics.print("Player rotation: " .. math.floor(self.rot), 10, 30)
         love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 10, 50)
 
-        for _, col in ipairs(self.cornerOffsets) do
-            love.graphics.setColor(191, 0, 191, 255)
-            love.graphics.circle("fill", self.x + self.moveX * self.dt + col.x, self.y + self.moveY * self.dt + col.y, 5)
-        end
+        -- for _, col in ipairs(self.cornerOffsets) do
+        --     love.graphics.setColor(191, 0, 191, 255)
+        --     love.graphics.circle("fill", self.x + self.moveX * self.dt + col.x, self.y + self.moveY * self.dt + col.y, 5)
+        -- end
         
     end
 end
@@ -143,7 +143,7 @@ player.create = function(entityManager, x, y)
     inst.mouseY = 0
     inst.rot = 0
     inst.r = 10
-    inst.nominalSpeed = 100
+    inst.nominalSpeed = 150
     inst.speedMultiplier = 1
     inst.crouchSpeedMultiplier = 0.5
     inst.runSpeedMultiplier = 1.5

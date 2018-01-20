@@ -1,4 +1,5 @@
 local EntityManager = require("src.entities.EntityManager")
+local CelAut = require("src.map.CelAutCaveGen")
 
 local grid = {}
 
@@ -19,10 +20,15 @@ local _generateGrid = function(self)
 end
 
 local _populateGrid = function(self)
+    local celAutGrid = CelAut.create(self.xSize, self.ySize).grid
     for x = 1, self.xSize do
         for y = 1, self.ySize do
-            local prob = grid_rng:random(100)
-            if prob >= 85 then
+            -- local prob = grid_rng:random(100)
+            -- if prob >= 85 then
+            --     self[x][y].walkable = false
+            -- end
+            if celAutGrid[x][y] then
+                print(x .. "-" .. y)
                 self[x][y].walkable = false
             end
         end
