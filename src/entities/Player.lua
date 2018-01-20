@@ -10,7 +10,7 @@ local playerDebugFlag = true
 local mouseButtonDown = false
 
 local createBullet = function(self)
-    local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 100)
+    local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 300)
     self.entityManager:addEntity(bullet)
 end
 

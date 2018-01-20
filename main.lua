@@ -12,13 +12,16 @@ local entityManager
 local player
 local enemy
 
+local tempX, tempY = 0, 0
+local zoom = 1
+
 function love.load()
     love.graphics.setBackgroundColor(255, 255, 255, 255)
 
     entityManager = EntityManager.create()
     entityManager:addEntity(Grid.create(entityManager))
-    entityManager:addEntity(Player.create(entityManager, 200, 200))
-    entityManager:addEntity(Enemy.create(entityManager, 300, 200))
+    entityManager:addEntity(Player.create(entityManager, 1200, 1200))
+    entityManager:addEntity(Enemy.create(entityManager, 1000, 1000))
 end
 
 function love.update(dt)
@@ -28,6 +31,9 @@ function love.update(dt)
 
     local player = entityManager:getPlayer()
     Camera:centerOnPosition(player:getPosition())
+    
+    -- debugCamControl(dt)
+
 
     entityManager:update(dt)
 end
@@ -40,4 +46,31 @@ function love.draw()
     Camera:unset()
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.print(love.timer.getFPS(), 20, 20)
+end
+
+function debugCamControl(dt)
+    if love.keyboard.isDown("up") then
+        tempY = tempY - Camera.panSpeed * dt
+    end
+
+    if love.keyboard.isDown("down") then
+        tempY = tempY + Camera.panSpeed * dt
+    end
+    
+    if love.keyboard.isDown("left") then
+        tempX = tempX - Camera.panSpeed * dt
+    end
+
+    if love.keyboard.isDown("right") then
+        tempX = tempX + Camera.panSpeed * dt
+    end
+    if love.keyboard.isDown("z") then
+        zoom = zoom + Camera.zoomSpeed * dt
+    end
+    if love.keyboard.isDown("x") then
+        zoom = zoom - Camera.zoomSpeed * dt
+    end
+
+    Camera:setScale(zoom, zoom)
+    Camera:setPosition(tempX, tempY)
 end

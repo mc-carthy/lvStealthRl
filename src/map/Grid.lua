@@ -8,7 +8,7 @@ local gridDebugFlag = true
 local grid_rng = love.math.newRandomGenerator(os.time())
 
 local playerX, playerY = 0, 0
-local viewDist = 22
+local viewDist = 15
 
 local _generateGrid = function(self)
     for x = 1, self.xSize do
@@ -21,7 +21,7 @@ local _generateGrid = function(self)
 end
 
 local _populateGrid = function(self)
-    local celAutGrid = CelAut.create(self.xSize, self.ySize).grid
+    local celAutGrid = CelAut.create(self.xSize, self.ySize, 485).grid
     for x = 1, self.xSize do
         for y = 1, self.ySize do
             -- local prob = grid_rng:random(100)
@@ -57,11 +57,12 @@ end
 local draw = function(self)
     for x = 1, self.xSize do
         for y = 1, self.ySize do
-            if x == playerX and y == playerY then
-                love.graphics.setColor(0, 127, 0, 255)
-            else
-                love.graphics.setColor(127, 127, 127)
-            end
+            -- if x == playerX and y == playerY then
+            --     love.graphics.setColor(0, 127, 0, 255)
+            -- else
+            --     love.graphics.setColor(127, 127, 127)
+            -- end
+            love.graphics.setColor(127, 127, 127)
             if not self[x][y].walkable then
                 love.graphics.setColor(0, 0, 0)
             end
@@ -79,15 +80,15 @@ grid.create = function(entityManager)
 
     inst.tag = "grid"
     inst.entityManager = entityManager
-    inst.cellSize = 20
-    inst.worldScaleInScreens = 8
-    local border = 2
+    inst.cellSize = 50
+    inst.worldScaleInScreens = 5
+    local border = 0
     inst.cellDrawSize = inst.cellSize - border
-    inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
-    inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
+    -- inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
+    -- inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
 
-    -- inst.xSize = 300
-    -- inst.ySize = 300
+    inst.xSize = 150
+    inst.ySize = 150
     _generateGrid(inst)
     _populateGrid(inst)
 
