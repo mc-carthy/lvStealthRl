@@ -15,7 +15,7 @@ local _collisionCheck = function(self)
         if other.tag == "grid" then
             local grid = other
             local gridX, gridY = grid.worldSpaceToGrid(grid, self.x, self.y)
-            if not grid[gridX][gridY].walkable then
+            if grid[gridX][gridY].walkable == false then
                 self.done = true
             end
         end

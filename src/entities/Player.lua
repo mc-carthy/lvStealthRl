@@ -83,7 +83,7 @@ local horizontalCollision = function(self, dt)
     -- Horizontal colisions
     for i, col in ipairs(self.cornerOffsets) do
         local nextGridSpaceX, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x + self.moveX * dt + col.x, self.y + col.y)
-        if not self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) then
+        if self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) == false then
             return true
         end
     end
@@ -94,7 +94,7 @@ local verticalCollision = function(self, dt)
     -- Vertical colisions
     for i, col in ipairs(self.cornerOffsets) do
         local nextGridSpaceX, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x - col.x, self.y + self.moveY * dt - col.y)
-        if not self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) then
+        if self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) == false then
             return true
         end
     end

@@ -17,7 +17,8 @@ local _generateGrid = function(self)
         self[x] = {}
         for y = 1, self.ySize do
             self[x][y] = {}
-            self[x][y].walkable = true
+            -- TODO: Consider only checking for walkable is false to reduce number of checks
+            -- self[x][y].walkable = true
         end
     end
 end
@@ -89,7 +90,7 @@ local draw = function(self)
             --     love.graphics.setColor(127, 127, 127)
             -- end
             love.graphics.setColor(127, 127, 127)
-            if not self[x][y].walkable then
+            if self[x][y].walkable == false then
                 love.graphics.setColor(31, 31, 31)
             end
             if gridDebugFlag then
