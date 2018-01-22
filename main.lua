@@ -3,9 +3,11 @@ local EntityManager = require("src.entities.EntityManager")
 local Camera = require("src.utils.Camera")
 local Player = require("src.entities.Player")
 local Enemy = require("src.entities.Enemy")
+local Gamera = require("src.utils.gamera")
 
 DEBUG = false
 
+gamera = Gamera.new(0, 0, 4200, 4200)
 
 local grid
 local entityManager
@@ -30,9 +32,9 @@ function love.update(dt)
     end
 
     local player = entityManager:getPlayer()
-    Camera:centerOnPosition(player:getPosition())
-    
+    -- Camera:centerOnPosition(player:getPosition())
     -- debugCamControl(dt)
+    gamera:setPosition(player:getPosition())
 
 
     entityManager:update(dt)
@@ -40,10 +42,12 @@ end
 
 function love.draw()
     love.graphics.setBackgroundColor(0, 0, 0, 255)
-    -- TODO: Add sorting layer function to control which items get drawn in front
-    Camera:set()
-    entityManager:draw()
-    Camera:unset()
+    gamera:draw(function(l, t, w, h)
+        -- TODO: Add sorting layer function to control which items get drawn in front
+            -- Camera:set()
+            entityManager:draw()
+            -- Camera:unset()
+    end)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.print(love.timer.getFPS(), 20, 20)
 end

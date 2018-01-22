@@ -66,7 +66,8 @@ local getInput = function(self)
     end
 
     -- self.mouseX, self.mouseY = love.mouse.getPosition()
-    self.mouseX, self.mouseY = Camera:mousePosition()
+    -- self.mouseX, self.mouseY = Camera:mousePosition()
+    self.mouseX, self.mouseY = gamera:toWorld(love.mouse.getPosition())
     self.rot = Vector2.angle(self.x, self.y, self.mouseX, self.mouseY)
 end
 
