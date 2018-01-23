@@ -94,7 +94,16 @@ local draw = function(self)
                 love.graphics.setColor(31, 31, 31)
             end
             if gridDebugFlag then
-                if x < viewDistX + playerX and x > playerX - viewDistX and y < viewDistY + playerY and y > playerY - viewDistY then
+                -- if x < viewDistX + playerX and x > playerX - viewDistX and y < viewDistY + playerY and y > playerY - viewDistY then
+                local l, t, w, h = gamera:getVisible()
+                local tl = (x - 1) * self.cellSize
+                local tt = (y - 1) * self.cellSize
+                local tr = tl + self.cellSize
+                local tb = tt + self.cellSize
+                local slack = 40
+
+
+                if tl > l - slack and tt > t - slack and tr < l + w + slack and tb < t + h + slack then
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
                 end
             end
