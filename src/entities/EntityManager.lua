@@ -46,6 +46,14 @@ local draw = function(self)
     end
 end
 
+local debugDraw = function(self)
+    for i = 1, #self.entities do
+        if self.entities[i].debugDraw then
+            self.entities[i]:debugDraw()
+        end
+    end
+end
+
 entityManager.create = function()
     local inst = {}
 
@@ -58,6 +66,7 @@ entityManager.create = function()
 
     inst.update = update
     inst.draw = draw
+    inst.debugDraw = debugDraw
 
     return inst
 end

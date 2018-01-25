@@ -122,15 +122,19 @@ local draw = function(self)
     if playerDebugFlag then
         love.graphics.setColor(63, 63, 63)
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
-        love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 10, 10)
-        love.graphics.print("Player rotation: " .. math.floor(self.rot), 10, 30)
-        love.graphics.print("Speed multiplier: " .. self.speedMultiplier, 10, 50)
-
         -- for _, col in ipairs(self.cornerOffsets) do
         --     love.graphics.setColor(191, 0, 191, 255)
         --     love.graphics.circle("fill", self.x + self.moveX * self.dt + col.x, self.y + self.moveY * self.dt + col.y, 5)
         -- end
         
+    end
+end
+
+local debugDraw = function(self)
+    if playerDebugFlag then
+        love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 30, 10)
+        love.graphics.print("Player rotation: " .. math.floor(self.rot), 30, 30)
+        love.graphics.print("Speed multiplier: " .. string.format("%.2f", self.speedMultiplier), 30, 50)
     end
 end
 
@@ -169,6 +173,7 @@ player.create = function(entityManager, x, y)
 
     inst.update = update
     inst.draw = draw
+    inst.debugDraw = debugDraw
 
     return inst
 end

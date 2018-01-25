@@ -22,7 +22,7 @@ function love.load()
 
     entityManager = EntityManager.create()
     entityManager:addEntity(Grid.create(entityManager))
-    entityManager:addEntity(Player.create(entityManager, 1200, 1200))
+    entityManager:addEntity(Player.create(entityManager, 1210, 1210))
     entityManager:addEntity(Enemy.create(entityManager, 1000, 1000))
 end
 
@@ -49,7 +49,8 @@ function love.draw()
             -- Camera:unset()
     end)
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.print(love.timer.getFPS(), 20, 20)
+    entityManager:debugDraw()
+    love.graphics.print(love.timer.getFPS(), 10, 10)
 end
 
 function debugCamControl(dt)
