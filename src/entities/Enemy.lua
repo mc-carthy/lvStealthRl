@@ -9,7 +9,7 @@ local enemyDebugFlag = true
 local angleToPlayer = nil
 local playerInViewAngle = nil
 local relativeAngleToPlayer = nil
-local nearRotThreshold = 5
+local nearRotThreshold = 10
 
 local takeDamage = function(self)
     self.done = true
@@ -20,13 +20,16 @@ local _chasePlayer = function(self, dt)
     local rot = Vector2.angle(self.x, self.y, player.x, player.y)
     local dx, dy = Vector2.pointFromRotDist(rot, self.moveSpeed * dt)
 
+    local dRot = 0
     self.targetRot = rot
     if math.abs((self.targetRot - self.rot) % 360) > nearRotThreshold then
-        dRot = Math.sign(self.targetRot - self.rot) * self.rotSpeed * dt
-        self.rot = self.rot + dRot
-    else
-        self.rot = rot
+        if relativeAngleToPlayer < 180 then
+            dRot = self.rotSpeed * dt
+        elseif relativeAngleToPlayer < 360 then
+            dRot = -self.rotSpeed * dt
+        end
     end
+    self.rot = self.rot + dRot
 
     self.x = self.x + dx
     self.y = self.y + dy
@@ -52,10 +55,10 @@ local update = function(self, dt)
     angleToPlayer = Vector2.angle(self.x, self.y, player.x, player.y)
 
     -- TODO: Tidy up this angle check
-    relativeAngleToPlayer = (angleToPlayer - self.rot)
+    relativeAngleToPlayer = (angleToPlayer - self.rot) % 360
     if relativeAngleToPlayer < 0 then relativeAngleToPlayer = relativeAngleToPlayer + 360 end
-    if relativeAngleToPlayer > 180 then relativeAngleToPlayer = -relativeAngleToPlayer + 360 end
-    playerInViewAngle = relativeAngleToPlayer < self.viewAngle / 2
+    -- if relativeAngleToPlayer > 180 then relativeAngleToPlayer = -relativeAngleToPlayer + 360 end
+    playerInViewAngle = (relativeAngleToPlayer < self.viewAngle / 2) or (-relativeAngleToPlayer + 360 < self.viewAngle / 2)
 
     if playerInViewDist and playerInViewAngle then
         self.canSeePlayer = true
