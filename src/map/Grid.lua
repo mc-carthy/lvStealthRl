@@ -1,5 +1,6 @@
 local EntityManager = require("src.entities.EntityManager")
 local CelAut = require("src.map.CelAutCaveGen")
+local BspBuilding = require("src.map.bspBuilding")
 
 local grid = {}
 
@@ -57,6 +58,19 @@ local _populateGrid = function(self)
                     self[celAutGridScale * x - 2][celAutGridScale * y - 3].walkable = false
                     self[celAutGridScale * x - 3][celAutGridScale * y - 3].walkable = false
                 end
+            end
+        end
+    end
+end
+
+local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH)
+    local buildingX, buildingY = buildingX,buildingY
+    local bspBuilding = BspBuilding.create(buildingW, buildingH)
+
+    for x = 1, bspBuilding.w do
+        for y = 1, bspBuilding.h do
+            if bspBuilding.grid[x][y].outerWall then
+                self[x + buildingX][y + buildingY].walkable = false
             end
         end
     end
@@ -127,6 +141,7 @@ grid.create = function(entityManager)
     inst.ySize = 210
     _generateGrid(inst)
     _populateGrid(inst)
+    _addBuilding(inst, 50, 50, 30, 30)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
