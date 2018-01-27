@@ -11,7 +11,7 @@ local grid_rng = love.math.newRandomGenerator(os.time())
 local playerX, playerY = 0, 0
 local viewDistX = 33
 local viewDistY = 19
-local celAutGridScale = 2
+local celAutGridScale = 4
 
 local _generateGrid = function(self)
     for x = 1, self.xSize do
@@ -96,6 +96,9 @@ local update = function(self, dt)
 end
 
 local draw = function(self)
+    local l, t, w, h = gamera:getVisible()
+    local slack = 40
+
     for x = 1, self.xSize do
         for y = 1, self.ySize do
             -- if x == playerX and y == playerY then
@@ -103,21 +106,17 @@ local draw = function(self)
             -- else
             --     love.graphics.setColor(127, 127, 127)
             -- end
-            love.graphics.setColor(127, 127, 127)
-            if self[x][y].walkable == false then
-                love.graphics.setColor(31, 31, 31)
-            end
             if gridDebugFlag then
                 -- if x < viewDistX + playerX and x > playerX - viewDistX and y < viewDistY + playerY and y > playerY - viewDistY then
-                local l, t, w, h = gamera:getVisible()
-                local tl = (x - 1) * self.cellSize
-                local tt = (y - 1) * self.cellSize
-                local tr = tl + self.cellSize
-                local tb = tt + self.cellSize
-                local slack = 40
-
-
+                    local tl = (x - 1) * self.cellSize
+                    local tt = (y - 1) * self.cellSize
+                    local tr = tl + self.cellSize
+                    local tb = tt + self.cellSize
                 if tl > l - slack and tt > t - slack and tr < l + w + slack and tb < t + h + slack then
+                    love.graphics.setColor(127, 127, 127)
+                    if self[x][y].walkable == false then
+                        love.graphics.setColor(31, 31, 31)
+                    end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
                 end
             end
@@ -131,17 +130,18 @@ grid.create = function(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 5
+    inst.worldScaleInScreens = 10
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
-    -- inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
-    -- inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
+    inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
+    inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
 
-    inst.xSize = 210
-    inst.ySize = 210
+    -- inst.xSize = 420
+    -- inst.ySize = 420
+    gamera:setWorld(0, 0, inst.xSize * inst.cellSize, inst.ySize * inst.cellSize)
     _generateGrid(inst)
     _populateGrid(inst)
-    _addBuilding(inst, 50, 50, 30, 30)
+    _addBuilding(inst, 150, 150, 50, 50)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable

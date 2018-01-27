@@ -7,7 +7,7 @@ local Gamera = require("src.utils.gamera")
 
 DEBUG = false
 
-gamera = Gamera.new(0, 0, 4200, 4200)
+gamera = Gamera.new(0, 0, 100, 100)
 
 local grid
 local entityManager
