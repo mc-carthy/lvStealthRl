@@ -21,20 +21,16 @@ end
 local getInput = function(self)
     local inputX = 0
     local inputY = 0
-    if (love.keyboard.isDown("d") or love.keyboard.isDown("right")) and
-    not (love.keyboard.isDown("a") or love.keyboard.isDown("left")) then
+    if love.keyboard.isDown("d") and not love.keyboard.isDown("a") then
         inputX = 1
     end
-    if (love.keyboard.isDown("a") or love.keyboard.isDown("left")) and
-    not (love.keyboard.isDown("d") or love.keyboard.isDown("right")) then
+    if love.keyboard.isDown("a") and not love.keyboard.isDown("d") then
         inputX = -1
     end
-    if (love.keyboard.isDown("s") or love.keyboard.isDown("down")) and
-    not (love.keyboard.isDown("w") or love.keyboard.isDown("up")) then
+    if love.keyboard.isDown("s") and not love.keyboard.isDown("w") then
         inputY = 1
     end
-    if (love.keyboard.isDown("w") or love.keyboard.isDown("up")) and
-    not (love.keyboard.isDown("s") or love.keyboard.isDown("down")) then
+    if love.keyboard.isDown("w") and not love.keyboard.isDown("s") then
         inputY = -1
     end
 

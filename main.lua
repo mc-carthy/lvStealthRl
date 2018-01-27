@@ -33,8 +33,8 @@ function love.update(dt)
 
     local player = entityManager:getPlayer()
     -- Camera:centerOnPosition(player:getPosition())
-    -- debugCamControl(dt)
     gamera:setPosition(player:getPosition())
+    -- debugCamControl(dt)
 
 
     entityManager:update(dt)
@@ -55,19 +55,19 @@ end
 
 function debugCamControl(dt)
     if love.keyboard.isDown("up") then
-        tempY = tempY - Camera.panSpeed * dt
+        tempY = tempY - Camera.panSpeed * dt / zoom
     end
-
+    
     if love.keyboard.isDown("down") then
-        tempY = tempY + Camera.panSpeed * dt
+        tempY = tempY + Camera.panSpeed * dt / zoom
     end
     
     if love.keyboard.isDown("left") then
-        tempX = tempX - Camera.panSpeed * dt
+        tempX = tempX - Camera.panSpeed * dt / zoom
     end
 
     if love.keyboard.isDown("right") then
-        tempX = tempX + Camera.panSpeed * dt
+        tempX = tempX + Camera.panSpeed * dt / zoom
     end
     if love.keyboard.isDown("z") then
         zoom = zoom + Camera.zoomSpeed * dt
@@ -76,6 +76,8 @@ function debugCamControl(dt)
         zoom = zoom - Camera.zoomSpeed * dt
     end
 
-    Camera:setScale(zoom, zoom)
-    Camera:setPosition(tempX, tempY)
+    gamera:setScale(zoom)
+    gamera:setPosition(tempX, tempY)
+    -- Camera:setScale(zoom, zoom)
+    -- Camera:setPosition(tempX, tempY)
 end
