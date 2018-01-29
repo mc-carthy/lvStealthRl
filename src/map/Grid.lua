@@ -63,6 +63,74 @@ local _populateGrid = function(self)
     end
 end
 
+local function _initialiseContourMap(self)
+    local grid = {}
+    for x = 1, self.xSize do
+        grid[x] = {}
+        for y = 1, self.ySize do
+            if self[x][y].walkable == false then
+                grid[x][y] = 0
+            else
+                grid[x][y] = -1
+            end
+        end
+    end
+    return grid
+end
+
+local function _calculateContourMap(self)
+    local currentContourValue = 0
+    while not _countourMapComplete(self) do
+        local contourMapLocal = {}
+        for x = 1, self.xSize do
+            contourMapLocal[x] = {}
+            for y = 1, self.ySize do
+                contourMapLocal[x][y] = self.contourMap[x][y]
+            end
+        end
+
+        for x = 1, self.xSize do
+            for y = 1, self.ySize do
+                for neighbourX = x - 1, x + 1 do
+                    for neighbourY = y - 1, y + 1 do
+                        if neighbourX == x or neighbourY == y then
+                            if _isInGridRange(self, neighbourX, neighbourY) and self.contourMap[x][y] == -1 then
+                                if self.contourMap[neighbourX][neighbourY] == currentContourValue then
+                                    contourMapLocal[x][y] = currentContourValue + 1
+                                    print(x .. "-" .. y)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        for x = 1, self.xSize do
+            for y = 1, self.ySize do
+                self.contourMap[x][y] = contourMapLocal[x][y]
+            end
+        end
+        currentContourValue = currentContourValue + 1
+    end
+    print(currentContourValue)
+end
+
+function _countourMapComplete(self)
+    for x = 1, self.xSize do
+        for y = 1, self.ySize do
+            if self.contourMap[x][y] == -1 then
+                return false
+            end
+        end
+    end
+    return true
+end
+
+function _isInGridRange(self, x, y)
+    return x > 0 and x < self.xSize and y > 0 and y < self.ySize
+end
+
 local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH)
     local buildingX, buildingY = buildingX,buildingY
     local bspBuilding = BspBuilding.create(buildingW, buildingH)
@@ -118,6 +186,8 @@ local draw = function(self)
                         love.graphics.setColor(31, 31, 31)
                     end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+                    -- love.graphics.setColor(0, 255, 255, 255)
+                    -- love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
                 end
             end
         end
@@ -130,7 +200,7 @@ grid.create = function(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 10
+    inst.worldScaleInScreens = 20
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
@@ -141,7 +211,10 @@ grid.create = function(entityManager)
     gamera:setWorld(0, 0, inst.xSize * inst.cellSize, inst.ySize * inst.cellSize)
     _generateGrid(inst)
     _populateGrid(inst)
-    _addBuilding(inst, 150, 150, 50, 50)
+    -- _addBuilding(inst, 50, 50, 50, 50)
+
+    inst.contourMap = _initialiseContourMap(inst)
+    _calculateContourMap(inst)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
