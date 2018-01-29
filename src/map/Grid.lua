@@ -97,7 +97,6 @@ local function _calculateContourMap(self)
                             if _isInGridRange(self, neighbourX, neighbourY) and self.contourMap[x][y] == -1 then
                                 if self.contourMap[neighbourX][neighbourY] == currentContourValue then
                                     contourMapLocal[x][y] = currentContourValue + 1
-                                    print(x .. "-" .. y)
                                 end
                             end
                         end
@@ -113,7 +112,21 @@ local function _calculateContourMap(self)
         end
         currentContourValue = currentContourValue + 1
     end
-    print(currentContourValue)
+end
+
+local function _findHighestContourValue(self)
+    local maxVal, maxX, maxY = 0, 0, 0
+    for x = 1, self.xSize do
+        for y = 1, self.ySize do
+            if self.contourMap[x][y] > maxVal then
+                maxVal = self.contourMap[x][y]
+                maxX = x
+                maxY = y
+            end
+        end
+    end
+    print(maxX .. "-" .. maxY .. " : " .. maxVal)
+    return maxVal, maxX, maxY
 end
 
 function _countourMapComplete(self)
@@ -186,8 +199,8 @@ local draw = function(self)
                         love.graphics.setColor(31, 31, 31)
                     end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
-                    -- love.graphics.setColor(0, 255, 255, 255)
-                    -- love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
+                    love.graphics.setColor(0, 255, 255, 255)
+                    love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
                 end
             end
         end
@@ -200,7 +213,7 @@ grid.create = function(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 20
+    inst.worldScaleInScreens = 10
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
@@ -211,10 +224,14 @@ grid.create = function(entityManager)
     gamera:setWorld(0, 0, inst.xSize * inst.cellSize, inst.ySize * inst.cellSize)
     _generateGrid(inst)
     _populateGrid(inst)
+    
     -- _addBuilding(inst, 50, 50, 50, 50)
-
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
+    local buildingSize, buildingX, buildingY = _findHighestContourValue(inst)
+    local buildingRad = math.floor(buildingSize / 2)
+    _addBuilding(inst, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize)
+    print(buildingSize)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
