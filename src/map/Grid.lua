@@ -165,6 +165,15 @@ local function _zeroContourMapAroundPoint(self, x, y, w, h)
     end
 end
 
+local function _addBuildings(self, numberOfBuildings)
+    for i = 1, numberOfBuildings do
+        local buildingSize, buildingX, buildingY = _findHighestContourValue(self)
+        local buildingRad = math.floor(buildingSize / 2)
+        _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize)
+        _zeroContourMapAroundPoint(self, buildingX, buildingY, buildingSize, buildingSize)
+    end
+end
+
 local worldSpaceToGrid = function(self, x, y)
     gridx = math.floor(x / self.cellSize) + 1
     gridy = math.floor(y / self.cellSize) + 1
@@ -236,10 +245,7 @@ grid.create = function(entityManager)
     -- _addBuilding(inst, 50, 50, 50, 50)
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
-    local buildingSize, buildingX, buildingY = _findHighestContourValue(inst)
-    local buildingRad = math.floor(buildingSize / 2)
-    _addBuilding(inst, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize)
-    _zeroContourMapAroundPoint(inst, buildingX, buildingY, buildingSize, buildingSize)
+    _addBuildings(inst, 5)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
