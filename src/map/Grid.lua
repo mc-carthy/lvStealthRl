@@ -13,7 +13,7 @@ local viewDistX = 33
 local viewDistY = 19
 local celAutGridScale = 4
 
-local _generateGrid = function(self)
+local function _generateGrid(self)
     for x = 1, self.xSize do
         self[x] = {}
         for y = 1, self.ySize do
@@ -24,7 +24,7 @@ local _generateGrid = function(self)
     end
 end
 
-local _populateGrid = function(self)
+local function _populateGrid(self)
     local celAutGrid = CelAut.create(self.xSize / celAutGridScale, self.ySize / celAutGridScale, 460).grid
     for x = 1, self.xSize / celAutGridScale do
         for y = 1, self.ySize / celAutGridScale do
@@ -78,6 +78,21 @@ local function _initialiseContourMap(self)
     return grid
 end
 
+local function _countourMapComplete(self)
+    for x = 1, self.xSize do
+        for y = 1, self.ySize do
+            if self.contourMap[x][y] == -1 then
+                return false
+            end
+        end
+    end
+    return true
+end
+
+local function _isInGridRange(self, x, y)
+    return x > 0 and x < self.xSize and y > 0 and y < self.ySize
+end
+
 local function _calculateContourMap(self)
     local currentContourValue = 0
     while not _countourMapComplete(self) do
@@ -129,21 +144,6 @@ local function _findHighestContourValue(self)
     return maxVal, maxX, maxY
 end
 
-function _countourMapComplete(self)
-    for x = 1, self.xSize do
-        for y = 1, self.ySize do
-            if self.contourMap[x][y] == -1 then
-                return false
-            end
-        end
-    end
-    return true
-end
-
-function _isInGridRange(self, x, y)
-    return x > 0 and x < self.xSize and y > 0 and y < self.ySize
-end
-
 local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH)
     local buildingX, buildingY = buildingX,buildingY
     local bspBuilding = BspBuilding.create(buildingW, buildingH)
@@ -174,13 +174,13 @@ local function _addBuildings(self, numberOfBuildings)
     end
 end
 
-local worldSpaceToGrid = function(self, x, y)
+local function worldSpaceToGrid(self, x, y)
     gridx = math.floor(x / self.cellSize) + 1
     gridy = math.floor(y / self.cellSize) + 1
     return gridx, gridy
 end
 
-local isWalkable = function(self, gridX, gridY)
+local function isWalkable(self, gridX, gridY)
     if self[gridX] and self[gridX][gridY] then
         return self[gridX][gridY].walkable
     else
@@ -188,12 +188,12 @@ local isWalkable = function(self, gridX, gridY)
     end
 end
 
-local update = function(self, dt)
+local function update(self, dt)
     local player = self.entityManager:getPlayer()
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
 end
 
-local draw = function(self)
+local function draw(self)
     local l, t, w, h = gamera:getVisible()
     local slack = 40
 
@@ -216,15 +216,15 @@ local draw = function(self)
                         love.graphics.setColor(31, 31, 31)
                     end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
-                    love.graphics.setColor(0, 255, 255, 255)
-                    love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
+                    -- love.graphics.setColor(0, 255, 255, 255)
+                    -- love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
                 end
             end
         end
     end
 end
 
-grid.create = function(entityManager)
+function grid.create(entityManager)
     local inst = {}
 
     inst.tag = "grid"
