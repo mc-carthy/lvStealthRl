@@ -51,7 +51,7 @@ function love.draw()
             -- Camera:unset()
     end)
     love.graphics.setColor(255, 255, 255, 255)
-    entityManager:debugDraw()
+    entityManager:drawScreenSpace()
     love.graphics.print(love.timer.getFPS(), 10, 10)
 end
 

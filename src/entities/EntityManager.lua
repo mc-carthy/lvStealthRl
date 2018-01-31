@@ -46,10 +46,10 @@ local draw = function(self)
     end
 end
 
-local debugDraw = function(self)
+local drawScreenSpace = function(self)
     for i = 1, #self.entities do
-        if self.entities[i].debugDraw then
-            self.entities[i]:debugDraw()
+        if self.entities[i].drawScreenSpace then
+            self.entities[i]:drawScreenSpace()
         end
     end
 end
@@ -66,7 +66,7 @@ entityManager.create = function()
 
     inst.update = update
     inst.draw = draw
-    inst.debugDraw = debugDraw
+    inst.drawScreenSpace = drawScreenSpace
 
     return inst
 end
