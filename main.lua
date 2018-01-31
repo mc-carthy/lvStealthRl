@@ -33,8 +33,8 @@ function love.update(dt)
 
     local player = entityManager:getPlayer()
     -- Camera:centerOnPosition(player:getPosition())
+    debugCamControl(dt)
     gamera:setPosition(player:getPosition())
-    -- debugCamControl(dt)
 
 
     entityManager:update(dt)
@@ -49,7 +49,7 @@ function love.draw()
             -- Camera:unset()
     end)
     love.graphics.setColor(255, 255, 255, 255)
-    entityManager:debugDraw()
+    entityManager:drawScreenSpace()
     love.graphics.print(love.timer.getFPS(), 10, 10)
 end
 

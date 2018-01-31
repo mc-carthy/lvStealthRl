@@ -88,14 +88,13 @@ local draw = function(self)
     love.graphics.circle("fill", self.x, self.y, self.radius)
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("line", self.x, self.y, self.radius)
-end
 
-local debugDraw = function(self)
     if enemyDebugFlag then
-        love.graphics.print("Angle to player: " .. string.format("%.2f", angleToPlayer), 200, 10)
-        love.graphics.print("Facing angle: " .. self.rot, 200, 30)
-        love.graphics.print("Relative angle to player: " .. string.format("%.2f", relativeAngleToPlayer), 200, 50)
-        love.graphics.print("Player in view angle: " .. tostring(playerInViewAngle), 200, 70)
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.print("Angle to player: " .. string.format("%.2f", angleToPlayer), self.x, self.y - 90)
+        love.graphics.print("Facing angle: " .. self.rot, self.x, self.y - 70)
+        love.graphics.print("Relative angle to player: " .. string.format("%.2f", relativeAngleToPlayer), self.x, self.y - 50)
+        love.graphics.print("Player in view angle: " .. tostring(playerInViewAngle), self.x, self.y - 30)
     end
 end
 
@@ -120,7 +119,6 @@ enemy.create = function(entityManager, x, y, rot)
     inst.takeDamage = takeDamage
     inst.update = update
     inst.draw = draw
-    inst.debugDraw = debugDraw
 
     return inst
 end

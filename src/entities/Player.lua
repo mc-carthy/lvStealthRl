@@ -126,7 +126,7 @@ local draw = function(self)
     end
 end
 
-local debugDraw = function(self)
+local drawScreenSpace = function(self)
     if playerDebugFlag then
         love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 30, 10)
         love.graphics.print("Player rotation: " .. math.floor(self.rot), 30, 30)
@@ -169,7 +169,7 @@ player.create = function(entityManager, x, y)
 
     inst.update = update
     inst.draw = draw
-    inst.debugDraw = debugDraw
+    inst.drawScreenSpace = drawScreenSpace
 
     return inst
 end
