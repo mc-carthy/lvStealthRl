@@ -22,7 +22,9 @@ function love.load()
 
     entityManager = EntityManager.create()
     entityManager:addEntity(Grid.create(entityManager))
-    entityManager:addEntity(Player.create(entityManager, 1210, 1210))
+    local playerX, playerY = entityManager:getGrid().lowestPeakX, entityManager:getGrid().lowestPeakY;
+    entityManager:addEntity(Player.create(entityManager, playerX, playerY))
+    -- entityManager:addEntity(Player.create(entityManager, 1210, 1210))
     entityManager:addEntity(Enemy.create(entityManager, 1000, 1000))
 end
 
@@ -33,8 +35,8 @@ function love.update(dt)
 
     local player = entityManager:getPlayer()
     -- Camera:centerOnPosition(player:getPosition())
+    debugCamControl(dt)
     gamera:setPosition(player:getPosition())
-    -- debugCamControl(dt)
 
 
     entityManager:update(dt)

@@ -12,6 +12,7 @@ local playerX, playerY = 0, 0
 local viewDistX = 33
 local viewDistY = 19
 local celAutGridScale = 4
+local wallChancePercentage = 475
 
 local function _generateGrid(self)
     for x = 1, self.xSize do
@@ -25,7 +26,7 @@ local function _generateGrid(self)
 end
 
 local function _populateGrid(self)
-    local celAutGrid = CelAut.create(self.xSize / celAutGridScale, self.ySize / celAutGridScale, 460).grid
+    local celAutGrid = CelAut.create(self.xSize / celAutGridScale, self.ySize / celAutGridScale, wallChancePercentage).grid
     for x = 1, self.xSize / celAutGridScale do
         for y = 1, self.ySize / celAutGridScale do
             -- local prob = grid_rng:random(100)
@@ -93,6 +94,23 @@ local function _isInGridRange(self, x, y)
     return x > 0 and x < self.xSize and y > 0 and y < self.ySize
 end
 
+local function _isPeakContour(self, x, y)
+    for i = -1, 1 do
+        for j = -1, 1 do
+            if self.contourMap[x + i] and self.contourMap[x + i][y + j] then
+                if _isInGridRange(self, x + i, y + j) then
+                    if not (i == 0 and j == 0) then
+                        if self.contourMap[x][y] <= self.contourMap[x + i][y + j] and self.contourMap[x][y] > 0 then
+                            return false
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return true
+end
+
 local function _calculateContourMap(self)
     local currentContourValue = 0
     while not _countourMapComplete(self) do
@@ -127,6 +145,24 @@ local function _calculateContourMap(self)
         end
         currentContourValue = currentContourValue + 1
     end
+end
+
+local function _findLowestContourPeak(self)
+    local minPeak, minPeakX, minPeakY = 1000, 0, 0
+    for x = 1, self.xSize do
+        for y = 1, self.ySize do
+            if _isPeakContour(self, x, y) then
+                if self.contourMap[x][y] < minPeak and self.contourMap[x][y] > 0 then
+                    minPeak = self.contourMap[x][y]
+                    minPeakX = x
+                    minPeakY = y
+                end
+            end
+        end
+    end
+    print(minPeakX .. "-" .. minPeakY .. " : " .. minPeak)
+    -- return minPeakX, minPeakY
+    return minPeakX * self.cellSize + self.cellSize / 2, minPeakY * self.cellSize + self.cellSize / 2
 end
 
 local function _findHighestContourValue(self)
@@ -199,11 +235,6 @@ local function draw(self)
 
     for x = 1, self.xSize do
         for y = 1, self.ySize do
-            -- if x == playerX and y == playerY then
-            --     love.graphics.setColor(0, 127, 0, 255)
-            -- else
-            --     love.graphics.setColor(127, 127, 127)
-            -- end
             if gridDebugFlag then
                 -- if x < viewDistX + playerX and x > playerX - viewDistX and y < viewDistY + playerY and y > playerY - viewDistY then
                     local tl = (x - 1) * self.cellSize
@@ -212,6 +243,11 @@ local function draw(self)
                     local tb = tt + self.cellSize
                 if tl > l - slack and tt > t - slack and tr < l + w + slack and tb < t + h + slack then
                     love.graphics.setColor(127, 127, 127)
+                    -- if x == playerX and y == playerY then
+                    --     love.graphics.setColor(0, 127, 0, 255)
+                    -- else
+                    --     love.graphics.setColor(127, 127, 127)
+                    -- end
                     if self[x][y].walkable == false then
                         love.graphics.setColor(31, 31, 31)
                     end
@@ -245,6 +281,7 @@ function grid.create(entityManager)
     -- _addBuilding(inst, 50, 50, 50, 50)
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
+    inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeak(inst)
     _addBuildings(inst, 5)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
