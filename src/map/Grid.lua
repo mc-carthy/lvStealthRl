@@ -147,22 +147,34 @@ local function _calculateContourMap(self)
     end
 end
 
-local function _findLowestContourPeak(self)
+local function _findLowestContourPeak(self, exludeEqualNeighbours)
+    exludeEqualNeighbours = exludeEqualNeighbours or true
     local minPeak, minPeakX, minPeakY = 1000, 0, 0
     for x = 1, self.xSize do
         for y = 1, self.ySize do
             if _isPeakContour(self, x, y) then
-                if self.contourMap[x][y] < minPeak and self.contourMap[x][y] > 0 then
-                    minPeak = self.contourMap[x][y]
-                    minPeakX = x
-                    minPeakY = y
+                if exludeEqualNeighbours then
+                    if self.contourMap[x][y] < minPeak and self.contourMap[x][y] > 0 then
+                        minPeak = self.contourMap[x][y]
+                        minPeakX = x
+                        minPeakY = y
+                    end
+                else
+                    if self.contourMap[x][y] <= minPeak and self.contourMap[x][y] > 0 then
+                        minPeak = self.contourMap[x][y]
+                        minPeakX = x
+                        minPeakY = y
+                    end
                 end
             end
         end
     end
     print(minPeakX .. "-" .. minPeakY .. " : " .. minPeak)
+    if minPeakX == 1 and minPeakY == 1 then
+       minPeakX, minPeakY = _findLowestContourPeak(self, false)
+    end
     -- return minPeakX, minPeakY
-    return minPeakX * self.cellSize + self.cellSize / 2, minPeakY * self.cellSize + self.cellSize / 2
+    return minPeakX * self.cellSize - self.cellSize / 2, minPeakY * self.cellSize - self.cellSize / 2
 end
 
 local function _findHighestContourValue(self)
