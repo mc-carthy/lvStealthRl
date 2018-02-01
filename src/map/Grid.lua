@@ -193,10 +193,17 @@ local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH)
     end
 end
 
+-- TODO: This function currently sets the value of tiles inside a building to 
+-- zero, and those surrounding a building to -1, so they will be rechecked
+-- Consider breaking into multiple functions
 local function _zeroContourMapAroundPoint(self, x, y, w, h)
     for i = -w, w do
         for j = -h, h do
-            self.contourMap[x + i][y + j] = 0
+            if math.abs(i) < (w / 2) + 1 and math.abs(j) < (h / 2) + 1 or self.contourMap[x + i][y + j] == 0 then
+                self.contourMap[x + i][y + j] = 0
+            else
+                self.contourMap[x + i][y + j] = -1
+            end
         end
     end
 end
@@ -207,6 +214,7 @@ local function _addBuildings(self, numberOfBuildings)
         local buildingRad = math.floor(buildingSize / 2)
         _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize)
         _zeroContourMapAroundPoint(self, buildingX, buildingY, buildingSize, buildingSize)
+        _calculateContourMap(self)
     end
 end
 
@@ -252,8 +260,8 @@ local function draw(self)
                         love.graphics.setColor(31, 31, 31)
                     end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
-                    -- love.graphics.setColor(0, 255, 255, 255)
-                    -- love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
+                    love.graphics.setColor(0, 255, 255, 255)
+                    love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
                 end
             end
         end
