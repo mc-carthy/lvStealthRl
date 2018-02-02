@@ -7,7 +7,13 @@ local player = {}
 
 local playerDebugFlag = true
 
+local GRID_SIZE
 local mouseButtonDown = false
+local collisionBuffer = 0.05
+
+local load = function(self)
+    GRID_SIZE = self.entityManager:getGrid().cellSize
+end
 
 local createBullet = function(self)
     local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 300)
@@ -81,6 +87,8 @@ local horizontalCollision = function(self, dt)
     for i, col in ipairs(self.cornerOffsets) do
         local nextGridSpaceX, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x + self.moveX * dt + col.x, self.y + col.y)
         if self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) == false then
+            -- TODO: This line below only works when framerate is 35 fps+
+            self.x = Math.roundToNearest(self.x, GRID_SIZE) - col.x - Math.sign(self.moveX) * collisionBuffer
             return true
         end
     end
@@ -90,8 +98,10 @@ end
 local verticalCollision = function(self, dt)
     -- Vertical colisions
     for i, col in ipairs(self.cornerOffsets) do
-        local nextGridSpaceX, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x - col.x, self.y + self.moveY * dt - col.y)
+        local nextGridSpaceX, nextGridSpaceY = self.grid.worldSpaceToGrid(self.grid, self.x + col.x, self.y + self.moveY * dt + col.y)
         if self.grid:isWalkable(nextGridSpaceX, nextGridSpaceY) == false then
+            -- TODO: This line below only works when framerate is 35 fps+
+            self.y = Math.roundToNearest(self.y, GRID_SIZE) - col.y - Math.sign(self.moveY) * collisionBuffer
             return true
         end
     end
@@ -166,6 +176,8 @@ player.create = function(entityManager, x, y)
     inst.getInput = getInput
     inst.getPosition = getPosition
     inst.getSpeedMultiplier = getSpeedMultiplier
+
+    load(inst)
 
     inst.update = update
     inst.draw = draw

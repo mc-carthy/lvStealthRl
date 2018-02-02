@@ -92,7 +92,7 @@ local draw = function(self)
     if enemyDebugFlag then
         love.graphics.setColor(255, 255, 255)
         love.graphics.print("Angle to player: " .. string.format("%.2f", angleToPlayer), self.x, self.y - 90)
-        love.graphics.print("Facing angle: " .. self.rot, self.x, self.y - 70)
+        love.graphics.print("Facing angle: " .. string.format("%.2f", self.rot), self.x, self.y - 70)
         love.graphics.print("Relative angle to player: " .. string.format("%.2f", relativeAngleToPlayer), self.x, self.y - 50)
         love.graphics.print("Player in view angle: " .. tostring(playerInViewAngle), self.x, self.y - 30)
     end

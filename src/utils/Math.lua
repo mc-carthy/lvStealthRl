@@ -18,4 +18,15 @@ function M.lerp(a,b,t)
     return (1-t)*a + t*b
 end
 
+function M.roundToNearest(val, nearestNum)
+    nearestNum = nearestNum or 1
+    local tempVal = val / nearestNum
+    if tempVal % 1 < 0.5 then
+        tempVal = math.floor(tempVal)
+    else
+        tempVal = math.ceil(tempVal)
+    end
+    return tempVal * nearestNum
+end
+
 return M
