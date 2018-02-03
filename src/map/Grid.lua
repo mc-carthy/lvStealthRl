@@ -197,8 +197,8 @@ local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH)
 
     for x = 1, bspBuilding.w do
         for y = 1, bspBuilding.h do
-            if bspBuilding.grid[x][y].outerWall then
-                self[x + buildingX][y + buildingY] = tile["buildingOuterWall"]
+            if bspBuilding.grid[x][y] then
+                self[x + buildingX][y + buildingY] = bspBuilding.grid[x][y]
             end
         end
     end
@@ -265,7 +265,7 @@ local function draw(self)
                     if self[x][y].colour then
                         love.graphics.setColor(self[x][y].colour)
                     else
-                        love.graphics.setColor(191, 0, 0)
+                        love.graphics.setColor(255, 0, 255)
                     end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
                     -- love.graphics.setColor(0, 255, 255, 255)
