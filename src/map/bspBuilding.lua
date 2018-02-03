@@ -8,13 +8,20 @@ local function createOuterWalls(self)
         grid[x] = {}
         for y = 1, self.h do
             grid[x][y] = {}
-            local prob = bsp_rng:random(100)
-            if prob <= 95 then
-                if x == 1 or x == self.w or y == 1 or y == self.h then
-                    grid[x][y].outerWall = true
-                end
+            if x == 1 or x == self.w or y == 1 or y == self.h then
+                grid[x][y].outerWall = true
             end
         end
+    end
+    local prob = bsp_rng:random(100)
+    if prob < 25 then
+        grid[1][math.random(2, self.h - 1)].outerWall = false
+    elseif prob < 50 then
+        grid[self.w][math.random(2, self.h - 1)].outerWall = false
+    elseif prob < 75 then
+        grid[math.random(2, self.w - 1)][1].outerWall = false
+    else
+        grid[math.random(2, self.w - 1)][self.h].outerWall = false
     end
     return grid
 end
