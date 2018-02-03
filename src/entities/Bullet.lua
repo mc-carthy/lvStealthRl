@@ -31,7 +31,7 @@ local update = function(self, dt)
 end
 
 local draw = function(self)
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(0, 0, 0)
     love.graphics.circle("fill", self.x, self.y, self.radius)
 end
 

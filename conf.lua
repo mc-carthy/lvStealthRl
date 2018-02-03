@@ -3,6 +3,7 @@ function love.conf(t)
     t.window.height = 720
     t.window.title = "LÖVE Stealth RL"
     t.window.icon = nil
+    t.window.vsync = true
 
     t.modules.audio = true
     t.modules.event = true

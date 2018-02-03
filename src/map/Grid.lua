@@ -1,6 +1,7 @@
 local EntityManager = require("src.entities.EntityManager")
 local CelAut = require("src.map.CelAutCaveGen")
 local BspBuilding = require("src.map.bspBuilding")
+local tile = require("src.map.tileDictionary")
 
 local grid = {}
 
@@ -18,9 +19,7 @@ local function _generateGrid(self)
     for x = 1, self.xSize do
         self[x] = {}
         for y = 1, self.ySize do
-            self[x][y] = {}
-            -- TODO: Consider only checking for walkable is false to reduce number of checks
-            -- self[x][y].walkable = true
+            self[x][y] = tile["ground"]
         end
     end
 end
@@ -35,29 +34,29 @@ local function _populateGrid(self)
             -- end
             if celAutGrid[x][y] then
                 if celAutGridScale == 1 then
-                    self[celAutGridScale * x][celAutGridScale * y].walkable = false
+                    self[celAutGridScale * x][celAutGridScale * y] = tile["caveWall"]
                 elseif celAutGridScale == 2 then
-                    self[celAutGridScale * x    ][celAutGridScale * y    ].walkable = false
-                    self[celAutGridScale * x - 1][celAutGridScale * y    ].walkable = false
-                    self[celAutGridScale * x    ][celAutGridScale * y - 1].walkable = false
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 1].walkable = false
+                    self[celAutGridScale * x    ][celAutGridScale * y    ] = tile["caveWall"]
+                    self[celAutGridScale * x - 1][celAutGridScale * y    ] = tile["caveWall"]
+                    self[celAutGridScale * x    ][celAutGridScale * y - 1] = tile["caveWall"]
+                    self[celAutGridScale * x - 1][celAutGridScale * y - 1] = tile["caveWall"]
                 elseif celAutGridScale == 4 then
-                    self[celAutGridScale * x    ][celAutGridScale * y    ].walkable = false
-                    self[celAutGridScale * x - 1][celAutGridScale * y    ].walkable = false
-                    self[celAutGridScale * x - 2][celAutGridScale * y    ].walkable = false
-                    self[celAutGridScale * x - 3][celAutGridScale * y    ].walkable = false
-                    self[celAutGridScale * x    ][celAutGridScale * y - 1].walkable = false
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 1].walkable = false
-                    self[celAutGridScale * x - 2][celAutGridScale * y - 1].walkable = false
-                    self[celAutGridScale * x - 3][celAutGridScale * y - 1].walkable = false
-                    self[celAutGridScale * x    ][celAutGridScale * y - 2].walkable = false
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 2].walkable = false
-                    self[celAutGridScale * x - 2][celAutGridScale * y - 2].walkable = false
-                    self[celAutGridScale * x - 3][celAutGridScale * y - 2].walkable = false
-                    self[celAutGridScale * x    ][celAutGridScale * y - 3].walkable = false
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 3].walkable = false
-                    self[celAutGridScale * x - 2][celAutGridScale * y - 3].walkable = false
-                    self[celAutGridScale * x - 3][celAutGridScale * y - 3].walkable = false
+                    self[celAutGridScale * x    ][celAutGridScale * y    ] = tile["caveWall"]
+                    self[celAutGridScale * x - 1][celAutGridScale * y    ] = tile["caveWall"]
+                    self[celAutGridScale * x - 2][celAutGridScale * y    ] = tile["caveWall"]
+                    self[celAutGridScale * x - 3][celAutGridScale * y    ] = tile["caveWall"]
+                    self[celAutGridScale * x    ][celAutGridScale * y - 1] = tile["caveWall"]
+                    self[celAutGridScale * x - 1][celAutGridScale * y - 1] = tile["caveWall"]
+                    self[celAutGridScale * x - 2][celAutGridScale * y - 1] = tile["caveWall"]
+                    self[celAutGridScale * x - 3][celAutGridScale * y - 1] = tile["caveWall"]
+                    self[celAutGridScale * x    ][celAutGridScale * y - 2] = tile["caveWall"]
+                    self[celAutGridScale * x - 1][celAutGridScale * y - 2] = tile["caveWall"]
+                    self[celAutGridScale * x - 2][celAutGridScale * y - 2] = tile["caveWall"]
+                    self[celAutGridScale * x - 3][celAutGridScale * y - 2] = tile["caveWall"]
+                    self[celAutGridScale * x    ][celAutGridScale * y - 3] = tile["caveWall"]
+                    self[celAutGridScale * x - 1][celAutGridScale * y - 3] = tile["caveWall"]
+                    self[celAutGridScale * x - 2][celAutGridScale * y - 3] = tile["caveWall"]
+                    self[celAutGridScale * x - 3][celAutGridScale * y - 3] = tile["caveWall"]
                 end
             end
         end
@@ -199,7 +198,7 @@ local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH)
     for x = 1, bspBuilding.w do
         for y = 1, bspBuilding.h do
             if bspBuilding.grid[x][y].outerWall then
-                self[x + buildingX][y + buildingY].walkable = false
+                self[x + buildingX][y + buildingY] = tile["buildingOuterWall"]
             end
         end
     end
@@ -263,17 +262,14 @@ local function draw(self)
                     local tb = tt + self.cellSize
                 if tl > l - slack and tt > t - slack and tr < l + w + slack and tb < t + h + slack then
                     love.graphics.setColor(127, 127, 127)
-                    -- if x == playerX and y == playerY then
-                    --     love.graphics.setColor(0, 127, 0, 255)
-                    -- else
-                    --     love.graphics.setColor(127, 127, 127)
-                    -- end
-                    if self[x][y].walkable == false then
-                        love.graphics.setColor(31, 31, 31)
+                    if self[x][y].colour then
+                        love.graphics.setColor(self[x][y].colour)
+                    else
+                        love.graphics.setColor(191, 0, 0)
                     end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
-                    love.graphics.setColor(0, 255, 255, 255)
-                    love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
+                    -- love.graphics.setColor(0, 255, 255, 255)
+                    -- love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
                 end
             end
         end
