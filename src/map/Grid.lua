@@ -19,7 +19,8 @@ local function _generateGrid(self)
     for x = 1, self.xSize do
         self[x] = {}
         for y = 1, self.ySize do
-            self[x][y] = tile["ground"]
+            self[x][y] = {}
+            -- self[x][y] = tile["ground"]
         end
     end
 end
@@ -265,7 +266,7 @@ local function draw(self)
                     if self[x][y].colour then
                         love.graphics.setColor(self[x][y].colour)
                     else
-                        love.graphics.setColor(255, 0, 255)
+                        love.graphics.setColor(tile["ground"].colour)
                     end
                     love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
                     -- love.graphics.setColor(0, 255, 255, 255)
