@@ -4,30 +4,31 @@ local bspBuilding = {}
 
 local bsp_rng = love.math.newRandomGenerator(os.time())
 
-local function createOuterWalls(self)
-    local grid = {}
+local function _createOuterWalls(self)
     for x = 1, self.w do
-        grid[x] = {}
+        self.grid[x] = {}
         for y = 1, self.h do
-            grid[x][y] = {}
+            self.grid[x][y] = {}
             if x == 1 or x == self.w or y == 1 or y == self.h then
-                grid[x][y] = tile["buildingOuterWall"]
+                self.grid[x][y] = tile["buildingOuterWall"]
             else
-                grid[x][y] = tile["ground"]
+                self.grid[x][y] = tile["ground"]
             end
         end
     end
+end
+
+local function _addOuterDoor(self)
     local prob = bsp_rng:random(100)
     if prob < 25 then
-        grid[1][math.random(2, self.h - 1)] = tile["ground"]
+        self.grid[1][math.random(2, self.h - 1)] = tile["buildingOuterDoor"]
     elseif prob < 50 then
-        grid[self.w][math.random(2, self.h - 1)] = tile["ground"]
+        self.grid[self.w][math.random(2, self.h - 1)] = tile["buildingOuterDoor"]
     elseif prob < 75 then
-        grid[math.random(2, self.w - 1)][1] = tile["ground"]
+        self.grid[math.random(2, self.w - 1)][1] = tile["buildingOuterDoor"]
     else
-        grid[math.random(2, self.w - 1)][self.h] = tile["ground"]
+        self.grid[math.random(2, self.w - 1)][self.h] = tile["buildingOuterDoor"]
     end
-    return grid
 end
 
 bspBuilding.create = function(w, h, minRoomSize)
@@ -38,7 +39,8 @@ bspBuilding.create = function(w, h, minRoomSize)
     inst.h = h
     inst.minRoomSize = minRoomSize or 5
 
-    inst.grid = createOuterWalls(inst)
+    _createOuterWalls(inst)
+    _addOuterDoor(inst)
 
     return inst
 end

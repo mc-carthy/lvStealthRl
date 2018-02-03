@@ -12,7 +12,12 @@ tileDictionary["ground"] = {
 
 tileDictionary["buildingOuterWall"] = {
     walkable = false,
-    colour = { 31, 31, 31 }
+    colour = { 31, 31, 31, 255 }
+}
+
+tileDictionary["buildingOuterDoor"] = {
+    walkable = true,
+    colour = { 0, 191, 191, 255}
 }
 
 return tileDictionary
