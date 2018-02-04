@@ -11,7 +11,7 @@ local playerDebugFlag = true
 local GRID_SIZE
 local mouseButtonDown = false
 local collisionBuffer = 0.05
-local keycardLevel = 1
+local keycardLevel = 5
 
 local _unlockDoors = function(self)
     for i = 1, keycardLevel do
@@ -20,9 +20,10 @@ local _unlockDoors = function(self)
         end
     end
 end
+
 local load = function(self)
     GRID_SIZE = self.entityManager:getGrid().cellSize
-    -- _unlockDoors(self)
+    _unlockDoors(self)
 end
 
 

@@ -192,9 +192,9 @@ local function _findHighestContourValue(self)
     return maxVal, maxX, maxY
 end
 
-local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH)
+local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH, entranceLevel)
     local buildingX, buildingY = buildingX,buildingY
-    local bspBuilding = BspBuilding.create(buildingW, buildingH)
+    local bspBuilding = BspBuilding.create(buildingW, buildingH, 0, entranceLevel)
 
     for x = 1, bspBuilding.w do
         for y = 1, bspBuilding.h do
@@ -224,7 +224,7 @@ local function _addBuildings(self, numberOfBuildings)
     for i = 1, numberOfBuildings do
         local buildingSize, buildingX, buildingY = _findHighestContourValue(self)
         local buildingRad = math.floor(buildingSize / 2)
-        _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize)
+        _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize, i)
         _zeroContourMapAroundPoint(self, buildingX, buildingY, buildingSize, buildingSize)
         _calculateContourMap(self)
     end
@@ -299,7 +299,7 @@ function grid.create(entityManager)
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
     inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeak(inst)
-    _addBuildings(inst, 5)
+    _addBuildings(inst, 10)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
