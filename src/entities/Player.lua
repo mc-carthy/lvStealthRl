@@ -4,6 +4,8 @@ local Math = require("src.utils.Math")
 local Bullet = require("src.entities.Bullet")
 local tile = require("src.map.tileDictionary")
 
+local bresenham = require("src.utils.bresenham")
+
 local player = {}
 
 local playerDebugFlag = true
