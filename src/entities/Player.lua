@@ -2,6 +2,7 @@ local Camera = require("src.utils.Camera")
 local Vector2 = require("src.utils.Vector2")
 local Math = require("src.utils.Math")
 local Bullet = require("src.entities.Bullet")
+local tile = require("src.map.tileDictionary")
 
 local player = {}
 
@@ -10,10 +11,20 @@ local playerDebugFlag = true
 local GRID_SIZE
 local mouseButtonDown = false
 local collisionBuffer = 0.05
+local keycardLevel = 1
 
+local _unlockDoors = function(self)
+    for i = 1, keycardLevel do
+        if tile["doorLevel" .. i] then
+            tile["doorLevel" .. i].walkable = true
+        end
+    end
+end
 local load = function(self)
     GRID_SIZE = self.entityManager:getGrid().cellSize
+    -- _unlockDoors(self)
 end
+
 
 local createBullet = function(self)
     local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 300)

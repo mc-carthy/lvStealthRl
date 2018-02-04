@@ -15,8 +15,10 @@ tileDictionary["buildingOuterWall"] = {
     colour = { 31, 31, 31, 255 }
 }
 
-tileDictionary["buildingOuterDoor"] = {
-    walkable = true,
+-- TODO: Make a new table for each level door, have the player change the value
+-- of walkable when the player card level is greater than the door card level
+tileDictionary["doorLevel1"] = {
+    walkable = false,
     colour = { 0, 191, 191, 255}
 }
 

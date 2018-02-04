@@ -21,13 +21,13 @@ end
 local function _addOuterDoor(self)
     local prob = bsp_rng:random(100)
     if prob < 25 then
-        self.grid[1][math.random(2, self.h - 1)] = tile["buildingOuterDoor"]
+        self.grid[1][math.random(2, self.h - 1)] = tile["doorLevel1"]
     elseif prob < 50 then
-        self.grid[self.w][math.random(2, self.h - 1)] = tile["buildingOuterDoor"]
+        self.grid[self.w][math.random(2, self.h - 1)] = tile["doorLevel1"]
     elseif prob < 75 then
-        self.grid[math.random(2, self.w - 1)][1] = tile["buildingOuterDoor"]
+        self.grid[math.random(2, self.w - 1)][1] = tile["doorLevel1"]
     else
-        self.grid[math.random(2, self.w - 1)][self.h] = tile["buildingOuterDoor"]
+        self.grid[math.random(2, self.w - 1)][self.h] = tile["doorLevel1"]
     end
 end
 
