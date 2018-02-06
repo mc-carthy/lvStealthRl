@@ -172,7 +172,7 @@ local function _findLowestContourPeak(self, exludeEqualNeighbours)
             end
         end
     end
-    print(minPeakX .. "-" .. minPeakY .. " : " .. minPeak)
+    -- print(minPeakX .. "-" .. minPeakY .. " : " .. minPeak)
     if minPeakX == 1 and minPeakY == 1 then
        minPeakX, minPeakY = _findLowestContourPeak(self, false)
     end
@@ -191,7 +191,7 @@ local function _findHighestContourValue(self)
             end
         end
     end
-    print(maxX .. "-" .. maxY .. " : " .. maxVal)
+    -- print(maxX .. "-" .. maxY .. " : " .. maxVal)
     return maxVal, maxX, maxY
 end
 
@@ -247,7 +247,7 @@ local function isWalkable(self, gridX, gridY)
     end
 end
 
-local setPoints = function(self, points, success)
+local function setPoints(self, points, success)
     self.points = points
     if success then
         losColour = { 0, 191, 0, 255 }
@@ -261,7 +261,7 @@ local function update(self, dt)
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
     mouseX, mouseY = worldSpaceToGrid(self, gamera:toWorld(love.mouse.getPosition()))
     local points, success = bresenham.line(playerX, playerY, mouseX, mouseY, function(x, y)
-        return true
+        return self:isWalkable(x, y) == nil
     end)
     self:setPoints(points, success)
 end
