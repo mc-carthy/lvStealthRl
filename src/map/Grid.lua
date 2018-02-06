@@ -22,8 +22,9 @@ local function _generateGrid(self)
     for x = 1, self.xSize do
         self[x] = {}
         for y = 1, self.ySize do
-            self[x][y] = {}
-            -- self[x][y] = tile["ground"]
+            -- self[x][y] = {}
+            -- TODO: This comes with a performance deficit of around 30% drop in fps
+            self[x][y] = tile["ground"]
         end
     end
 end
@@ -261,7 +262,7 @@ local function update(self, dt)
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
     mouseX, mouseY = worldSpaceToGrid(self, gamera:toWorld(love.mouse.getPosition()))
     local points, success = bresenham.line(playerX, playerY, mouseX, mouseY, function(x, y)
-        return self:isWalkable(x, y) == nil
+        return self:isWalkable(x, y)
     end)
     self:setPoints(points, success)
 end
