@@ -2,6 +2,8 @@ local EntityManager = require("src.entities.EntityManager")
 local CelAut = require("src.map.CelAutCaveGen")
 local BspBuilding = require("src.map.bspBuilding")
 local tile = require("src.map.tileDictionary")
+local los = require("src.utils.los")
+local bresenham = require("src.utils.bresenham")
 
 local grid = {}
 
@@ -14,6 +16,7 @@ local viewDistX = 33
 local viewDistY = 19
 local celAutGridScale = 4
 local wallChancePercentage = 475
+local losColour = { 0, 191, 0, 255}
 
 local function _generateGrid(self)
     for x = 1, self.xSize do
@@ -244,9 +247,23 @@ local function isWalkable(self, gridX, gridY)
     end
 end
 
+local setPoints = function(self, points, success)
+    self.points = points
+    if success then
+        losColour = { 0, 191, 0, 255 }
+    else
+        losColour = { 191, 0, 0, 255 }
+    end
+end
+
 local function update(self, dt)
     local player = self.entityManager:getPlayer()
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
+    mouseX, mouseY = worldSpaceToGrid(self, gamera:toWorld(love.mouse.getPosition()))
+    local points, success = bresenham.line(playerX, playerY, mouseX, mouseY, function(x, y)
+        return true
+    end)
+    self:setPoints(points, success)
 end
 
 local function draw(self)
@@ -275,6 +292,10 @@ local function draw(self)
             end
         end
     end
+    love.graphics.setColor(losColour)
+    for i = 1, #self.points do
+        love.graphics.rectangle('fill', (self.points[i][1] - 1) * self.cellSize, (self.points[i][2] - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+    end
 end
 
 function grid.create(entityManager)
@@ -288,6 +309,7 @@ function grid.create(entityManager)
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
     inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
+    inst.points = {{1, 1}}
 
     -- inst.xSize = 420
     -- inst.ySize = 420
@@ -303,6 +325,7 @@ function grid.create(entityManager)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
+    inst.setPoints = setPoints
     inst.update = update
     inst.draw = draw
 
