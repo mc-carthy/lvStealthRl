@@ -10,6 +10,8 @@ local angleToPlayer = nil
 local playerInViewAngle = nil
 local relativeAngleToPlayer = nil
 local nearRotThreshold = 10
+local enemyVisionTiles
+local playerInLos
 
 local takeDamage = function(self)
     self.done = true
@@ -59,7 +61,8 @@ local update = function(self, dt)
     if relativeAngleToPlayer < 0 then relativeAngleToPlayer = relativeAngleToPlayer + 360 end
     -- if relativeAngleToPlayer > 180 then relativeAngleToPlayer = -relativeAngleToPlayer + 360 end
     local playerInViewAngle = (relativeAngleToPlayer < self.viewAngle / 2) or (-relativeAngleToPlayer + 360 < self.viewAngle / 2)
-    local playerInLos = self.grid:lineOfSight(self.x, self.y, player.x, player.y)
+    -- playerInLos = self.grid:lineOfSight(self.x, self.y, player.x, player.y)
+    enemyVisionTiles, playerInLos = self.grid:lineOfSightPoints(self.x, self.y, player.x, player.y)
     
     if playerInViewDist and playerInViewAngle and playerInLos then
         self.canSeePlayer = true
@@ -96,6 +99,14 @@ local draw = function(self)
         love.graphics.print("Facing angle: " .. string.format("%.2f", self.rot), self.x, self.y - 70)
         love.graphics.print("Relative angle to player: " .. string.format("%.2f", relativeAngleToPlayer), self.x, self.y - 50)
         love.graphics.print("Player in view angle: " .. tostring(playerInViewAngle), self.x, self.y - 30)
+        if playerInLos then
+            love.graphics.setColor(0, 191, 0, 255)
+        else
+            love.graphics.setColor(191, 0, 0, 255)
+        end
+        for i = 1, #enemyVisionTiles do
+            love.graphics.rectangle('fill', (enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
+        end
     end
 end
 
