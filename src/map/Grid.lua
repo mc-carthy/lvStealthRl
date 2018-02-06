@@ -257,14 +257,27 @@ local function setPoints(self, points, success)
     end
 end
 
+local function lineOfSight(self, startX, startY, endX, endY)
+    startX, startY = self:worldSpaceToGrid(startX, startY)
+    endX, endY = self:worldSpaceToGrid(endX, endY)
+    local success = bresenham.los(startX, startY, endX, endY, function(x, y)
+        return self:isWalkable(x, y)
+    end)
+    return success
+end
+
+local function lineOfSightPoints(self, startX, startY, endX, endY)
+    startX, startY = self:worldSpaceToGrid(startX, startY)
+    endX, endY = self:worldSpaceToGrid(endX, endY)
+    local points, success = bresenham.line(startX, startY, endX, endY, function(x, y)
+        return self:isWalkable(x, y)
+    end)
+    return points, success
+end
+
 local function update(self, dt)
     local player = self.entityManager:getPlayer()
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
-    mouseX, mouseY = worldSpaceToGrid(self, gamera:toWorld(love.mouse.getPosition()))
-    local points, success = bresenham.line(playerX, playerY, mouseX, mouseY, function(x, y)
-        return self:isWalkable(x, y)
-    end)
-    self:setPoints(points, success)
 end
 
 local function draw(self)
@@ -310,7 +323,7 @@ function grid.create(entityManager)
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
     inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
-    inst.points = {{1, 1}}
+    inst.points = {}
 
     -- inst.xSize = 420
     -- inst.ySize = 420
@@ -326,7 +339,8 @@ function grid.create(entityManager)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
-    inst.setPoints = setPoints
+    inst.lineOfSight = lineOfSight
+    inst.lineOfSightPoints = lineOfSightPoints
     inst.update = update
     inst.draw = draw
 

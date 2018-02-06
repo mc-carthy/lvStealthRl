@@ -58,9 +58,10 @@ local update = function(self, dt)
     relativeAngleToPlayer = (angleToPlayer - self.rot) % 360
     if relativeAngleToPlayer < 0 then relativeAngleToPlayer = relativeAngleToPlayer + 360 end
     -- if relativeAngleToPlayer > 180 then relativeAngleToPlayer = -relativeAngleToPlayer + 360 end
-    playerInViewAngle = (relativeAngleToPlayer < self.viewAngle / 2) or (-relativeAngleToPlayer + 360 < self.viewAngle / 2)
-
-    if playerInViewDist and playerInViewAngle then
+    local playerInViewAngle = (relativeAngleToPlayer < self.viewAngle / 2) or (-relativeAngleToPlayer + 360 < self.viewAngle / 2)
+    local playerInLos = self.grid:lineOfSight(self.x, self.y, player.x, player.y)
+    
+    if playerInViewDist and playerInViewAngle and playerInLos then
         self.canSeePlayer = true
     else
         self.canSeePlayer = false
@@ -103,6 +104,7 @@ enemy.create = function(entityManager, x, y, rot)
 
     inst.tag = "enemy"
     inst.entityManager = entityManager
+    inst.grid = entityManager:getGrid()
     inst.x = x or 0
     inst.y = y or 0
     inst.radius = 5
