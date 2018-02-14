@@ -6,28 +6,22 @@ local enemy = {}
 
 local enemyDebugFlag = true
 
-local angleToPlayer = nil
-local playerInViewAngle = nil
-local relativeAngleToPlayer = nil
 local nearRotThreshold = 10
-local enemyVisionTiles
-local playerInLos
 
 local takeDamage = function(self)
     self.done = true
 end
 
 local _chasePlayer = function(self, dt)
-    local player = self.entityManager:getPlayer()
-    local rot = Vector2.angle(self.x, self.y, player.x, player.y)
+    local rot = Vector2.angle(self.x, self.y, self.player.x, self.player.y)
     local dx, dy = Vector2.pointFromRotDist(rot, self.moveSpeed * dt)
 
     local dRot = 0
     self.targetRot = rot
     if math.abs((self.targetRot - self.rot) % 360) > nearRotThreshold then
-        if relativeAngleToPlayer < 180 then
+        if self.relativeAngleToPlayer < 180 then
             dRot = self.rotSpeed * dt
-        elseif relativeAngleToPlayer < 360 then
+        elseif self.relativeAngleToPlayer < 360 then
             dRot = -self.rotSpeed * dt
         end
     end
@@ -42,9 +36,7 @@ local _updateCollider = function(self)
 end
 
 local update = function(self, dt)
-    local player = self.entityManager:getPlayer()
-
-    self.viewDist = self.nominalViewDist * player:getSpeedMultiplier()
+    self.viewDist = self.nominalViewDist * self.player:getSpeedMultiplier()
     -- local rotSpeed = 36
     -- self.rot = self.rot + rotSpeed * dt
     -- if self.rot > 360 then self.rot = 0 end
@@ -52,19 +44,20 @@ local update = function(self, dt)
     _updateCollider(self)
 
 
-    local playerInViewDist = Vector2.magnitude(self.x - player.x, self.y - player.y) < self.viewDist
+    local playerInViewDist = Vector2.magnitude(self.x - self.player.x, self.y - self.player.y) < self.viewDist
 
-    angleToPlayer = Vector2.angle(self.x, self.y, player.x, player.y)
+    self.angleToPlayer = Vector2.angle(self.x, self.y, self.player.x, self.player.y)
 
     -- TODO: Tidy up this angle check
-    relativeAngleToPlayer = (angleToPlayer - self.rot) % 360
-    if relativeAngleToPlayer < 0 then relativeAngleToPlayer = relativeAngleToPlayer + 360 end
-    -- if relativeAngleToPlayer > 180 then relativeAngleToPlayer = -relativeAngleToPlayer + 360 end
-    local playerInViewAngle = (relativeAngleToPlayer < self.viewAngle / 2) or (-relativeAngleToPlayer + 360 < self.viewAngle / 2)
-    -- playerInLos = self.grid:lineOfSight(self.x, self.y, player.x, player.y)
-    enemyVisionTiles, playerInLos = self.grid:lineOfSightPoints(self.x, self.y, player.x, player.y)
+    self.relativeAngleToPlayer = (self.angleToPlayer - self.rot) % 360
+    if self.relativeAngleToPlayer < 0 then self.relativeAngleToPlayer = self.relativeAngleToPlayer + 360 end
+    -- if self.relativeAngleToPlayer > 180 then self.relativeAngleToPlayer = -self.relativeAngleToPlayer + 360 end
+    self.playerInViewAngle = (self.relativeAngleToPlayer < self.viewAngle / 2) or (-self.relativeAngleToPlayer + 360 < self.viewAngle / 2)
+    -- TODO: Consider starting los 1 block away from enemy so they don't get trapped inside an unwalkable tile
+    -- self.playerInLos = self.grid:lineOfSight(self.x, self.y, self.player.x, self.player.y)
+    self.enemyVisionTiles, self.playerInLos = self.grid:lineOfSightPoints(self.x, self.y, self.player.x, self.player.y)
     
-    if playerInViewDist and playerInViewAngle and playerInLos then
+    if playerInViewDist and  self.playerInViewAngle and self.playerInLos then
         self.canSeePlayer = true
     else
         self.canSeePlayer = false
@@ -95,17 +88,17 @@ local draw = function(self)
 
     if enemyDebugFlag then
         love.graphics.setColor(255, 255, 255)
-        love.graphics.print("Angle to player: " .. string.format("%.2f", angleToPlayer), self.x, self.y - 90)
+        love.graphics.print("Angle to player: " .. string.format("%.2f", self.angleToPlayer), self.x, self.y - 90)
         love.graphics.print("Facing angle: " .. string.format("%.2f", self.rot), self.x, self.y - 70)
-        love.graphics.print("Relative angle to player: " .. string.format("%.2f", relativeAngleToPlayer), self.x, self.y - 50)
-        love.graphics.print("Player in view angle: " .. tostring(playerInViewAngle), self.x, self.y - 30)
-        if playerInLos then
+        love.graphics.print("Relative angle to player: " .. string.format("%.2f", self.relativeAngleToPlayer), self.x, self.y - 50)
+        love.graphics.print("Player in view angle: " .. tostring( self.playerInViewAngle), self.x, self.y - 30)
+        if self.playerInLos then
             love.graphics.setColor(0, 191, 0, 255)
         else
             love.graphics.setColor(191, 0, 0, 255)
         end
-        for i = 1, #enemyVisionTiles do
-            love.graphics.rectangle('fill', (enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
+        for i = 1, #self.enemyVisionTiles do
+            love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
         end
     end
 end
@@ -126,6 +119,12 @@ enemy.create = function(entityManager, x, y, rot)
     inst.viewDist = 100
     inst.nominalViewDist = 200
     inst.viewAngle = 120
+    inst.player = entityManager:getPlayer()
+    inst.angleToPlayer = nil
+    inst.playerInViewAngle = nil
+    inst.relativeAngleToPlayer = nil
+    inst.enemyVisionTiles = nil
+    inst.playerInLos = nil
     inst.canSeePlayer = true
     inst.moveSpeed = 100
 

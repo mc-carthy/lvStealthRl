@@ -25,7 +25,9 @@ function love.load()
     local playerX, playerY = entityManager:getGrid().lowestPeakX, entityManager:getGrid().lowestPeakY;
     entityManager:addEntity(Player.create(entityManager, playerX, playerY))
     -- entityManager:addEntity(Player.create(entityManager, 1210, 1210))
-    entityManager:addEntity(Enemy.create(entityManager, 1000, 1000))
+    entityManager:addEntity(Enemy.create(entityManager, 2000, 2000))
+    entityManager:addEntity(Enemy.create(entityManager, 4000, 2000))
+    entityManager:addEntity(Enemy.create(entityManager, 6000, 2000))
 end
 
 function love.update(dt)

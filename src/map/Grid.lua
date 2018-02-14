@@ -319,7 +319,7 @@ function grid.create(entityManager)
     inst.entityManager = entityManager
     inst.cellSize = 20
     inst.worldScaleInScreens = 10
-    local border = 0
+    local border = 1
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
     inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
