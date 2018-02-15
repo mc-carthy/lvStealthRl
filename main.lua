@@ -3,6 +3,7 @@ local EntityManager = require("src.entities.EntityManager")
 local Camera = require("src.utils.Camera")
 local Player = require("src.entities.Player")
 local Enemy = require("src.entities.Enemy")
+local EnemyManager = require("src.entities.enemyManager")
 local Gamera = require("src.utils.gamera")
 
 DEBUG = false
@@ -24,10 +25,7 @@ function love.load()
     entityManager:addEntity(Grid.create(entityManager))
     local playerX, playerY = entityManager:getGrid().lowestPeakX, entityManager:getGrid().lowestPeakY;
     entityManager:addEntity(Player.create(entityManager, playerX, playerY))
-    -- entityManager:addEntity(Player.create(entityManager, 1210, 1210))
-    entityManager:addEntity(Enemy.create(entityManager, 2000, 2000))
-    entityManager:addEntity(Enemy.create(entityManager, 4000, 2000))
-    entityManager:addEntity(Enemy.create(entityManager, 6000, 2000))
+    entityManager:addEntity(EnemyManager.create(entityManager))
 end
 
 function love.update(dt)
