@@ -280,36 +280,29 @@ local function update(self, dt)
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
 end
 
-local function draw(self)
-    local l, t, w, h = gamera:getVisible()
-    local slack = 40
+local _loadCanvas = function(self)
+    self.canvas = love.graphics.newCanvas(self.cellSize * self.xSize, self.cellSize * self.ySize)
 
+    love.graphics.setCanvas(self.canvas)
+    love.graphics.clear()
     for x = 1, self.xSize do
         for y = 1, self.ySize do
-            if gridDebugFlag then
-                -- if x < viewDistX + playerX and x > playerX - viewDistX and y < viewDistY + playerY and y > playerY - viewDistY then
-                    local tl = (x - 1) * self.cellSize
-                    local tt = (y - 1) * self.cellSize
-                    local tr = tl + self.cellSize
-                    local tb = tt + self.cellSize
-                if tl > l - slack and tt > t - slack and tr < l + w + slack and tb < t + h + slack then
-                    love.graphics.setColor(127, 127, 127)
-                    if self[x][y].colour then
-                        love.graphics.setColor(self[x][y].colour)
-                    else
-                        love.graphics.setColor(tile["ground"].colour)
-                    end
-                    love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
-                    -- love.graphics.setColor(0, 255, 255, 255)
-                    -- love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
+                love.graphics.setColor(127, 127, 127)
+                if self[x][y].colour then
+                    love.graphics.setColor(self[x][y].colour)
+                else
+                    love.graphics.setColor(tile["ground"].colour)
                 end
-            end
+                love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
         end
     end
-    love.graphics.setColor(losColour)
-    for i = 1, #self.points do
-        love.graphics.rectangle('fill', (self.points[i][1] - 1) * self.cellSize, (self.points[i][2] - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
-    end
+
+    love.graphics.setCanvas()
+end
+
+local function draw(self)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.draw(self.canvas, 0, 0)
 end
 
 function grid.create(entityManager)
@@ -319,7 +312,7 @@ function grid.create(entityManager)
     inst.entityManager = entityManager
     inst.cellSize = 20
     inst.worldScaleInScreens = 10
-    local border = 1
+    local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
     inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
@@ -341,6 +334,10 @@ function grid.create(entityManager)
     inst.isWalkable = isWalkable
     inst.lineOfSight = lineOfSight
     inst.lineOfSightPoints = lineOfSightPoints
+
+    inst.canvas = nil
+    _loadCanvas(inst)
+
     inst.update = update
     inst.draw = draw
 
