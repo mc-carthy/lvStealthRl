@@ -234,6 +234,27 @@ local function _addBuildings(self, numberOfBuildings)
     end
 end
 
+local function returnRandomGridPosOfTileType(self, tileType)
+    tileType = tileType or "ground"
+    assert(tile[tileType] ~= nil, "Please enter a valid tileType from tileDictionary")
+
+    local tileFound = false
+    while not tileFound do
+
+        local randX = love.math.random(self.xSize)
+        local randY = love.math.random(self.ySize)
+        if self[randX][randY] == tile[tileType] then
+            tileFound = true
+            return randX, randY
+        end
+    end
+end
+
+local function returnRandomWorldPosOfTileType(self, tileType)
+    worldX, worldY = returnRandomGridPosOfTileType(self, tileType)
+    return worldX * self.cellSize, worldY * self.cellSize
+end
+
 local function worldSpaceToGrid(self, x, y)
     gridx = math.floor(x / self.cellSize) + 1
     gridy = math.floor(y / self.cellSize) + 1
@@ -311,7 +332,7 @@ function grid.create(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 10
+    inst.worldScaleInScreens = 12
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
@@ -324,7 +345,6 @@ function grid.create(entityManager)
     _generateGrid(inst)
     _populateGrid(inst)
     
-    -- _addBuilding(inst, 50, 50, 50, 50)
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
     inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeak(inst)
@@ -334,6 +354,8 @@ function grid.create(entityManager)
     inst.isWalkable = isWalkable
     inst.lineOfSight = lineOfSight
     inst.lineOfSightPoints = lineOfSightPoints
+    inst.returnRandomWorldPosOfTileType = returnRandomWorldPosOfTileType
+    inst.returnRandomGridPosOfTileType = returnRandomGridPosOfTileType
 
     inst.canvas = nil
     _loadCanvas(inst)
