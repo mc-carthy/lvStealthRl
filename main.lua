@@ -43,7 +43,6 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.setBackgroundColor(0, 0, 0, 255)
     gamera:draw(function(l, t, w, h)
         -- TODO: Add sorting layer function to control which items get drawn in front
             -- Camera:set()

@@ -252,7 +252,7 @@ end
 
 local function returnRandomWorldPosOfTileType(self, tileType)
     worldX, worldY = returnRandomGridPosOfTileType(self, tileType)
-    return worldX * self.cellSize, worldY * self.cellSize
+    return worldX * self.cellSize - self.cellSize / 2, worldY * self.cellSize - self.cellSize / 2
 end
 
 local function worldSpaceToGrid(self, x, y)
