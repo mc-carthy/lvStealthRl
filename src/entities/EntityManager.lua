@@ -40,8 +40,18 @@ end
 
 local draw = function(self)
     for i = 1, #self.entities do
-        if self.entities[i].draw then
-            self.entities[i]:draw()
+        if self.entities[i].tag ~= "player" then 
+            if self.entities[i].draw then
+                self.entities[i]:draw()
+            end
+        end
+    end
+    -- TODO: This ensures the player is drawn on top of everything, refactor to use sorting layers
+    for i = 1, #self.entities do
+        if self.entities[i].tag == "player" then 
+            if self.entities[i].draw then
+                self.entities[i]:draw()
+            end
         end
     end
 end
