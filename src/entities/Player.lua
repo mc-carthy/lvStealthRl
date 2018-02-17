@@ -156,7 +156,7 @@ local drawScreenSpace = function(self)
         love.graphics.setColor(0, 0, 0, 255)
         love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 30, 10)
         love.graphics.print("Player rotation: " .. math.floor(self.rot), 30, 30)
-        love.graphics.print("Speed multiplier: " .. string.format("%.2f", self.speedMultiplier), 30, 50)
+        love.graphics.print("Speed multiplier: " .. string.format("%.2f", getSpeedMultiplier(self)), 30, 50)
     end
 end
 

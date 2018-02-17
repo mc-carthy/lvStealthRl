@@ -22,7 +22,11 @@ local function _createRoom(self, x, y, w, h)
     for i = x, x + w do
         for j = y, y + h do
             if i == x or i == x + w or j == y or j == y + h then
-                self.grid[i][j] = tile["buildingOuterWall"]
+                if love.math.random() < 0.95 then
+                    self.grid[i][j] = tile["buildingOuterWall"]
+                else
+                    self.grid[i][j] = tile["ground"]
+                end
             end
         end
     end
@@ -36,7 +40,7 @@ end
     x and y represent top-left corner coord
 --]] 
 local function _splitRoom(self, x, y, w, h, minRoomSize)
-    local minRoomSize = minRoomSize or 5
+    local minRoomSize = minRoomSize or 10
     local prob = love.math.random()
     local splitH = nil
     
