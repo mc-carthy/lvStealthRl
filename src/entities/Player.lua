@@ -35,28 +35,29 @@ local createBullet = function(self)
 end
 
 local getSpeedMultiplier = function(self)
-    return self.speedMultiplier
+    return self.speedMultiplier * math.sqrt(math.pow(self.moveX, 2) + math.pow(self.moveY, 2)) / self.nominalSpeed
 end
 
 local getInput = function(self)
-    local inputX = 0
-    local inputY = 0
+    self.inputX = 0
+    self.inputY = 0
+
     if love.keyboard.isDown("d") and not love.keyboard.isDown("a") then
-        inputX = 1
+        self.inputX = 1
     end
     if love.keyboard.isDown("a") and not love.keyboard.isDown("d") then
-        inputX = -1
+        self.inputX = -1
     end
     if love.keyboard.isDown("s") and not love.keyboard.isDown("w") then
-        inputY = 1
+        self.inputY = 1
     end
     if love.keyboard.isDown("w") and not love.keyboard.isDown("s") then
-        inputY = -1
+        self.inputY = -1
     end
 
-    if inputX ~= 0 and inputY ~= 0 then
-        inputX = inputX / 1.41
-        inputY = inputY / 1.41
+    if self.inputX ~= 0 and self.inputY ~= 0 then
+        self.inputX = self.inputX / 1.41
+        self.inputY = self.inputY / 1.41
     end
 
     if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
@@ -67,8 +68,8 @@ local getInput = function(self)
         self.speedMultiplier = Math.lerp(self.speedMultiplier, 1, self.moveSpeedDampening)
     end
 
-    self.moveX = inputX * self.nominalSpeed * self.speedMultiplier
-    self.moveY = inputY * self.nominalSpeed * self.speedMultiplier
+    self.moveX = Math.lerp(self.moveX, self.inputX * self.nominalSpeed * self.speedMultiplier, self.moveSpeedDampening)
+    self.moveY = Math.lerp(self.moveY, self.inputY * self.nominalSpeed * self.speedMultiplier, self.moveSpeedDampening)
 
     local buttonPressed = love.mouse.isDown(1)
 
@@ -165,6 +166,8 @@ player.create = function(entityManager, x, y)
     inst.tag = "player"
     inst.x = x
     inst.y = y
+    inst.inputX = 0
+    inst.inputY = 0
     inst.entityManager = entityManager
     inst.grid = inst.entityManager:getGrid()
     inst.mouseX = 0

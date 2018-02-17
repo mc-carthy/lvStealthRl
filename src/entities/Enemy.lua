@@ -36,7 +36,7 @@ local _updateCollider = function(self)
 end
 
 local update = function(self, dt)
-    self.viewDist = self.nominalViewDist * self.player:getSpeedMultiplier()
+    self.viewDist = self.nominalViewDist * (1 + self.player:getSpeedMultiplier())
     -- local rotSpeed = 36
     -- self.rot = self.rot + rotSpeed * dt
     -- if self.rot > 360 then self.rot = 0 end
@@ -84,7 +84,7 @@ local draw = function(self)
             love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
         end
     end
-    
+
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
     local viewAngleX1, viewAngleY1 = Vector2.pointFromRotDist(self.rot - self.viewAngle / 2, self.viewDist)
     local viewAngleX2, viewAngleY2 = Vector2.pointFromRotDist(self.rot + self.viewAngle / 2, self.viewDist)
