@@ -3,13 +3,13 @@ local Vector2 = require("src.utils.Vector2")
 local Math = require("src.utils.Math")
 local Bullet = require("src.entities.Bullet")
 local tile = require("src.map.tileDictionary")
-
 local bresenham = require("src.utils.bresenham")
 
 local player = {}
 
 local playerDebugFlag = true
 
+local playerImage = love.graphics.newImage("assets/img/kenneyTest/player.png")
 local GRID_SIZE
 local mouseButtonDown = false
 local collisionBuffer = 0.05
@@ -137,9 +137,6 @@ local update = function(self, dt)
 end
 
 local draw = function(self)
-    love.graphics.setColor(0, 255, 0)
-    love.graphics.circle("fill", self.x, self.y, self.r)
-
     if playerDebugFlag then
         love.graphics.setColor(63, 63, 63)
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
@@ -149,14 +146,18 @@ local draw = function(self)
         -- end
         
     end
+    -- love.graphics.setColor(0, 255, 0)
+    -- love.graphics.circle("fill", self.x, self.y, self.r)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.draw(playerImage, self.x, self.y, -math.rad(self.rot), 1, 1, 32, 32)
 end
 
 local drawScreenSpace = function(self)
     if playerDebugFlag then
-        love.graphics.setColor(0, 0, 0, 255)
-        love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 30, 10)
-        love.graphics.print("Player rotation: " .. math.floor(self.rot), 30, 30)
-        love.graphics.print("Speed multiplier: " .. string.format("%.2f", getSpeedMultiplier(self)), 30, 50)
+        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 50, 10)
+        love.graphics.print("Player rotation: " .. math.floor(self.rot), 50, 30)
+        love.graphics.print("Speed multiplier: " .. string.format("%.2f", getSpeedMultiplier(self)), 50, 50)
     end
 end
 

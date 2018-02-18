@@ -18,6 +18,11 @@ local celAutGridScale = 4
 local wallChancePercentage = 475
 local losColour = { 0, 191, 0, 255}
 
+local dirtImage = love.graphics.newImage("assets/img/kenneyTest/dirt.png")
+local grassImage = love.graphics.newImage("assets/img/kenneyTest/grass.png")
+local sandImage = love.graphics.newImage("assets/img/kenneyTest/sand.png")
+local stoneImage = love.graphics.newImage("assets/img/kenneyTest/stone.png")
+
 local function _generateGrid(self)
     for x = 1, self.xSize do
         self[x] = {}
@@ -308,13 +313,29 @@ local _loadCanvas = function(self)
     love.graphics.clear()
     for x = 1, self.xSize do
         for y = 1, self.ySize do
-                love.graphics.setColor(127, 127, 127)
+            love.graphics.setColor(255, 255, 255, 255)
+            -- love.graphics.setColor(127, 127, 127)
+            -- if self[x][y].colour then
+            --     love.graphics.setColor(self[x][y].colour)
+            -- else
+            --     love.graphics.setColor(tile["ground"].colour)
+            -- end
+            -- love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+            
+            if self[x][y] == tile["ground"] then
+                love.graphics.draw(sandImage, (x - 1) * self.cellSize, (y - 1) * self.cellSize, 0, 0.3125, 0.3125)
+            elseif self[x][y] == tile["caveWall"] then
+                love.graphics.draw(dirtImage, (x - 1) * self.cellSize, (y - 1) * self.cellSize, 0, 0.3125, 0.3125)
+            elseif self[x][y] == tile["buildingOuterWall"] then
+                love.graphics.draw(stoneImage, (x - 1) * self.cellSize, (y - 1) * self.cellSize, 0, 0.3125, 0.3125)
+            else
                 if self[x][y].colour then
                     love.graphics.setColor(self[x][y].colour)
                 else
                     love.graphics.setColor(tile["ground"].colour)
                 end
                 love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+            end
         end
     end
 

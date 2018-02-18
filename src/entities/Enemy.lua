@@ -4,9 +4,11 @@ local Col = require("src.utils.CircleCollider")
 
 local enemy = {}
 
-local enemyDebugFlag = true
+local enemyDebugFlag = false
 
 local nearRotThreshold = 10
+local enemyImage = love.graphics.newImage("assets/img/kenneyTest/enemy.png")
+
 
 local takeDamage = function(self)
     self.done = true
@@ -97,10 +99,13 @@ local draw = function(self)
     -- love.graphics.line(self.x, self.y, self.x + viewAngleX2, self.y + viewAngleY2)
     -- love.graphics.line(self.x, self.y, self.x + focusX, self.y + focusY)
 
-    love.graphics.setColor(191, 0, 0)
-    love.graphics.circle("fill", self.x, self.y, self.radius)
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.circle("line", self.x, self.y, self.radius)
+    -- love.graphics.setColor(191, 0, 0)
+    -- love.graphics.circle("fill", self.x, self.y, self.radius)
+    -- love.graphics.setColor(0, 0, 0)
+    -- love.graphics.circle("line", self.x, self.y, self.radius)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.draw(enemyImage, self.x, self.y, -math.rad(self.rot), 1, 1, 32, 32)
+    -- love.graphics.draw(drawable (Drawable), x (number), y (number), r (number), sx (number), sy (number), ox (number), oy (number), kx (number), ky (number))
 end
 
 enemy.create = function(entityManager, x, y, rot)
@@ -111,7 +116,7 @@ enemy.create = function(entityManager, x, y, rot)
     inst.grid = entityManager:getGrid()
     inst.x = x or 0
     inst.y = y or 0
-    inst.radius = 5
+    inst.radius = 16
     inst.col = Col.create(x, y, inst.radius)
     inst.rot = rot or love.math.random(4) * 90
     inst.targetRot = nil

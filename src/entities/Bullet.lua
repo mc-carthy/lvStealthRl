@@ -32,6 +32,8 @@ end
 
 local draw = function(self)
     love.graphics.setColor(0, 0, 0)
+    love.graphics.circle("fill", self.x, self.y, self.radius + 1)
+    love.graphics.setColor(255, 191, 0)
     love.graphics.circle("fill", self.x, self.y, self.radius)
 end
 
@@ -43,7 +45,7 @@ bullet.create = function(entityManager, x, y, rot, speed)
     inst.entityManager = entityManager
     inst.x = x
     inst.y = y
-    inst.radius = 2
+    inst.radius = 3
     inst.col = Col.create(x, y, inst.radius)
     inst.rot = rot
     inst.speed = speed
