@@ -4,6 +4,7 @@ local Camera = require("src.utils.Camera")
 local Player = require("src.entities.Player")
 local Enemy = require("src.entities.Enemy")
 local EnemyManager = require("src.entities.enemyManager")
+local AudioBreadcrumb = require("src.entities.audioBreadcrumb")
 local Gamera = require("src.utils.gamera")
 
 DEBUG = false
@@ -31,6 +32,11 @@ end
 function love.update(dt)
     if love.keyboard.isDown("escape") then
         love.event.quit()
+    end
+
+    if love.mouse.isDown(1) then
+        mouseX, mouseY = gamera:toWorld(love.mouse.getPosition())
+        entityManager:addEntity(AudioBreadcrumb.create(entityManager, mouseX, mouseY))
     end
 
     local player = entityManager:getPlayer()
