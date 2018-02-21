@@ -14,9 +14,10 @@ end
 
 local function draw(self)
     if debugFlag then
-        love.graphics.setColor(191, 0, 191)
+        -- TODO: Check value of (self.currentLifetime / self.initialLifetime), does not seem to drop linearly from 1 to 0
+        love.graphics.setColor(191, 0, 191, (self.currentLifetime / self.initialLifetime) * 255)
         love.graphics.circle("fill", self.x, self.y, 5)
-        love.graphics.setColor(0, 0, 0)
+        love.graphics.setColor(0, 0, 0, (self.currentLifetime / self.initialLifetime) * 255)
         love.graphics.circle("line", self.x, self.y, 5)
     end
 end
@@ -27,8 +28,8 @@ function vb.create(entityManager, x, y, range, lifetime)
     inst.x = x
     inst.y = y
     inst.range = range or defaultRange
-    inst.lifetime = lifetime or defaultLifetime
-    inst.currentLifetime = inst.lifetime
+    inst.initialLifetime = lifetime or defaultLifetime
+    inst.currentLifetime = lifetime or defaultLifetime
 
     inst.update = update
     inst.draw = draw
