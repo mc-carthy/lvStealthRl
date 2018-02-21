@@ -149,7 +149,7 @@ local draw = function(self)
     -- love.graphics.setColor(0, 255, 0)
     -- love.graphics.circle("fill", self.x, self.y, self.r)
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(playerImage, self.x, self.y, -math.rad(self.rot), 1, 1, 32, 32)
+    love.graphics.draw(playerImage, self.x, self.y, -math.rad(self.rot), 0.5, 0.5, 32, 32)
 end
 
 local drawScreenSpace = function(self)

@@ -104,7 +104,7 @@ local draw = function(self)
     -- love.graphics.setColor(0, 0, 0)
     -- love.graphics.circle("line", self.x, self.y, self.radius)
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(enemyImage, self.x, self.y, -math.rad(self.rot), 1, 1, 32, 32)
+    love.graphics.draw(enemyImage, self.x, self.y, -math.rad(self.rot), 0.5, 0.5, 32, 32)
     -- love.graphics.draw(drawable (Drawable), x (number), y (number), r (number), sx (number), sy (number), ox (number), oy (number), kx (number), ky (number))
 end
 

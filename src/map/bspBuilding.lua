@@ -70,6 +70,7 @@ local function _splitRoom(self, x, y, w, h, minRoomSize)
 
     local split = love.math.random(minRoomSize, max)
 
+    -- TODO: Investigate why only the first instance of _createRoom seems to be getting called
     if splitH then
         self:_createRoom(x, y + split, w, h - split)
         self:_createRoom(x, y, w, split)
