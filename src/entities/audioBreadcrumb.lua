@@ -24,6 +24,7 @@ end
 function ab.create(entityManager, x, y, range, lifetime)
     local inst = {}
 
+    inst.tag = "audioBreadcrumb"
     inst.x = x
     inst.y = y
     inst.range = range or defaultRange

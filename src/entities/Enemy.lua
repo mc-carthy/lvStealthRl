@@ -14,6 +14,17 @@ local takeDamage = function(self)
     self.done = true
 end
 
+local function _checkForAudioBreadcrumbs(self)
+    local audioCrumbs = self.entityManager:getAudioBreadcrumbs()
+    for i = #audioCrumbs, 1, -1 do
+        local ac = audioCrumbs[i]
+        if Vector2.magnitude(ac.x - self.x, ac.y - self.y) < ac.range then
+            -- TODO: This is used only for debugging, set the enemy to move to the latest breadcrumb
+            self.canSeePlayer = true
+        end
+    end
+end
+
 local _chasePlayer = function(self, dt)
     local rot = Vector2.angle(self.x, self.y, self.player.x, self.player.y)
     local dx, dy = Vector2.pointFromRotDist(rot, self.moveSpeed * dt)
@@ -64,6 +75,8 @@ local update = function(self, dt)
     else
         self.canSeePlayer = false
     end
+
+    _checkForAudioBreadcrumbs(self)
 
     if self.canSeePlayer then
         _chasePlayer(self, dt)
@@ -131,6 +144,8 @@ enemy.create = function(entityManager, x, y, rot)
     inst.enemyVisionTiles = nil
     inst.playerInLos = nil
     inst.canSeePlayer = true
+    inst.viewableBreadcrumbs = {}
+    inst.audibleBreadcrumbs = {}
     inst.moveSpeed = 100
 
     inst.takeDamage = takeDamage

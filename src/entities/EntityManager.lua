@@ -8,6 +8,16 @@ local getEntities = function(self)
     return self.entities
 end
 
+local getAudioBreadcrumbs = function(self)
+    local audioCrumbTable = {}
+    for i = 1, #self.entities do
+        if self.entities[i].tag == "audioBreadcrumb" then
+            table.insert(audioCrumbTable, self.entities[i])
+        end
+    end
+    return audioCrumbTable
+end
+
 local getPlayer = function(self)
     for _, entity in ipairs(self:getEntities()) do
         if entity.tag == "player" then return entity end
@@ -73,6 +83,7 @@ entityManager.create = function()
     inst.getEntities = getEntities
     inst.getPlayer = getPlayer
     inst.getGrid = getGrid
+    inst.getAudioBreadcrumbs = getAudioBreadcrumbs
 
     inst.update = update
     inst.draw = draw

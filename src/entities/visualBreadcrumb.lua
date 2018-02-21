@@ -25,6 +25,7 @@ end
 function vb.create(entityManager, x, y, range, lifetime)
     local inst = {}
 
+    inst.tag = "visualBreadcrumb"
     inst.x = x
     inst.y = y
     inst.range = range or defaultRange
