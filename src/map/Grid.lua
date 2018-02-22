@@ -103,14 +103,21 @@ local function _isInGridRange(self, x, y)
     return x > 0 and x < self.xSize and y > 0 and y < self.ySize
 end
 
-local function _isPeakContour(self, x, y)
+local function _isPeakContour(self, x, y, exludeEqualNeighbours)
+    -- local exludeEqualNeighbours = exludeEqualNeighbours or true
     for i = -1, 1 do
         for j = -1, 1 do
             if self.contourMap[x + i] and self.contourMap[x + i][y + j] then
                 if _isInGridRange(self, x + i, y + j) then
                     if not (i == 0 and j == 0) then
-                        if self.contourMap[x][y] <= self.contourMap[x + i][y + j] and self.contourMap[x][y] > 0 then
-                            return false
+                        if exludeEqualNeighbours then
+                            if self.contourMap[x][y] <= self.contourMap[x + i][y + j] and self.contourMap[x][y] > 0 then
+                                return false
+                            end
+                        else
+                            if self.contourMap[x][y] < self.contourMap[x + i][y + j] and self.contourMap[x][y] > 0 then
+                                return false
+                            end
                         end
                     end
                 end
@@ -157,29 +164,20 @@ local function _calculateContourMap(self)
 end
 
 local function _findLowestContourPeak(self, exludeEqualNeighbours)
-    exludeEqualNeighbours = exludeEqualNeighbours or true
     local minPeak, minPeakX, minPeakY = 1000, 0, 0
     for x = 1, self.xSize do
         for y = 1, self.ySize do
-            if _isPeakContour(self, x, y) then
-                if exludeEqualNeighbours then
-                    if self.contourMap[x][y] < minPeak and self.contourMap[x][y] > 0 then
-                        minPeak = self.contourMap[x][y]
-                        minPeakX = x
-                        minPeakY = y
-                    end
-                else
-                    if self.contourMap[x][y] <= minPeak and self.contourMap[x][y] > 0 then
-                        minPeak = self.contourMap[x][y]
-                        minPeakX = x
-                        minPeakY = y
-                    end
+            if _isPeakContour(self, x, y, exludeEqualNeighbours) then
+                if self.contourMap[x][y] <= minPeak and self.contourMap[x][y] > 0 then
+                    minPeak = self.contourMap[x][y]
+                    minPeakX = x
+                    minPeakY = y
                 end
             end
         end
     end
     -- print(minPeakX .. "-" .. minPeakY .. " : " .. minPeak)
-    if minPeakX == 1 and minPeakY == 1 then
+    if minPeakX == 0 and minPeakY == 0 then
        minPeakX, minPeakY = _findLowestContourPeak(self, false)
     end
     -- return minPeakX, minPeakY
@@ -336,6 +334,8 @@ local _loadCanvas = function(self)
                 end
                 love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
             end
+            -- love.graphics.setColor(0, 255, 255, 255)
+            -- love.graphics.print(self.contourMap[x][y], (x - 1) * self.cellSize, (y - 1) * self.cellSize)
         end
     end
 
@@ -353,7 +353,7 @@ function grid.create(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 4
+    inst.worldScaleInScreens = 12
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
@@ -368,8 +368,8 @@ function grid.create(entityManager)
     
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
-    inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeak(inst)
-    _addBuildings(inst, 1)
+    inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeak(inst, true)
+    _addBuildings(inst, 10)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
