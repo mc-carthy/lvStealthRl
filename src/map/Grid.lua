@@ -163,7 +163,7 @@ local function _calculateContourMap(self)
     end
 end
 
-local function _findLowestContourPeak(self, exludeEqualNeighbours)
+local function _findLowestContourPeakGrid(self, exludeEqualNeighbours)
     local minPeak, minPeakX, minPeakY = 1000, 0, 0
     for x = 1, self.xSize do
         for y = 1, self.ySize do
@@ -178,9 +178,14 @@ local function _findLowestContourPeak(self, exludeEqualNeighbours)
     end
     -- print(minPeakX .. "-" .. minPeakY .. " : " .. minPeak)
     if minPeakX == 0 and minPeakY == 0 then
-       minPeakX, minPeakY = _findLowestContourPeak(self, false)
+        print("Include equal neighbours")
+        minPeakX, minPeakY = _findLowestContourPeak(self, false)
     end
-    -- return minPeakX, minPeakY
+    return minPeakX, minPeakY
+end
+
+local function _findLowestContourPeakWorld(self, exludeEqualNeighbours)
+    local minPeakX, minPeakY = _findLowestContourPeakGrid(self, exludeEqualNeighbours)
     return minPeakX * self.cellSize - self.cellSize / 2, minPeakY * self.cellSize - self.cellSize / 2
 end
 
@@ -368,8 +373,8 @@ function grid.create(entityManager)
     
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
-    inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeak(inst, true)
-    _addBuildings(inst, 10)
+    inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeakWorld(inst, true)
+    _addBuildings(inst, 1)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable

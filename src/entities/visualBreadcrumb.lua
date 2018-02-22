@@ -7,7 +7,6 @@ local defaultLifetime = 5
 
 local function update(self, dt)
     self.currentLifetime = self.currentLifetime - dt
-    print(self.currentLifetime * 255 / self.initialLifetime)
     if self.currentLifetime < 0 then
         self.done = true
     end
