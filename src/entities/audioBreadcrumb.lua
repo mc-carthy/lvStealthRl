@@ -3,7 +3,7 @@ local ab = {}
 local debugFlag = true
 
 local defaultRange = 40
-local defaultLifetime = 5
+local defaultLifetime = 2.5
 
 local function update(self, dt)
     self.currentLifetime = self.currentLifetime - dt

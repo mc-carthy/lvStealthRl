@@ -35,7 +35,7 @@ end
 
 
 local createBullet = function(self)
-    local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 300)
+    local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 500)
     self.entityManager:addEntity(bullet)
 end
 
