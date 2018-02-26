@@ -14,12 +14,13 @@ end
 
 local function draw(self)
     if debugFlag then
-        love.graphics.setColor(255, 255, 255, math.pow((self.currentLifetime / self.initialLifetime), 4) * 128)
-        love.graphics.circle("fill", self.x, self.y, self.range * math.pow((self.currentLifetime / self.initialLifetime), 4))
-        love.graphics.setColor(0, 191, 191, self.currentLifetime * 255/ self.initialLifetime)
-        love.graphics.circle("fill", self.x, self.y, 5)
-        love.graphics.setColor(0, 0, 0, self.currentLifetime * 255/ self.initialLifetime)
-        love.graphics.circle("line", self.x, self.y, 5)
+        love.graphics.setColor(255, 255, 255, math.pow((self.currentLifetime / self.initialLifetime), 4) * 64)
+        love.graphics.setLineWidth(3)
+        love.graphics.circle("line", self.x, self.y, self.range * math.pow((self.currentLifetime / self.initialLifetime), 4))
+        -- love.graphics.setColor(0, 191, 191, self.currentLifetime * 255/ self.initialLifetime)
+        -- love.graphics.circle("fill", self.x, self.y, 5)
+        -- love.graphics.setColor(0, 0, 0, self.currentLifetime * 255/ self.initialLifetime)
+        -- love.graphics.circle("line", self.x, self.y, 5)
     end
 end
 

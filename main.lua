@@ -87,14 +87,14 @@ end
 
 -- TODO: Only for breadcrumb testing
 function love.mousepressed(x, y, button, isTouch)
-    if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") then
-        if button == 1 then
-            mouseX, mouseY = gamera:toWorld(love.mouse.getPosition())
-            entityManager:addEntity(AudioBreadcrumb.create(entityManager, mouseX, mouseY))
-        end
-        if button == 2 then
-            mouseX, mouseY = gamera:toWorld(love.mouse.getPosition())
-            entityManager:addEntity(VisualBreadcrumb.create(entityManager, mouseX, mouseY))
-        end
-    end
+    -- if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") then
+    --     if button == 1 then
+    --         mouseX, mouseY = gamera:toWorld(love.mouse.getPosition())
+    --         entityManager:addEntity(AudioBreadcrumb.create(entityManager, mouseX, mouseY))
+    --     end
+    --     if button == 2 then
+    --         mouseX, mouseY = gamera:toWorld(love.mouse.getPosition())
+    --         entityManager:addEntity(VisualBreadcrumb.create(entityManager, mouseX, mouseY))
+    --     end
+    -- end
 end

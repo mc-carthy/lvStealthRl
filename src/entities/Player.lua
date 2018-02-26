@@ -4,6 +4,7 @@ local Math = require("src.utils.Math")
 local Bullet = require("src.entities.Bullet")
 local tile = require("src.map.tileDictionary")
 local bresenham = require("src.utils.bresenham")
+local AudioCrumb = require("src.entities.audioBreadcrumb")
 
 local player = {}
 
@@ -21,6 +22,10 @@ local _unlockDoors = function(self)
             tile["doorLevel" .. i].walkable = true
         end
     end
+end
+
+local _gridPosChanged = function(self, oldGridX, oldGridY)
+    return oldGridX ~= self.gridX or oldGridY ~= self.gridY
 end
 
 local load = function(self)
@@ -76,6 +81,7 @@ local getInput = function(self)
     if buttonPressed and not mouseButtonDown then
         mouseButtonDown = true
         createBullet(self)
+        self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, 500))
     end
 
     if not buttonPressed then
@@ -131,7 +137,13 @@ local update = function(self, dt)
     self.dt = dt
     self:getInput()
 
+    local oldGridX, oldGridY = self.gridX, self.gridY
+
     self.gridX, self.gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
+
+    if _gridPosChanged(self, oldGridX, oldGridY) then
+        self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, self.nominalSpeed * self.speedMultiplier))
+    end
 
     self:move(dt)
 end
