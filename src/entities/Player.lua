@@ -35,7 +35,7 @@ local createBullet = function(self)
 end
 
 local getSpeedMultiplier = function(self)
-    return self.speedMultiplier * math.sqrt(math.pow(self.moveX, 2) + math.pow(self.moveY, 2)) / self.nominalSpeed
+    return math.sqrt(math.pow(self.moveX, 2) + math.pow(self.moveY, 2)) / self.nominalSpeed
 end
 
 local getInput = function(self)
