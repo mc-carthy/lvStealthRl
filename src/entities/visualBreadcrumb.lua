@@ -3,7 +3,7 @@ local vb = {}
 local debugFlag = true
 
 local defaultRange = 40
-local defaultLifetime = 5
+local defaultLifetime = 2.5
 
 local function update(self, dt)
     self.currentLifetime = self.currentLifetime - dt
@@ -15,9 +15,9 @@ end
 local function draw(self)
     if debugFlag then
         -- TODO: Check value of (self.currentLifetime / self.initialLifetime), does not seem to drop linearly from 1 to 0
-        love.graphics.setColor(0, 191, 0, self.currentLifetime * 255 / self.initialLifetime)
+        love.graphics.setColor(0, 191, 0, self.currentLifetime * 127 / self.initialLifetime)
         love.graphics.circle("fill", self.x, self.y, 5)
-        love.graphics.setColor(0, 0, 0, self.currentLifetime * 255/ self.initialLifetime)
+        love.graphics.setColor(0, 0, 0, self.currentLifetime * 127 / self.initialLifetime)
         love.graphics.circle("line", self.x, self.y, 5)
     end
 end

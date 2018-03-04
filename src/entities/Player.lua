@@ -144,7 +144,8 @@ local update = function(self, dt)
 
     if _gridPosChanged(self, oldGridX, oldGridY) then
         self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, self.nominalSpeed * self.speedMultiplier))
-        self.entityManager:addEntity(VisualCrumb.create(self.entityManager, self.x, self.y, self.nominalSpeed * self.speedMultiplier))
+        -- TODO: The 200 below represents the enemies nominalViewDistance, remove this hard-coded value in future
+        self.entityManager:addEntity(VisualCrumb.create(self.entityManager, self.x, self.y, 200 * (1 + self:getSpeedMultiplier())))
     end
 
     self:move(dt)

@@ -91,6 +91,7 @@ local update = function(self, dt)
     _updateCollider(self)
     -- _checkForPlayer(self)
     _checkForAudioBreadcrumbs(self)
+    _checkForVisualBreadcrumbs(self)
     
     -- if self.canSeePlayer then
     --     _chasePlayer(self, dt)

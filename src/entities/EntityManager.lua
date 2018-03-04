@@ -94,6 +94,7 @@ entityManager.create = function()
     inst.getPlayer = getPlayer
     inst.getGrid = getGrid
     inst.getAudioBreadcrumbs = getAudioBreadcrumbs
+    inst.getVisualBreadcrumbs = getVisualBreadcrumbs
 
     inst.update = update
     inst.draw = draw
