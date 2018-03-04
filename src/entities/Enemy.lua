@@ -40,26 +40,31 @@ local function _checkForVisualBreadcrumbs(self)
     end
 end
 
-local function _checkForPlayer(self)
-    local playerInViewDist = Vector2.magnitude(self.x - self.player.x, self.y - self.player.y) < self.viewDist
+local function _targetInViewRange(self, target)
+    return Vector2.magnitude(self.x - target.x, self.y - target.y) < self.viewDist
+end
 
-    self.angleToPlayer = Vector2.angle(self.x, self.y, self.player.x, self.player.y)
-
+local function _targetInViewAngle(self, target)
+    local angleToTarget = Vector2.angle(self.x, self.y, target.x, target.y)
     -- TODO: Tidy up this angle check
-    self.relativeAngleToPlayer = (self.angleToPlayer - self.rot) % 360
-    if self.relativeAngleToPlayer < 0 then self.relativeAngleToPlayer = self.relativeAngleToPlayer + 360 end
-    -- if self.relativeAngleToPlayer > 180 then self.relativeAngleToPlayer = -self.relativeAngleToPlayer + 360 end
-    self.playerInViewAngle = (self.relativeAngleToPlayer < self.viewAngle / 2) or (-self.relativeAngleToPlayer + 360 < self.viewAngle / 2)
-    -- TODO: Consider starting los 1 block away from enemy so they don't get trapped inside an unwalkable tile
-    -- self.playerInLos = self.grid:lineOfSight(self.x, self.y, self.player.x, self.player.y)
-    self.enemyVisionTiles, self.playerInLos = self.grid:lineOfSightPoints(self.x, self.y, self.player.x, self.player.y)
-    
-    if playerInViewDist and self.playerInViewAngle and self.playerInLos then
-        self.canSeePlayer = true
-    else
-        self.canSeePlayer = false
-    end
+    local relativeAngleToTarget = (angleToTarget - self.rot) % 360
+    if relativeAngleToTarget < 0 then relativeAngleToTarget = relativeAngleToTarget + 360 end
+    if target.tag ~= nil and target.tag == "player" then self.relativeAngleToPlayer = relativeAngleToTarget end
+    return (relativeAngleToTarget < self.viewAngle / 2) or (-relativeAngleToTarget + 360 < self.viewAngle / 2)
+end
 
+local function _targetInLineOfSight(self, target)
+    -- TODO: Consider starting los 1 block away from enemy so they don't get trapped inside an unwalkable tile
+    local targetInLos = self.grid:lineOfSight(self.x, self.y, target.x, target.y)
+    -- NOTE: The below should only be used for a single target (i.e. the player), 
+    -- otherwise the enemyVisionTiles table will be overwritten by other targets
+    -- self.enemyVisionTiles, self.targetInLos = self.grid:lineOfSightPoints(self.x, self.y, self.target.x, self.target.y)
+    return targetInLos
+end
+
+local function _canSeeTarget(self, target)
+    assert(target.x ~= nil and target.y ~= nil, "Target must have x and y attributes")
+    return _targetInViewRange(self, target) and _targetInViewAngle(self, target) and _targetInLineOfSight(self, target)
 end
 
 local _chasePlayer = function(self, dt)
@@ -81,6 +86,12 @@ local _chasePlayer = function(self, dt)
     self.y = self.y + dy
 end
 
+local function _checkForPlayer(self, dt)
+    if _canSeeTarget(self, self.player) then
+        _chasePlayer(self, dt)
+    end
+end
+
 local _updateCollider = function(self)
     self.col:update(self.x, self.y)
 end
@@ -89,13 +100,9 @@ local update = function(self, dt)
     self.viewDist = self.nominalViewDist * (1 + self.player:getSpeedMultiplier())
 
     _updateCollider(self)
-    -- _checkForPlayer(self)
-    _checkForAudioBreadcrumbs(self)
-    _checkForVisualBreadcrumbs(self)
-    
-    -- if self.canSeePlayer then
-    --     _chasePlayer(self, dt)
-    -- end
+    _checkForPlayer(self, dt)
+    -- _checkForAudioBreadcrumbs(self)
+    -- _checkForVisualBreadcrumbs(self)
 end
 
 local draw = function(self)
