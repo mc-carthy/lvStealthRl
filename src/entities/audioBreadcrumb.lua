@@ -24,10 +24,11 @@ local function draw(self)
     end
 end
 
-function ab.create(entityManager, x, y, range, lifetime)
+function ab.create(entityManager, x, y, range, ownerTag, lifetime)
     local inst = {}
 
     inst.tag = "audioBreadcrumb"
+    inst.ownerTag = ownerTag or nil
     inst.x = x
     inst.y = y
     inst.range = range or defaultRange

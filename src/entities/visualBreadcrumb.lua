@@ -22,10 +22,11 @@ local function draw(self)
     end
 end
 
-function vb.create(entityManager, x, y, range, lifetime)
+function vb.create(entityManager, x, y, range, ownerTag, lifetime)
     local inst = {}
 
     inst.tag = "visualBreadcrumb"
+    inst.ownerTag = ownerTag or nil
     inst.x = x
     inst.y = y
     inst.range = range or defaultRange

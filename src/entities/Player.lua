@@ -37,6 +37,7 @@ end
 
 local createBullet = function(self)
     local bullet = Bullet.create(self.entityManager, self.x, self.y, self.rot, 500)
+    self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, 500, bullet.tag))
     self.entityManager:addEntity(bullet)
 end
 
@@ -82,7 +83,6 @@ local getInput = function(self)
     if buttonPressed and not mouseButtonDown then
         mouseButtonDown = true
         createBullet(self)
-        self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, 500))
     end
 
     if not buttonPressed then
@@ -143,9 +143,9 @@ local update = function(self, dt)
     self.gridX, self.gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
 
     if _gridPosChanged(self, oldGridX, oldGridY) then
-        self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, self.nominalSpeed * self.speedMultiplier))
+        self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, self.nominalSpeed * self.speedMultiplier, self.tag))
         -- TODO: The 200 below represents the enemies nominalViewDistance, remove this hard-coded value in future
-        self.entityManager:addEntity(VisualCrumb.create(self.entityManager, self.x, self.y, 200 * (1 + self:getSpeedMultiplier())))
+        self.entityManager:addEntity(VisualCrumb.create(self.entityManager, self.x, self.y, 200 * (1 + self:getSpeedMultiplier()), self.tag))
     end
 
     self:move(dt)

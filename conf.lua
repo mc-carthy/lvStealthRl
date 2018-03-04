@@ -1,6 +1,8 @@
 function love.conf(t)
-    t.window.width = 1280
-    t.window.height = 720
+    -- t.window.width = 1280
+    -- t.window.height = 720
+    t.window.width = 640
+    t.window.height = 360
     t.window.title = "LÖVE stealth RL prototype"
     t.window.icon = nil
     t.window.vsync = false

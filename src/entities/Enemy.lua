@@ -111,7 +111,7 @@ local update = function(self, dt)
     self.viewDist = self.nominalViewDist * (1 + self.player:getSpeedMultiplier())
 
     _updateCollider(self)
-    _checkForPlayer(self, dt)
+    -- _checkForPlayer(self, dt)
     _checkForAudioBreadcrumbs(self)
     _checkForVisualBreadcrumbs(self)
 end

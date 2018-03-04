@@ -178,7 +178,7 @@ local function _findLowestContourPeakGrid(self, exludeEqualNeighbours)
     end
     -- print(minPeakX .. "-" .. minPeakY .. " : " .. minPeak)
     if minPeakX == 0 and minPeakY == 0 then
-        print("Include equal neighbours")
+        -- print("Include equal neighbours")
         minPeakX, minPeakY = _findLowestContourPeakGrid(self, false)
     end
     return minPeakX, minPeakY

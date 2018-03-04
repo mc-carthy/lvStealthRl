@@ -1,5 +1,6 @@
 local Vector2 = require("src.utils.Vector2")
 local Col = require("src.utils.CircleCollider")
+local AudioCrumb = require("src.entities.audioBreadcrumb")
 
 local bullet = {}
 
@@ -16,6 +17,8 @@ local _collisionCheck = function(self)
             local grid = other
             local gridX, gridY = grid.worldSpaceToGrid(grid, self.x, self.y)
             if grid[gridX][gridY].walkable == false then
+                -- TODO: Remove hard-coded value for bullet impact noise
+                self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, 200, self.tag))
                 self.done = true
             end
         end
