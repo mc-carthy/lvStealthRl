@@ -14,15 +14,20 @@ local takeDamage = function(self)
     self.done = true
 end
 
+local function _relativeAngleToTarget(self, target)
+    local angleToTarget = Vector2.angle(self.x, self.y, target.x, target.y)
+    -- TODO: Tidy up this angle check
+    local relativeAngleToTarget = (angleToTarget - self.rot) % 360
+    if relativeAngleToTarget < 0 then relativeAngleToTarget = relativeAngleToTarget + 360 end
+    return relativeAngleToTarget
+end
+
 local function _targetInViewRange(self, target)
     return Vector2.magnitude(self.x - target.x, self.y - target.y) < self.viewDist
 end
 
 local function _targetInViewAngle(self, target)
-    local angleToTarget = Vector2.angle(self.x, self.y, target.x, target.y)
-    -- TODO: Tidy up this angle check
-    local relativeAngleToTarget = (angleToTarget - self.rot) % 360
-    if relativeAngleToTarget < 0 then relativeAngleToTarget = relativeAngleToTarget + 360 end
+    local relativeAngleToTarget = _relativeAngleToTarget(self, target)
     if target.tag ~= nil and target.tag == "player" then self.relativeAngleToPlayer = relativeAngleToTarget end
     return (relativeAngleToTarget < self.viewAngle / 2) or (-relativeAngleToTarget + 360 < self.viewAngle / 2)
 end
@@ -71,16 +76,18 @@ local function _checkForVisualBreadcrumbs(self)
     end
 end
 
-local _chasePlayer = function(self, dt)
-    local rot = Vector2.angle(self.x, self.y, self.player.x, self.player.y)
+local _moveToTarget = function(self, target, dt)
+    assert(target.x ~= nil and target.y ~= nil, "Target must have x and y attributes")
+    local rot = Vector2.angle(self.x, self.y, target.x, target.y)
     local dx, dy = Vector2.pointFromRotDist(rot, self.moveSpeed * dt)
-
     local dRot = 0
-    self.targetRot = rot
-    if math.abs((self.targetRot - self.rot) % 360) > nearRotThreshold then
-        if self.relativeAngleToPlayer < 180 then
+    local targetRot = rot
+
+    local relativeAngleToTarget = _relativeAngleToTarget(self, target)
+    if math.abs((targetRot - self.rot) % 360) > nearRotThreshold then
+        if relativeAngleToTarget < 180 then
             dRot = self.rotSpeed * dt
-        elseif self.relativeAngleToPlayer < 360 then
+        elseif relativeAngleToTarget < 360 then
             dRot = -self.rotSpeed * dt
         end
     end
@@ -92,7 +99,7 @@ end
 
 local function _checkForPlayer(self, dt)
     if _canSeeTarget(self, self.player) then
-        _chasePlayer(self, dt)
+        _moveToTarget(self, self.player, dt)
     end
 end
 
