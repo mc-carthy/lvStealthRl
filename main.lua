@@ -1,11 +1,8 @@
-local Grid = require("src.map.Grid")
 local EntityManager = require("src.entities.EntityManager")
-local Camera = require("src.utils.Camera")
+local Grid = require("src.map.Grid")
 local Player = require("src.entities.Player")
-local Enemy = require("src.entities.Enemy")
 local EnemyManager = require("src.entities.enemyManager")
-local AudioBreadcrumb = require("src.entities.audioBreadcrumb")
-local VisualBreadcrumb = require("src.entities.VisualBreadcrumb")
+local Camera = require("src.utils.Camera")
 local Gamera = require("src.utils.gamera")
 
 DEBUG = false
@@ -15,7 +12,6 @@ gamera = Gamera.new(0, 0, 100, 100)
 local grid
 local entityManager
 local player
-local enemy
 
 local tempX, tempY = 0, 0
 local zoom = 1
@@ -85,16 +81,5 @@ function debugCamControl(dt)
     -- Camera:setPosition(tempX, tempY)
 end
 
--- TODO: Only for breadcrumb testing
 function love.mousepressed(x, y, button, isTouch)
-    -- if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") then
-    --     if button == 1 then
-    --         mouseX, mouseY = gamera:toWorld(love.mouse.getPosition())
-    --         entityManager:addEntity(AudioBreadcrumb.create(entityManager, mouseX, mouseY))
-    --     end
-    --     if button == 2 then
-    --         mouseX, mouseY = gamera:toWorld(love.mouse.getPosition())
-    --         entityManager:addEntity(VisualBreadcrumb.create(entityManager, mouseX, mouseY))
-    --     end
-    -- end
 end
