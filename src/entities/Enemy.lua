@@ -4,7 +4,7 @@ local Col = require("src.utils.CircleCollider")
 
 local enemy = {}
 
-local enemyDebugFlag = false
+local enemyDebugFlag = true
 
 local nearRotThreshold = 10
 local enemyImage = love.graphics.newImage("assets/img/kenneyTest/enemy.png")
@@ -15,14 +15,51 @@ local takeDamage = function(self)
 end
 
 local function _checkForAudioBreadcrumbs(self)
+    for k,v in pairs(self.audibleBreadcrumbs) do self.audibleBreadcrumbs[k]=nil end
+
     local audioCrumbs = self.entityManager:getAudioBreadcrumbs()
     for i = #audioCrumbs, 1, -1 do
         local ac = audioCrumbs[i]
         if Vector2.magnitude(ac.x - self.x, ac.y - self.y) < ac.range then
-            -- TODO: This is used only for debugging, set the enemy to move to the latest breadcrumb
-            self.canSeePlayer = true
+            table.insert(self.audibleBreadcrumbs, ac)
         end
     end
+end
+
+local function _checkForVisualBreadcrumbs(self)
+    for k,v in pairs(self.visualBreadcrumbs) do self.visualBreadcrumbs[k]=nil end
+
+    local visualCrumbs = self.entityManager:getVisualBreadcrumbs()
+    for i = #visualCrumbs, 1, -1 do
+        local vc = visualCrumbs[i]
+        if Vector2.magnitude(vc.x - self.x, vc.y - self.y) < vc.range then
+            if self.grid:lineOfSight(self.x, self.y, self.player.x, self.player.y) then
+                table.insert(self.visualBreadcrumbs, vc)
+            end
+        end
+    end
+end
+
+local function _checkForPlayer(self)
+    local playerInViewDist = Vector2.magnitude(self.x - self.player.x, self.y - self.player.y) < self.viewDist
+
+    self.angleToPlayer = Vector2.angle(self.x, self.y, self.player.x, self.player.y)
+
+    -- TODO: Tidy up this angle check
+    self.relativeAngleToPlayer = (self.angleToPlayer - self.rot) % 360
+    if self.relativeAngleToPlayer < 0 then self.relativeAngleToPlayer = self.relativeAngleToPlayer + 360 end
+    -- if self.relativeAngleToPlayer > 180 then self.relativeAngleToPlayer = -self.relativeAngleToPlayer + 360 end
+    self.playerInViewAngle = (self.relativeAngleToPlayer < self.viewAngle / 2) or (-self.relativeAngleToPlayer + 360 < self.viewAngle / 2)
+    -- TODO: Consider starting los 1 block away from enemy so they don't get trapped inside an unwalkable tile
+    -- self.playerInLos = self.grid:lineOfSight(self.x, self.y, self.player.x, self.player.y)
+    self.enemyVisionTiles, self.playerInLos = self.grid:lineOfSightPoints(self.x, self.y, self.player.x, self.player.y)
+    
+    if playerInViewDist and self.playerInViewAngle and self.playerInLos then
+        self.canSeePlayer = true
+    else
+        self.canSeePlayer = false
+    end
+
 end
 
 local _chasePlayer = function(self, dt)
@@ -50,53 +87,38 @@ end
 
 local update = function(self, dt)
     self.viewDist = self.nominalViewDist * (1 + self.player:getSpeedMultiplier())
-    -- local rotSpeed = 36
-    -- self.rot = self.rot + rotSpeed * dt
-    -- if self.rot > 360 then self.rot = 0 end
 
     _updateCollider(self)
-
-
-    local playerInViewDist = Vector2.magnitude(self.x - self.player.x, self.y - self.player.y) < self.viewDist
-
-    self.angleToPlayer = Vector2.angle(self.x, self.y, self.player.x, self.player.y)
-
-    -- TODO: Tidy up this angle check
-    self.relativeAngleToPlayer = (self.angleToPlayer - self.rot) % 360
-    if self.relativeAngleToPlayer < 0 then self.relativeAngleToPlayer = self.relativeAngleToPlayer + 360 end
-    -- if self.relativeAngleToPlayer > 180 then self.relativeAngleToPlayer = -self.relativeAngleToPlayer + 360 end
-    self.playerInViewAngle = (self.relativeAngleToPlayer < self.viewAngle / 2) or (-self.relativeAngleToPlayer + 360 < self.viewAngle / 2)
-    -- TODO: Consider starting los 1 block away from enemy so they don't get trapped inside an unwalkable tile
-    -- self.playerInLos = self.grid:lineOfSight(self.x, self.y, self.player.x, self.player.y)
-    self.enemyVisionTiles, self.playerInLos = self.grid:lineOfSightPoints(self.x, self.y, self.player.x, self.player.y)
-    
-    if playerInViewDist and  self.playerInViewAngle and self.playerInLos then
-        self.canSeePlayer = true
-    else
-        self.canSeePlayer = false
-    end
-
+    -- _checkForPlayer(self)
     _checkForAudioBreadcrumbs(self)
-
-    if self.canSeePlayer then
-        _chasePlayer(self, dt)
-    end
+    
+    -- if self.canSeePlayer then
+    --     _chasePlayer(self, dt)
+    -- end
 end
 
 local draw = function(self)
     if enemyDebugFlag then
-        love.graphics.setColor(255, 255, 255)
-        love.graphics.print("Angle to player: " .. string.format("%.2f", self.angleToPlayer), self.x, self.y - 90)
-        love.graphics.print("Facing angle: " .. string.format("%.2f", self.rot), self.x, self.y - 70)
-        love.graphics.print("Relative angle to player: " .. string.format("%.2f", self.relativeAngleToPlayer), self.x, self.y - 50)
-        love.graphics.print("Player in view angle: " .. tostring( self.playerInViewAngle), self.x, self.y - 30)
-        if self.playerInLos then
-            love.graphics.setColor(0, 191, 0, 255)
-        else
-            love.graphics.setColor(191, 0, 0, 255)
+        -- love.graphics.setColor(255, 255, 255)
+        -- love.graphics.print("Angle to player: " .. string.format("%.2f", self.angleToPlayer), self.x, self.y - 90)
+        -- love.graphics.print("Facing angle: " .. string.format("%.2f", self.rot), self.x, self.y - 70)
+        -- love.graphics.print("Relative angle to player: " .. string.format("%.2f", self.relativeAngleToPlayer), self.x, self.y - 50)
+        -- love.graphics.print("Player in view angle: " .. tostring( self.playerInViewAngle), self.x, self.y - 30)
+        -- if self.playerInLos then
+        --     love.graphics.setColor(0, 191, 0, 255)
+        -- else
+        --     love.graphics.setColor(191, 0, 0, 255)
+        -- end
+        -- for i = 1, #self.enemyVisionTiles do
+        --     love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
+        -- end
+        love.graphics.setColor(255, 255, 255, 255)
+        for i = 1, #self.audibleBreadcrumbs do
+            love.graphics.line(self.x, self.y, self.audibleBreadcrumbs[i].x, self.audibleBreadcrumbs[i].y)
         end
-        for i = 1, #self.enemyVisionTiles do
-            love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
+        love.graphics.setColor(127, 0, 127, 255)
+        for i = 1, #self.visualBreadcrumbs do
+            love.graphics.line(self.x, self.y, self.visualBreadcrumbs[i].x, self.visualBreadcrumbs[i].y)
         end
     end
 
@@ -144,7 +166,7 @@ enemy.create = function(entityManager, x, y, rot)
     inst.enemyVisionTiles = nil
     inst.playerInLos = nil
     inst.canSeePlayer = true
-    inst.viewableBreadcrumbs = {}
+    inst.visualBreadcrumbs = {}
     inst.audibleBreadcrumbs = {}
     inst.moveSpeed = 100
 

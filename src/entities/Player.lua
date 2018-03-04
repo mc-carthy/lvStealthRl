@@ -5,6 +5,7 @@ local Bullet = require("src.entities.Bullet")
 local tile = require("src.map.tileDictionary")
 local bresenham = require("src.utils.bresenham")
 local AudioCrumb = require("src.entities.audioBreadcrumb")
+local VisualCrumb = require("src.entities.visualBreadcrumb")
 
 local player = {}
 
@@ -143,6 +144,7 @@ local update = function(self, dt)
 
     if _gridPosChanged(self, oldGridX, oldGridY) then
         self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, self.nominalSpeed * self.speedMultiplier))
+        self.entityManager:addEntity(VisualCrumb.create(self.entityManager, self.x, self.y, self.nominalSpeed * self.speedMultiplier))
     end
 
     self:move(dt)

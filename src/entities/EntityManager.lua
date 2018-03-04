@@ -18,6 +18,16 @@ local getAudioBreadcrumbs = function(self)
     return audioCrumbTable
 end
 
+local getVisualBreadcrumbs = function(self)
+    local visualCrumbTable = {}
+    for i = 1, #self.entities do
+        if self.entities[i].tag == "visualBreadcrumb" then
+            table.insert(visualCrumbTable, self.entities[i])
+        end
+    end
+    return visualCrumbTable
+end
+
 local getPlayer = function(self)
     for _, entity in ipairs(self:getEntities()) do
         if entity.tag == "player" then return entity end

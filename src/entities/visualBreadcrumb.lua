@@ -15,7 +15,7 @@ end
 local function draw(self)
     if debugFlag then
         -- TODO: Check value of (self.currentLifetime / self.initialLifetime), does not seem to drop linearly from 1 to 0
-        love.graphics.setColor(191, 0, 191, self.currentLifetime * 255 / self.initialLifetime)
+        love.graphics.setColor(0, 191, 0, self.currentLifetime * 255 / self.initialLifetime)
         love.graphics.circle("fill", self.x, self.y, 5)
         love.graphics.setColor(0, 0, 0, self.currentLifetime * 255/ self.initialLifetime)
         love.graphics.circle("line", self.x, self.y, 5)
