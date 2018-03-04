@@ -14,32 +14,6 @@ local takeDamage = function(self)
     self.done = true
 end
 
-local function _checkForAudioBreadcrumbs(self)
-    for k,v in pairs(self.audibleBreadcrumbs) do self.audibleBreadcrumbs[k]=nil end
-
-    local audioCrumbs = self.entityManager:getAudioBreadcrumbs()
-    for i = #audioCrumbs, 1, -1 do
-        local ac = audioCrumbs[i]
-        if Vector2.magnitude(ac.x - self.x, ac.y - self.y) < ac.range then
-            table.insert(self.audibleBreadcrumbs, ac)
-        end
-    end
-end
-
-local function _checkForVisualBreadcrumbs(self)
-    for k,v in pairs(self.visualBreadcrumbs) do self.visualBreadcrumbs[k]=nil end
-
-    local visualCrumbs = self.entityManager:getVisualBreadcrumbs()
-    for i = #visualCrumbs, 1, -1 do
-        local vc = visualCrumbs[i]
-        if Vector2.magnitude(vc.x - self.x, vc.y - self.y) < vc.range then
-            if self.grid:lineOfSight(self.x, self.y, self.player.x, self.player.y) then
-                table.insert(self.visualBreadcrumbs, vc)
-            end
-        end
-    end
-end
-
 local function _targetInViewRange(self, target)
     return Vector2.magnitude(self.x - target.x, self.y - target.y) < self.viewDist
 end
@@ -65,6 +39,36 @@ end
 local function _canSeeTarget(self, target)
     assert(target.x ~= nil and target.y ~= nil, "Target must have x and y attributes")
     return _targetInViewRange(self, target) and _targetInViewAngle(self, target) and _targetInLineOfSight(self, target)
+end
+
+local function _canHearTarget(self, target)
+    assert(target.x ~= nil and target.y ~= nil, "Target must have x and y attributes")
+    assert(target.range ~= nil, "Target must have a range attribute")
+    return Vector2.magnitude(self.x - target.x, self.y - target.y) < target.range
+end
+
+local function _checkForAudioBreadcrumbs(self)
+    for k,v in pairs(self.audibleBreadcrumbs) do self.audibleBreadcrumbs[k]=nil end
+
+    local audioCrumbs = self.entityManager:getAudioBreadcrumbs()
+    for i = #audioCrumbs, 1, -1 do
+        local ac = audioCrumbs[i]
+        if _canHearTarget(self, ac) then
+            table.insert(self.audibleBreadcrumbs, ac)
+        end
+    end
+end
+
+local function _checkForVisualBreadcrumbs(self)
+    for k,v in pairs(self.visualBreadcrumbs) do self.visualBreadcrumbs[k]=nil end
+
+    local visualCrumbs = self.entityManager:getVisualBreadcrumbs()
+    for i = #visualCrumbs, 1, -1 do
+        local vc = visualCrumbs[i]
+        if _canSeeTarget(self, vc) then
+            table.insert(self.visualBreadcrumbs, vc)
+        end
+    end
 end
 
 local _chasePlayer = function(self, dt)
@@ -101,8 +105,8 @@ local update = function(self, dt)
 
     _updateCollider(self)
     _checkForPlayer(self, dt)
-    -- _checkForAudioBreadcrumbs(self)
-    -- _checkForVisualBreadcrumbs(self)
+    _checkForAudioBreadcrumbs(self)
+    _checkForVisualBreadcrumbs(self)
 end
 
 local draw = function(self)
