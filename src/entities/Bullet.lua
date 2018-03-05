@@ -17,8 +17,9 @@ local _collisionCheck = function(self)
             local grid = other
             local gridX, gridY = grid.worldSpaceToGrid(grid, self.x, self.y)
             if grid[gridX][gridY].walkable == false then
-                -- TODO: Remove hard-coded value for bullet impact noise
-                self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x, self.y, 200, self.tag))
+                -- TODO: Remove hard-coded value for bullet impact noise and distance from impact point to create crumb
+                local dx, dy = Vector2.pointFromRotDist(self.rot, 5)
+                self.entityManager:addEntity(AudioCrumb.create(self.entityManager, self.x - dx, self.y - dy, 200, self.tag))
                 self.done = true
             end
         end
