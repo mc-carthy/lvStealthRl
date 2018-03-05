@@ -1,6 +1,7 @@
 local Vector2 = require("src.utils.Vector2")
 local Math = require("src.utils.Math")
 local Col = require("src.utils.CircleCollider")
+local Utils = require("src.utils.utils")
 
 local enemy = {}
 
@@ -76,15 +77,27 @@ local function _checkForAudioBreadcrumbs(self)
 end
 
 local function _checkForVisualBreadcrumbs(self)
-    for k,v in pairs(self.visualBreadcrumbs) do self.visualBreadcrumbs[k]=nil end
-
+    -- TODO: Keep an eye on this function in terms of the self.visualBreadcrumbs table
+    -- Currently it's not causing any issues, but looks like it could cause memory leak
     local visualCrumbs = self.entityManager:getVisualBreadcrumbs()
-    for i = #visualCrumbs, 1, -1 do
+    for i = 1, #visualCrumbs do
         local vc = visualCrumbs[i]
         if _canSeeTarget(self, vc) then
-            table.insert(self.visualBreadcrumbs, vc)
+            if not Utils.contains(self.visualBreadcrumbs, vc) then
+                table.insert(self.visualBreadcrumbs, vc)
+            end
+        end
+        if vc == nil or vc.currentLifetime < 0.1 then
+            for j, v in ipairs(self.visualBreadcrumbs) do
+                if v == vc then
+                    table.remove(self.visualBreadcrumbs, j)
+                end
+            end
         end
     end
+    -- if #self.visualBreadcrumbs > 0 then
+    --     print(#self.visualBreadcrumbs)
+    -- end
     self.priorityVisualBreadcrumb = _highestPriorityCrumb(self.visualBreadcrumbs)
 end
 
@@ -143,20 +156,20 @@ local draw = function(self)
         -- for i = 1, #self.enemyVisionTiles do
         --     love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
         -- end
-        love.graphics.setColor(255, 255, 255, 127)
-        for i = 1, #self.audibleBreadcrumbs do
-            love.graphics.line(self.x, self.y, self.audibleBreadcrumbs[i].x, self.audibleBreadcrumbs[i].y)
+        for _, v in pairs(self.audibleBreadcrumbs) do
+            love.graphics.setColor(255, 255, 255, 255 * v.currentLifetime / v.initialLifetime)
+            love.graphics.line(self.x, self.y, v.x, v.y)
         end
-        love.graphics.setColor(191, 0, 191, 63)
-        for i = 1, #self.visualBreadcrumbs do
-            love.graphics.line(self.x, self.y, self.visualBreadcrumbs[i].x, self.visualBreadcrumbs[i].y)
+        for _, v in pairs(self.visualBreadcrumbs) do
+            love.graphics.setColor(191, 0, 191, 191 * v.currentLifetime / v.initialLifetime)
+            love.graphics.line(self.x, self.y, v.x, v.y)
         end
         if self.priorityAudibleBreadcrumb then
-            love.graphics.setColor(127, 127, 127, 255)
+            love.graphics.setColor(127, 127, 127, 127 * self.priorityAudibleBreadcrumb.currentLifetime / self.priorityAudibleBreadcrumb.initialLifetime + 127)
             love.graphics.line(self.x, self.y, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
         end
         if self.priorityVisualBreadcrumb then
-            love.graphics.setColor(127, 0, 127, 255)
+            love.graphics.setColor(127, 0, 127, 127 * self.priorityVisualBreadcrumb.currentLifetime / self.priorityVisualBreadcrumb.initialLifetime + 127)
             love.graphics.line(self.x, self.y, self.priorityVisualBreadcrumb.x, self.priorityVisualBreadcrumb.y)
         end
 

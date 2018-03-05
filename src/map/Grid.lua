@@ -358,7 +358,7 @@ function grid.create(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 6
+    inst.worldScaleInScreens = 12
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
@@ -374,7 +374,7 @@ function grid.create(entityManager)
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
     inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeakWorld(inst, true)
-    _addBuildings(inst, 1)
+    _addBuildings(inst, 10)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
