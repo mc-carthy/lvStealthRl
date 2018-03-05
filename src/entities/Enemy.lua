@@ -52,6 +52,16 @@ local function _canHearTarget(self, target)
     return Vector2.magnitude(self.x - target.x, self.y - target.y) < target.range
 end
 
+local function _highestPriorityCrumb(crumbs)
+    local priorityCrumb = nil
+    for i = 1, #crumbs do
+        if priorityCrumb == nil or crumbs[i].currentLifetime > priorityCrumb.currentLifetime then
+            priorityCrumb = crumbs[i]
+        end
+    end
+    return priorityCrumb
+end
+
 local function _checkForAudioBreadcrumbs(self)
     for k,v in pairs(self.audibleBreadcrumbs) do self.audibleBreadcrumbs[k]=nil end
 
@@ -62,6 +72,7 @@ local function _checkForAudioBreadcrumbs(self)
             table.insert(self.audibleBreadcrumbs, ac)
         end
     end
+    self.priorityAudibleBreadcrumb = _highestPriorityCrumb(self.audibleBreadcrumbs)
 end
 
 local function _checkForVisualBreadcrumbs(self)
@@ -74,6 +85,7 @@ local function _checkForVisualBreadcrumbs(self)
             table.insert(self.visualBreadcrumbs, vc)
         end
     end
+    self.priorityVisualBreadcrumb = _highestPriorityCrumb(self.visualBreadcrumbs)
 end
 
 local _moveToTarget = function(self, target, dt)
@@ -131,14 +143,23 @@ local draw = function(self)
         -- for i = 1, #self.enemyVisionTiles do
         --     love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
         -- end
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(255, 255, 255, 127)
         for i = 1, #self.audibleBreadcrumbs do
             love.graphics.line(self.x, self.y, self.audibleBreadcrumbs[i].x, self.audibleBreadcrumbs[i].y)
         end
-        love.graphics.setColor(127, 0, 127, 255)
+        love.graphics.setColor(191, 0, 191, 63)
         for i = 1, #self.visualBreadcrumbs do
             love.graphics.line(self.x, self.y, self.visualBreadcrumbs[i].x, self.visualBreadcrumbs[i].y)
         end
+        if self.priorityAudibleBreadcrumb then
+            love.graphics.setColor(127, 127, 127, 255)
+            love.graphics.line(self.x, self.y, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
+        end
+        if self.priorityVisualBreadcrumb then
+            love.graphics.setColor(127, 0, 127, 255)
+            love.graphics.line(self.x, self.y, self.priorityVisualBreadcrumb.x, self.priorityVisualBreadcrumb.y)
+        end
+
     end
 
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
@@ -187,6 +208,9 @@ enemy.create = function(entityManager, x, y, rot)
     inst.canSeePlayer = true
     inst.visualBreadcrumbs = {}
     inst.audibleBreadcrumbs = {}
+    inst.priorityVisualBreadcrumb = nil
+    inst.priorityAudibleBreadcrumb = nil
+
     inst.moveSpeed = 100
 
     inst.takeDamage = takeDamage
