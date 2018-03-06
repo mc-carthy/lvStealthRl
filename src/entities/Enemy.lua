@@ -73,7 +73,14 @@ local function _checkForAudioBreadcrumbs(self)
             table.insert(self.audibleBreadcrumbs, ac)
         end
     end
-    self.priorityAudibleBreadcrumb = _highestPriorityCrumb(self.audibleBreadcrumbs)
+    local pac = _highestPriorityCrumb(self.audibleBreadcrumbs)
+    if pac ~= nil then
+        self.priorityAudibleBreadcrumb = {
+            x = pac.x,
+            y = pac.y,
+            tag = "visualTarget"
+        }
+    end
 end
 
 local function _checkForVisualBreadcrumbs(self)
@@ -98,7 +105,14 @@ local function _checkForVisualBreadcrumbs(self)
     -- if #self.visualBreadcrumbs > 0 then
     --     print(#self.visualBreadcrumbs)
     -- end
-    self.priorityVisualBreadcrumb = _highestPriorityCrumb(self.visualBreadcrumbs)
+    local pvc = _highestPriorityCrumb(self.visualBreadcrumbs)
+    if pvc ~= nil then
+        self.priorityVisualBreadcrumb = {
+            x = pvc.x,
+            y = pvc.y,
+            tag = "visualTarget"
+        }
+    end
 end
 
 local _moveToTarget = function(self, target, dt)
@@ -122,9 +136,10 @@ local _moveToTarget = function(self, target, dt)
         self.x = self.x + dx
         self.y = self.y + dy
     else
-        if target.tag == "visualBreadcrumb" then
+        if target.tag == "visualTarget" then
             self.priorityVisualBreadcrumb = nil
-        elseif target.tag == "audioBreadcrumb" then
+            self.priorityAudibleBreadcrumb = nil
+        elseif target.tag == "audioTarget" then
             self.priorityAudibleBreadcrumb = nil
         end
     end
@@ -178,11 +193,11 @@ local draw = function(self)
             love.graphics.line(self.x, self.y, v.x, v.y)
         end
         if self.priorityAudibleBreadcrumb then
-            love.graphics.setColor(127, 127, 127, 127 * self.priorityAudibleBreadcrumb.currentLifetime / self.priorityAudibleBreadcrumb.initialLifetime + 127)
+            love.graphics.setColor(127, 127, 127, 255)
             love.graphics.line(self.x, self.y, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
         end
         if self.priorityVisualBreadcrumb then
-            love.graphics.setColor(127, 0, 127, 127 * self.priorityVisualBreadcrumb.currentLifetime / self.priorityVisualBreadcrumb.initialLifetime + 127)
+            love.graphics.setColor(127, 0, 127, 255)
             love.graphics.line(self.x, self.y, self.priorityVisualBreadcrumb.x, self.priorityVisualBreadcrumb.y)
         end
 
