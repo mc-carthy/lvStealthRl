@@ -118,13 +118,25 @@ local _moveToTarget = function(self, target, dt)
     end
     self.rot = self.rot + dRot
 
-    self.x = self.x + dx
-    self.y = self.y + dy
+    if (Vector2.distance(self, target)) > 5 then
+        self.x = self.x + dx
+        self.y = self.y + dy
+    else
+        if target.tag == "visualBreadcrumb" then
+            self.priorityVisualBreadcrumb = nil
+        elseif target.tag == "audioBreadcrumb" then
+            self.priorityAudibleBreadcrumb = nil
+        end
+    end
 end
 
-local function _checkForPlayer(self, dt)
+local function _checkForTargets(self, dt)
     if _canSeeTarget(self, self.player) then
         _moveToTarget(self, self.player, dt)
+    elseif self.priorityVisualBreadcrumb ~= nil then
+        _moveToTarget(self, self.priorityVisualBreadcrumb, dt)
+    elseif self.priorityAudibleBreadcrumb ~= nil then
+        _moveToTarget(self, self.priorityAudibleBreadcrumb, dt)
     end
 end
 
@@ -136,9 +148,10 @@ local update = function(self, dt)
     self.viewDist = self.nominalViewDist * (1 + self.player:getSpeedMultiplier())
 
     _updateCollider(self)
-    -- _checkForPlayer(self, dt)
     _checkForAudioBreadcrumbs(self)
     _checkForVisualBreadcrumbs(self)
+    _checkForTargets(self, dt)
+
 end
 
 local draw = function(self)

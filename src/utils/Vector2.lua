@@ -12,6 +12,10 @@ function V.angle(x1, y1, x2, y2)
     return deg
 end
 
+function V.distance(v1, v2)
+    return V.magnitude(v1.x - v2.x, v1.y - v2.y)
+end
+
 function V.magnitude(x, y)
     return sqrt(pow(x, 2) + pow(y, 2))
 end
