@@ -40,7 +40,9 @@ local function calculateMap(self, startX, startY, endX, endY)
         for node, _ in path:nodes() do
             table.insert(self.points, { node:getX(), node:getY()})
         end
+        return true
     end
+    return false
 end
 
 local function _printMap()

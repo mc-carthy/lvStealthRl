@@ -289,8 +289,9 @@ local function setPoints(self, points, success)
 end
 
 local function getPath(self, startX, startY, mouseX, mouseY)
-    self.path:calculateMap(startX, startY, mouseX, mouseY)
-    self:setPoints(self.path.points, true)
+    if self.path:calculateMap(startX, startY, mouseX, mouseY) then
+        self:setPoints(self.path.points, true)
+    end
 end
 
 local function lineOfSight(self, startX, startY, endX, endY)
@@ -316,12 +317,13 @@ local function update(self, dt)
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
 
     local mouseX, mouseY = self:worldSpaceToGrid(gamera:toWorld(love.mouse.getPosition()))
-    if mouseX ~= prevMouseX or mouseY ~= prevMouseY then
-        prevMouseX = mouseX
-        prevMouseY = mouseY
-        self:getPath(playerX, playerY, mouseX, mouseY)
+    if self:isWalkable(mouseX, mouseY) then
+        if mouseX ~= prevMouseX or mouseY ~= prevMouseY then
+            prevMouseX = mouseX
+            prevMouseY = mouseY
+            self:getPath(playerX, playerY, mouseX, mouseY)
+        end
     end
-
 end
 
 local _loadCanvas = function(self)
