@@ -4,6 +4,7 @@ local BspBuilding = require("src.map.bspBuilding")
 local tile = require("src.map.tileDictionary")
 local los = require("src.utils.los")
 local bresenham = require("src.utils.bresenham")
+local jmp = require("src.pathfinding.jmp")
 
 local grid = {}
 
@@ -12,6 +13,7 @@ local gridDebugFlag = true
 local grid_rng = love.math.newRandomGenerator(os.time())
 
 local playerX, playerY = 0, 0
+local prevMouseX, prevMouseY = nil, nil
 local viewDistX = 33
 local viewDistY = 19
 local celAutGridScale = 4
@@ -286,6 +288,11 @@ local function setPoints(self, points, success)
     end
 end
 
+local function getPath(self, startX, startY, mouseX, mouseY)
+    self.path:calculateMap(startX, startY, mouseX, mouseY)
+    self:setPoints(self.path.points, true)
+end
+
 local function lineOfSight(self, startX, startY, endX, endY)
     startX, startY = self:worldSpaceToGrid(startX, startY)
     endX, endY = self:worldSpaceToGrid(endX, endY)
@@ -307,6 +314,14 @@ end
 local function update(self, dt)
     local player = self.entityManager:getPlayer()
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
+
+    local mouseX, mouseY = self:worldSpaceToGrid(gamera:toWorld(love.mouse.getPosition()))
+    if mouseX ~= prevMouseX or mouseY ~= prevMouseY then
+        prevMouseX = mouseX
+        prevMouseY = mouseY
+        self:getPath(playerX, playerY, mouseX, mouseY)
+    end
+
 end
 
 local _loadCanvas = function(self)
@@ -350,6 +365,15 @@ end
 local function draw(self)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(self.canvas, 0, 0)
+    love.graphics.setColor(0, 0, 0, 255)
+    for i = 1, #self.path.points - 1 do
+        love.graphics.line(
+            self.path.points[i][1] * self.cellSize - self.cellSize / 2,
+            self.path.points[i][2] * self.cellSize - self.cellSize / 2,
+            self.path.points[i + 1][1] * self.cellSize - self.cellSize / 2,
+            self.path.points[i + 1][2] * self.cellSize - self.cellSize / 2
+        )
+    end
 end
 
 function grid.create(entityManager)
@@ -380,6 +404,8 @@ function grid.create(entityManager)
     inst.isWalkable = isWalkable
     inst.lineOfSight = lineOfSight
     inst.lineOfSightPoints = lineOfSightPoints
+    inst.getPath = getPath
+    inst.setPoints = setPoints
     inst.returnRandomWorldPosOfTileType = returnRandomWorldPosOfTileType
     inst.returnRandomGridPosOfTileType = returnRandomGridPosOfTileType
 
@@ -388,6 +414,8 @@ function grid.create(entityManager)
 
     inst.update = update
     inst.draw = draw
+
+    inst.path = jmp.create(inst)
 
     return inst
 end
