@@ -159,13 +159,16 @@ end
 local function _checkForTargets(self, dt)
     if _canSeeTarget(self, self.player) then
         _moveToTarget(self, self.player, dt)
+        self.alertStatus = "red"
     elseif self.priorityVisualBreadcrumb ~= nil then
         _moveToTarget(self, self.priorityVisualBreadcrumb, dt)
+        self.alertStatus = "yellow"
     elseif self.priorityAudibleBreadcrumb ~= nil then
         if _targetInLineOfSight(self, self.priorityAudibleBreadcrumb) then
             _moveToTarget(self, self.priorityAudibleBreadcrumb, dt)
+            self.alertStatus = "yellow"
         else
-            if self.currentPathTarget.x ~= self.priorityAudibleBreadcrumb.x and self.currentPathTarget.y ~= self.priorityAudibleBreadcrumb.y then
+            if self.currentPathTarget ~= nil and self.currentPathTarget.x ~= self.priorityAudibleBreadcrumb.x and self.currentPathTarget.y ~= self.priorityAudibleBreadcrumb.y then
                 _getPathToPoint(self, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
             end
             if self.path ~= nil then
@@ -183,8 +186,11 @@ local function _checkForTargets(self, dt)
                     end
                 end
                 _moveToTarget(self, self.nextPoint, dt)
+                self.alertStatus = "yellow"
             end
         end
+    else
+        self.alertStatus = "green"
     end
 end
 
@@ -253,17 +259,23 @@ end
 
 local draw = function(self)
     if enemyDebugFlag then
-        _drawLos(self)
-        _drawBreadcrumbInfo(self)
-        _drawPathfindingInfo(self)
-        _drawDebugInfo(self)
+        -- _drawLos(self)
+        -- _drawBreadcrumbInfo(self)
+        -- _drawPathfindingInfo(self)
+        -- _drawDebugInfo(self)
     end
 
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
     local viewAngleX1, viewAngleY1 = Vector2.pointFromRotDist(self.rot - self.viewAngle / 2, self.viewDist)
     local viewAngleX2, viewAngleY2 = Vector2.pointFromRotDist(self.rot + self.viewAngle / 2, self.viewDist)
     
-    love.graphics.setColor(191, 0, 0, 127)
+    if self.alertStatus == "red" then
+        love.graphics.setColor(191, 0, 0, 127)
+    elseif self.alertStatus == "yellow" then
+        love.graphics.setColor(191, 191, 0, 127)
+    elseif self.alertStatus == "green" then
+        love.graphics.setColor(0, 127, 191, 127)
+    end
     love.graphics.arc("fill", self.x, self.y, self.viewDist, -math.rad(self.rot + self.viewAngle / 2), -math.rad(self.rot - self.viewAngle / 2))
 
     love.graphics.setColor(0, 0, 0)
@@ -309,6 +321,7 @@ enemy.create = function(entityManager, x, y, rot)
     inst.nextPathPoint = 1
     inst.nextPoint = {}
     inst.currentPathTarget = {}
+    inst.alertStatus = "green"
 
     inst.moveSpeed = 100
 
