@@ -119,7 +119,7 @@ end
 local _moveToTarget = function(self, target, dt)
     assert(target.x ~= nil and target.y ~= nil, "Target must have x and y attributes")
     local rot = Vector2.angle(self.x, self.y, target.x, target.y)
-    local dx, dy = Vector2.pointFromRotDist(rot, self.moveSpeed * dt)
+    local dx, dy = Vector2.pointFromRotDist(rot, self.nominalMoveSpeed * self.speedMultiplier * dt)
     local dRot = 0
     local targetRot = rot
 
@@ -171,7 +171,7 @@ local function _checkForTargets(self, dt)
             if self.currentPathTarget ~= nil and self.currentPathTarget.x ~= self.priorityAudibleBreadcrumb.x and self.currentPathTarget.y ~= self.priorityAudibleBreadcrumb.y then
                 _getPathToPoint(self, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
             end
-            if self.path ~= nil then
+            if self.path ~= nil and self.path[self.nextPathPoint] ~= nil then
                 self.nextPoint = {
                     x = self.path[self.nextPathPoint][1] * self.grid.cellSize,
                     y = self.path[self.nextPathPoint][2] * self.grid.cellSize
@@ -191,6 +191,14 @@ local function _checkForTargets(self, dt)
         end
     else
         self.alertStatus = "green"
+    end
+
+    if self.alertStatus == "red" then
+        self.speedMultiplier = 2
+    elseif self.alertStatus == "yellow" then
+        self.speedMultiplier = 1.25
+    else
+        self.speedMultiplier = 1
     end
 end
 
@@ -323,7 +331,8 @@ enemy.create = function(entityManager, x, y, rot)
     inst.currentPathTarget = {}
     inst.alertStatus = "green"
 
-    inst.moveSpeed = 100
+    inst.nominalMoveSpeed = 100
+    inst.speedMultiplier = 1
 
     inst.takeDamage = takeDamage
     inst.update = update
