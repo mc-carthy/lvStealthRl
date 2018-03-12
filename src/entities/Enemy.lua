@@ -145,13 +145,23 @@ local _moveToTarget = function(self, target, dt)
     end
 end
 
+local function _getPathToPoint(self, targetX, targetY)
+    local gridX, gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
+    local crumbX, crumbY = self.grid.worldSpaceToGrid(self.grid, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
+    self.path = self.grid:getPath(gridX, gridY, crumbX, crumbY)
+end
+
 local function _checkForTargets(self, dt)
     if _canSeeTarget(self, self.player) then
         _moveToTarget(self, self.player, dt)
     elseif self.priorityVisualBreadcrumb ~= nil then
         _moveToTarget(self, self.priorityVisualBreadcrumb, dt)
     elseif self.priorityAudibleBreadcrumb ~= nil then
-        _moveToTarget(self, self.priorityAudibleBreadcrumb, dt)
+        if _targetInLineOfSight(self, self.priorityAudibleBreadcrumb) then
+            _moveToTarget(self, self.priorityAudibleBreadcrumb, dt)
+        else
+            _getPathToPoint(self, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
+        end
     end
 end
 
@@ -199,6 +209,18 @@ local draw = function(self)
         if self.priorityVisualBreadcrumb then
             love.graphics.setColor(127, 0, 127, 255)
             love.graphics.line(self.x, self.y, self.priorityVisualBreadcrumb.x, self.priorityVisualBreadcrumb.y)
+        end
+
+        if self.path ~= nil then
+            love.graphics.setColor(0, 0, 0, 255)
+            for i = 1, #self.path - 1 do
+                love.graphics.line(
+                    self.path[i][1] * self.grid.cellSize - self.grid.cellSize / 2,
+                    self.path[i][2] * self.grid.cellSize - self.grid.cellSize / 2,
+                    self.path[i + 1][1] * self.grid.cellSize - self.grid.cellSize / 2,
+                    self.path[i + 1][2] * self.grid.cellSize - self.grid.cellSize / 2
+                )
+            end
         end
 
     end
@@ -251,6 +273,7 @@ enemy.create = function(entityManager, x, y, rot)
     inst.audibleBreadcrumbs = {}
     inst.priorityVisualBreadcrumb = nil
     inst.priorityAudibleBreadcrumb = nil
+    inst.path = nil
 
     inst.moveSpeed = 100
 

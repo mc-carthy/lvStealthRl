@@ -153,7 +153,7 @@ end
 
 local draw = function(self)
     if playerDebugFlag then
-        love.graphics.setColor(63, 63, 63)
+        love.graphics.setColor(63, 63, 63, 63)
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
         -- for _, col in ipairs(self.cornerOffsets) do
         --     love.graphics.setColor(191, 0, 191, 255)

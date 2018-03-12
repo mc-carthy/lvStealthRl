@@ -290,7 +290,10 @@ end
 
 local function getPath(self, startX, startY, mouseX, mouseY)
     if self.path:calculateMap(startX, startY, mouseX, mouseY) then
-        self:setPoints(self.path.points, true)
+        -- self:setPoints(self.path.points, true)
+        return self.path.points
+    else
+        return nil
     end
 end
 
@@ -321,7 +324,8 @@ local function update(self, dt)
         if mouseX ~= prevMouseX or mouseY ~= prevMouseY then
             prevMouseX = mouseX
             prevMouseY = mouseY
-            self:getPath(playerX, playerY, mouseX, mouseY)
+            self.path.points = self:getPath(playerX, playerY, mouseX, mouseY)
+            self:setPoints(self.path.points, true)
         end
     end
 end
@@ -367,15 +371,17 @@ end
 local function draw(self)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(self.canvas, 0, 0)
-    love.graphics.setColor(0, 0, 0, 255)
-    for i = 1, #self.path.points - 1 do
-        love.graphics.line(
-            self.path.points[i][1] * self.cellSize - self.cellSize / 2,
-            self.path.points[i][2] * self.cellSize - self.cellSize / 2,
-            self.path.points[i + 1][1] * self.cellSize - self.cellSize / 2,
-            self.path.points[i + 1][2] * self.cellSize - self.cellSize / 2
-        )
-    end
+    -- if self.path.points ~= nil then
+    --     love.graphics.setColor(0, 0, 0, 255)
+    --     for i = 1, #self.path.points - 1 do
+    --         love.graphics.line(
+    --             self.path.points[i][1] * self.cellSize - self.cellSize / 2,
+    --             self.path.points[i][2] * self.cellSize - self.cellSize / 2,
+    --             self.path.points[i + 1][1] * self.cellSize - self.cellSize / 2,
+    --             self.path.points[i + 1][2] * self.cellSize - self.cellSize / 2
+    --         )
+    --     end
+    -- end
 end
 
 function grid.create(entityManager)
