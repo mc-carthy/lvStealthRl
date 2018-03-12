@@ -352,6 +352,10 @@ local _loadCanvas = function(self)
                 love.graphics.draw(dirtImage, (x - 1) * self.cellSize, (y - 1) * self.cellSize, 0, 0.3125, 0.3125)
             elseif self[x][y] == tile["buildingOuterWall"] then
                 love.graphics.draw(stoneImage, (x - 1) * self.cellSize, (y - 1) * self.cellSize, 0, 0.3125, 0.3125)
+            elseif self[x][y] == tile["buildingInterior"] then
+                love.graphics.setColor(63, 63, 63, 255)
+                love.graphics.rectangle('fill', (x - 1) * self.cellSize, (y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+                -- love.graphics.draw(stoneImage, (x - 1) * self.cellSize, (y - 1) * self.cellSize, 0, 0.3125, 0.3125)
             else
                 if self[x][y].colour then
                     love.graphics.setColor(self[x][y].colour)

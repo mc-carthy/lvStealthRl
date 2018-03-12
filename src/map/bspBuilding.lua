@@ -12,7 +12,7 @@ local function _createOuterWalls(self)
             if x == 1 or x == self.w or y == 1 or y == self.h then
                 self.grid[x][y] = tile["buildingOuterWall"]
             else
-                self.grid[x][y] = tile["ground"]
+                self.grid[x][y] = tile["buildingInterior"]
             end
         end
     end
@@ -25,7 +25,7 @@ local function _createRoom(self, x, y, w, h)
                 if love.math.random() < 0.95 then
                     self.grid[i][j] = tile["buildingOuterWall"]
                 else
-                    self.grid[i][j] = tile["ground"]
+                    self.grid[i][j] = tile["buildingInterior"]
                 end
             end
         end
