@@ -156,6 +156,11 @@ local function _checkForTargets(self, dt)
         _moveToTarget(self, self.player, dt)
     elseif self.priorityVisualBreadcrumb ~= nil then
         _moveToTarget(self, self.priorityVisualBreadcrumb, dt)
+
+        -- TODO: Destroy priorityAudibleBreadcrumb and replace the below
+        -- conditional with another check. At the moment, enemies are continually
+        -- searching for a path to the priorityAudibleBreadcrumb, even though the
+        -- path has already been calculated
     elseif self.priorityAudibleBreadcrumb ~= nil then
         if _targetInLineOfSight(self, self.priorityAudibleBreadcrumb) then
             _moveToTarget(self, self.priorityAudibleBreadcrumb, dt)
@@ -167,6 +172,56 @@ end
 
 local _updateCollider = function(self)
     self.col:update(self.x, self.y)
+end
+
+local _drawDebugInfo = function(self)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.print("Facing angle: " .. string.format("%.2f", self.rot), self.x, self.y - 70)
+    love.graphics.print("Relative angle to player: " .. string.format("%.2f", self.relativeAngleToPlayer), self.x, self.y - 50)
+end
+
+local _drawLos = function(self)
+    if self.playerInLos then
+        love.graphics.setColor(0, 191, 0, 255)
+    else
+        love.graphics.setColor(191, 0, 0, 255)
+    end
+    for i = 1, #self.enemyVisionTiles do
+        love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
+    end
+end
+
+local _drawBreadcrumbInfo = function(self)
+    for _, v in pairs(self.audibleBreadcrumbs) do
+        love.graphics.setColor(255, 255, 255, 255 * v.currentLifetime / v.initialLifetime)
+        love.graphics.line(self.x, self.y, v.x, v.y)
+    end
+    for _, v in pairs(self.visualBreadcrumbs) do
+        love.graphics.setColor(191, 0, 191, 191 * v.currentLifetime / v.initialLifetime)
+        love.graphics.line(self.x, self.y, v.x, v.y)
+    end
+    if self.priorityAudibleBreadcrumb then
+        love.graphics.setColor(127, 127, 127, 255)
+        love.graphics.line(self.x, self.y, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
+    end
+    if self.priorityVisualBreadcrumb then
+        love.graphics.setColor(127, 0, 127, 255)
+        love.graphics.line(self.x, self.y, self.priorityVisualBreadcrumb.x, self.priorityVisualBreadcrumb.y)
+    end
+end
+
+local _drawPathfindingInfo = function(self)
+    if self.path ~= nil then
+        love.graphics.setColor(191, 0, 191, 255)
+        for i = 1, #self.path - 1 do
+            love.graphics.line(
+                self.path[i][1] * self.grid.cellSize - self.grid.cellSize / 2,
+                self.path[i][2] * self.grid.cellSize - self.grid.cellSize / 2,
+                self.path[i + 1][1] * self.grid.cellSize - self.grid.cellSize / 2,
+                self.path[i + 1][2] * self.grid.cellSize - self.grid.cellSize / 2
+            )
+        end
+    end
 end
 
 local update = function(self, dt)
@@ -181,48 +236,10 @@ end
 
 local draw = function(self)
     if enemyDebugFlag then
-        -- love.graphics.setColor(255, 255, 255)
-        -- love.graphics.print("Angle to player: " .. string.format("%.2f", self.angleToPlayer), self.x, self.y - 90)
-        -- love.graphics.print("Facing angle: " .. string.format("%.2f", self.rot), self.x, self.y - 70)
-        -- love.graphics.print("Relative angle to player: " .. string.format("%.2f", self.relativeAngleToPlayer), self.x, self.y - 50)
-        -- love.graphics.print("Player in view angle: " .. tostring( self.playerInViewAngle), self.x, self.y - 30)
-        -- if self.playerInLos then
-        --     love.graphics.setColor(0, 191, 0, 255)
-        -- else
-        --     love.graphics.setColor(191, 0, 0, 255)
-        -- end
-        -- for i = 1, #self.enemyVisionTiles do
-        --     love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
-        -- end
-        for _, v in pairs(self.audibleBreadcrumbs) do
-            love.graphics.setColor(255, 255, 255, 255 * v.currentLifetime / v.initialLifetime)
-            love.graphics.line(self.x, self.y, v.x, v.y)
-        end
-        for _, v in pairs(self.visualBreadcrumbs) do
-            love.graphics.setColor(191, 0, 191, 191 * v.currentLifetime / v.initialLifetime)
-            love.graphics.line(self.x, self.y, v.x, v.y)
-        end
-        if self.priorityAudibleBreadcrumb then
-            love.graphics.setColor(127, 127, 127, 255)
-            love.graphics.line(self.x, self.y, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
-        end
-        if self.priorityVisualBreadcrumb then
-            love.graphics.setColor(127, 0, 127, 255)
-            love.graphics.line(self.x, self.y, self.priorityVisualBreadcrumb.x, self.priorityVisualBreadcrumb.y)
-        end
-
-        if self.path ~= nil then
-            love.graphics.setColor(0, 0, 0, 255)
-            for i = 1, #self.path - 1 do
-                love.graphics.line(
-                    self.path[i][1] * self.grid.cellSize - self.grid.cellSize / 2,
-                    self.path[i][2] * self.grid.cellSize - self.grid.cellSize / 2,
-                    self.path[i + 1][1] * self.grid.cellSize - self.grid.cellSize / 2,
-                    self.path[i + 1][2] * self.grid.cellSize - self.grid.cellSize / 2
-                )
-            end
-        end
-
+        _drawLos(self)
+        _drawBreadcrumbInfo(self)
+        _drawPathfindingInfo(self)
+        _drawDebugInfo(self)
     end
 
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
@@ -263,10 +280,8 @@ enemy.create = function(entityManager, x, y, rot)
     inst.nominalViewDist = 200
     inst.viewAngle = 120
     inst.player = entityManager:getPlayer()
-    inst.angleToPlayer = nil
-    inst.playerInViewAngle = nil
-    inst.relativeAngleToPlayer = nil
-    inst.enemyVisionTiles = nil
+    inst.relativeAngleToPlayer = 0
+    inst.enemyVisionTiles = {}
     inst.playerInLos = nil
     inst.canSeePlayer = true
     inst.visualBreadcrumbs = {}

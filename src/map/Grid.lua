@@ -319,15 +319,15 @@ local function update(self, dt)
     local player = self.entityManager:getPlayer()
     playerX, playerY = worldSpaceToGrid(self, player:getPosition())
 
-    local mouseX, mouseY = self:worldSpaceToGrid(gamera:toWorld(love.mouse.getPosition()))
-    if self:isWalkable(mouseX, mouseY) then
-        if mouseX ~= prevMouseX or mouseY ~= prevMouseY then
-            prevMouseX = mouseX
-            prevMouseY = mouseY
-            self.path.points = self:getPath(playerX, playerY, mouseX, mouseY)
-            self:setPoints(self.path.points, true)
-        end
-    end
+    -- local mouseX, mouseY = self:worldSpaceToGrid(gamera:toWorld(love.mouse.getPosition()))
+    -- if self:isWalkable(mouseX, mouseY) then
+    --     if mouseX ~= prevMouseX or mouseY ~= prevMouseY then
+    --         prevMouseX = mouseX
+    --         prevMouseY = mouseY
+    --         self.path.points = self:getPath(playerX, playerY, mouseX, mouseY)
+    --         self:setPoints(self.path.points, true)
+    --     end
+    -- end
 end
 
 local _loadCanvas = function(self)
@@ -375,17 +375,6 @@ end
 local function draw(self)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(self.canvas, 0, 0)
-    -- if self.path.points ~= nil then
-    --     love.graphics.setColor(0, 0, 0, 255)
-    --     for i = 1, #self.path.points - 1 do
-    --         love.graphics.line(
-    --             self.path.points[i][1] * self.cellSize - self.cellSize / 2,
-    --             self.path.points[i][2] * self.cellSize - self.cellSize / 2,
-    --             self.path.points[i + 1][1] * self.cellSize - self.cellSize / 2,
-    --             self.path.points[i + 1][2] * self.cellSize - self.cellSize / 2
-    --         )
-    --     end
-    -- end
 end
 
 function grid.create(entityManager)

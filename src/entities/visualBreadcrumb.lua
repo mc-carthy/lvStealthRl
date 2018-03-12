@@ -1,6 +1,6 @@
 local vb = {}
 
-local debugFlag = true
+local debugFlag = false
 
 local defaultRange = 40
 local defaultLifetime = 2.5
