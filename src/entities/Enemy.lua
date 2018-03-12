@@ -168,6 +168,22 @@ local function _checkForTargets(self, dt)
             if self.currentPathTarget.x ~= self.priorityAudibleBreadcrumb.x and self.currentPathTarget.y ~= self.priorityAudibleBreadcrumb.y then
                 _getPathToPoint(self, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
             end
+            if self.path ~= nil then
+                self.nextPoint = {
+                    x = self.path[self.nextPathPoint][1] * self.grid.cellSize,
+                    y = self.path[self.nextPathPoint][2] * self.grid.cellSize
+                }
+                if Vector2.distance(self, self.nextPoint) < 10 then
+                    if self.nextPathPoint < #self.path then
+                        self.nextPathPoint = self.nextPathPoint + 1
+                    else
+                        self.priorityAudibleBreadcrumb = nil
+                        self.currentPathTarget = nil
+                        self.path = nil
+                    end
+                end
+                _moveToTarget(self, self.nextPoint, dt)
+            end
         end
     end
 end
@@ -233,7 +249,6 @@ local update = function(self, dt)
     _checkForAudioBreadcrumbs(self)
     _checkForVisualBreadcrumbs(self)
     _checkForTargets(self, dt)
-
 end
 
 local draw = function(self)
@@ -291,6 +306,8 @@ enemy.create = function(entityManager, x, y, rot)
     inst.priorityVisualBreadcrumb = nil
     inst.priorityAudibleBreadcrumb = nil
     inst.path = nil
+    inst.nextPathPoint = 1
+    inst.nextPoint = {}
     inst.currentPathTarget = {}
 
     inst.moveSpeed = 100
