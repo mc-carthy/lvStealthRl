@@ -10,6 +10,7 @@ local enemyDebugFlag = true
 local nearRotThreshold = 10
 local enemyImage = love.graphics.newImage("assets/img/kenneyTest/enemy.png")
 
+local testCount = 0
 
 local takeDamage = function(self)
     self.done = true
@@ -146,6 +147,10 @@ local _moveToTarget = function(self, target, dt)
 end
 
 local function _getPathToPoint(self, targetX, targetY)
+    self.currentPathTarget = {
+        x = targetX,
+        y = targetY
+    }
     local gridX, gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
     local crumbX, crumbY = self.grid.worldSpaceToGrid(self.grid, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
     self.path = self.grid:getPath(gridX, gridY, crumbX, crumbY)
@@ -156,16 +161,13 @@ local function _checkForTargets(self, dt)
         _moveToTarget(self, self.player, dt)
     elseif self.priorityVisualBreadcrumb ~= nil then
         _moveToTarget(self, self.priorityVisualBreadcrumb, dt)
-
-        -- TODO: Destroy priorityAudibleBreadcrumb and replace the below
-        -- conditional with another check. At the moment, enemies are continually
-        -- searching for a path to the priorityAudibleBreadcrumb, even though the
-        -- path has already been calculated
     elseif self.priorityAudibleBreadcrumb ~= nil then
         if _targetInLineOfSight(self, self.priorityAudibleBreadcrumb) then
             _moveToTarget(self, self.priorityAudibleBreadcrumb, dt)
         else
-            _getPathToPoint(self, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
+            if self.currentPathTarget.x ~= self.priorityAudibleBreadcrumb.x and self.currentPathTarget.y ~= self.priorityAudibleBreadcrumb.y then
+                _getPathToPoint(self, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
+            end
         end
     end
 end
@@ -289,6 +291,7 @@ enemy.create = function(entityManager, x, y, rot)
     inst.priorityVisualBreadcrumb = nil
     inst.priorityAudibleBreadcrumb = nil
     inst.path = nil
+    inst.currentPathTarget = {}
 
     inst.moveSpeed = 100
 
