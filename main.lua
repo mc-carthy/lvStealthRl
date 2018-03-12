@@ -17,8 +17,8 @@ local tempX, tempY = 0, 0
 local zoom = 1
 
 function love.load()
-    love.graphics.setBackgroundColor(255, 255, 255, 255)
-
+    love.graphics.setBackgroundColor(0, 0, 0, 0)
+    love.mouse.setVisible(false)
     entityManager = EntityManager.create()
     entityManager:addEntity(Grid.create(entityManager))
     local playerX, playerY = entityManager:getGrid().lowestPeakX, entityManager:getGrid().lowestPeakY;

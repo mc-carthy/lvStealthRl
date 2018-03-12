@@ -9,7 +9,7 @@ local VisualCrumb = require("src.entities.visualBreadcrumb")
 
 local player = {}
 
-local playerDebugFlag = true
+local playerDebugFlag = false
 
 local playerImage = love.graphics.newImage("assets/img/kenneyTest/player.png")
 local GRID_SIZE
@@ -134,6 +134,28 @@ local getPosition = function(self)
     return self.x, self.y
 end
 
+local _updateCursor = function(self)
+    local dx = self.x - self.mouseX
+    local dy = self.y - self.mouseY
+    local dist = math.sqrt(math.pow(dx, 2) + math.pow(dy, 2))
+    local dir = -math.atan2(self.mouseY - self.y, self.mouseX - self.x)
+    dist = math.max(20, dist)
+
+    self.cursorPos.x = self.x + dist * math.cos(dir)
+    self.cursorPos.y = self.y - dist * math.sin(dir)
+    for i = 1, #self.entityManager.entities do
+        local other = self.entityManager.entities[i]
+        if other.tag == "enemy" then
+            if Vector2.distance(self.cursorPos, other) < other.radius then
+                self.cursorColour = { 191, 0, 0, 255 }
+                break
+            else
+                self.cursorColour = { 255, 255, 255, 255 }
+            end
+        end
+    end
+end
+
 local update = function(self, dt)
     self.dt = dt
     self:getInput()
@@ -149,6 +171,7 @@ local update = function(self, dt)
     end
 
     self:move(dt)
+    _updateCursor(self)
 end
 
 local draw = function(self)
@@ -163,6 +186,9 @@ local draw = function(self)
     end
     -- love.graphics.setColor(0, 255, 0)
     -- love.graphics.circle("fill", self.x, self.y, self.r)
+    love.graphics.setColor(unpack(self.cursorColour))
+    -- love.graphics.circle("line", self.mouseX, self.mouseY, 5)
+    love.graphics.circle("line", self.cursorPos.x, self.cursorPos.y, 5)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(playerImage, self.x, self.y, -math.rad(self.rot), 0.5, 0.5, 32, 32)
 end
@@ -203,6 +229,8 @@ player.create = function(entityManager, x, y)
         { x = -inst.r, y = inst.r  },
         { x = inst.r,  y = inst.r  }
     }
+    inst.cursorPos = {}
+    inst.cursorColour = { 255, 255, 255, 255 }
 
     inst.move = move
     inst.horizontalCollision = horizontalCollision
