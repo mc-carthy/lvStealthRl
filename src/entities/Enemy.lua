@@ -161,6 +161,7 @@ local function _checkForTargets(self, dt)
         _moveToTarget(self, self.player, dt)
         self.alertStatus = "red"
     elseif self.priorityVisualBreadcrumb ~= nil then
+        -- TODO: Add los check and path finding if necessary
         _moveToTarget(self, self.priorityVisualBreadcrumb, dt)
         self.alertStatus = "yellow"
     elseif self.priorityAudibleBreadcrumb ~= nil then
@@ -268,8 +269,8 @@ end
 local draw = function(self)
     if enemyDebugFlag then
         -- _drawLos(self)
-        -- _drawBreadcrumbInfo(self)
-        -- _drawPathfindingInfo(self)
+        _drawBreadcrumbInfo(self)
+        _drawPathfindingInfo(self)
         -- _drawDebugInfo(self)
     end
 

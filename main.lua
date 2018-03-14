@@ -15,6 +15,7 @@ local player
 
 local tempX, tempY = 0, 0
 local zoom = 1
+local paused = false
 
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0, 0)
@@ -36,8 +37,9 @@ function love.update(dt)
     debugCamControl(dt)
     gamera:setPosition(player:getPosition())
 
-
-    entityManager:update(dt)
+    if not paused then
+        entityManager:update(dt)
+    end
 end
 
 function love.draw()
@@ -82,4 +84,10 @@ function debugCamControl(dt)
 end
 
 function love.mousepressed(x, y, button, isTouch)
+end
+
+function love.keypressed(key)
+    if key == 'space' then
+        paused = not paused
+    end
 end
