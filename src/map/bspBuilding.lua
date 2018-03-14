@@ -76,6 +76,16 @@ local function _demoWalls(self)
     end
 end
 
+local _demoRoomWalls = function(self)
+    for _, room in ipairs(self.rooms) do
+        for _ = 1, 2 do
+            local i = math.random(1, #room.walls)
+            local demoWall = room.walls[i]
+            self.grid[demoWall.x][demoWall.y] = tile["buildingInterior"]
+        end
+    end
+end
+
 local _printRoomStatus = function(self)
     for i, room in ipairs(self.rooms) do
         io.write("Room number: " .. room.number .. "\n")
@@ -172,7 +182,8 @@ bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel)
     inst._splitRoom = _splitRoom
 
     _createRoom(inst, 1, 1, w - 1, h - 1)
-    _demoWalls(inst)
+    -- _demoWalls(inst)
+    _demoRoomWalls(inst)
     -- _printRoomStatus(inst)
 
     _addOuterDoor(inst, entranceLevel)
