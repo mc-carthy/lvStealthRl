@@ -207,8 +207,7 @@ local function _findHighestContourValue(self)
 end
 
 local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH, entranceLevel)
-    local buildingX, buildingY = buildingX,buildingY
-    local bspBuilding = BspBuilding.create(buildingW, buildingH, 0, entranceLevel)
+    local bspBuilding = BspBuilding.create(buildingX, buildingY, buildingW, buildingH, 0, entranceLevel)
 
     for x = 1, bspBuilding.w do
         for y = 1, bspBuilding.h do
@@ -217,6 +216,7 @@ local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH, en
             end
         end
     end
+    return bspBuilding
 end
 
 -- TODO: This function currently sets the value of tiles inside a building to 
@@ -238,7 +238,8 @@ local function _addBuildings(self, numberOfBuildings)
     for i = 1, numberOfBuildings do
         local buildingSize, buildingX, buildingY = _findHighestContourValue(self)
         local buildingRad = math.floor(buildingSize / 2)
-        _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize, i)
+        local building = _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize, i)
+        table.insert(self.buildings, building)
         _zeroContourMapAroundPoint(self, buildingX, buildingY, buildingSize, buildingSize)
         _calculateContourMap(self)
     end
@@ -330,6 +331,15 @@ local function update(self, dt)
     -- end
 end
 
+local _drawRoomCentres = function(self)
+    love.graphics.setColor(191, 0, 0, 255)
+    for i, building in ipairs(self.buildings) do
+        for j, room in ipairs(building.rooms) do
+            love.graphics.circle("fill", (building.x + room.x + room.w / 2) * self.cellSize, (building.y + room.y + room.h / 2) * self.cellSize, 5)
+        end
+    end
+end
+
 local _loadCanvas = function(self)
     self.canvas = love.graphics.newCanvas(self.cellSize * self.xSize, self.cellSize * self.ySize)
 
@@ -375,6 +385,7 @@ end
 local function draw(self)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(self.canvas, 0, 0)
+    _drawRoomCentres(self)
 end
 
 function grid.create(entityManager)
@@ -389,6 +400,7 @@ function grid.create(entityManager)
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
     inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
     inst.points = {}
+    inst.buildings = {}
 
     -- inst.xSize = 420
     -- inst.ySize = 420
