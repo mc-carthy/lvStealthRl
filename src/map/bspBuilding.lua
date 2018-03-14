@@ -39,8 +39,9 @@ local _createFinalRoom = function(self, x, y, w, h)
         y = y,
         w = w,
         h = h,
-        walls = {},
         floor = {},
+        edgeWalls = {},
+        cornerWalls = {},
         neighbours = {},
         debugColour = { math.random(0, 255), math.random(0, 255), math.random(0, 255), 127 }
     }
@@ -51,8 +52,12 @@ local _createFinalRoom = function(self, x, y, w, h)
                     x = i,
                     y = j
                 }
-                table.insert(room.walls, wall)
-            else
+                if (i == x or i == x + w) and (j == y or j == y + h) then
+                    table.insert(room.cornerWalls, wall)
+                else
+                    table.insert(room.edgeWalls, wall)
+                end
+            else 
                 local floor = {
                     x = i,
                     y = j
@@ -79,8 +84,8 @@ end
 local _demoRoomWalls = function(self)
     for _, room in ipairs(self.rooms) do
         for _ = 1, 2 do
-            local i = math.random(1, #room.walls)
-            local demoWall = room.walls[i]
+            local i = math.random(1, #room.edgeWalls)
+            local demoWall = room.edgeWalls[i]
             self.grid[demoWall.x][demoWall.y] = tile["buildingInterior"]
         end
     end
@@ -90,9 +95,12 @@ local _printRoomStatus = function(self)
     for i, room in ipairs(self.rooms) do
         io.write("Room number: " .. room.number .. "\n")
         io.write("Room centre: " .. room.x + room.w / 2 .. "-" .. room.y + room.h / 2 .. "\n")
-        for j, wall in ipairs(room.walls) do
-            io.write("Room number: " .. i .. " Wall at: " .. room.walls[j].x .. "-" .. room.walls[j].y .. "\n")
-        end            
+        for j, wall in ipairs(room.cornerWalls) do
+            io.write("Room number: " .. i .. " Wall at: " .. room.cornerWalls[j].x .. "-" .. room.cornerWalls[j].y .. "\n")
+        end
+        for j, wall in ipairs(room.edgeWalls) do
+            io.write("Room number: " .. i .. " Wall at: " .. room.edgeWalls[j].x .. "-" .. room.edgeWalls[j].y .. "\n")
+        end
     end
 end
 
