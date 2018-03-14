@@ -340,6 +340,17 @@ local _drawRoomCentres = function(self)
     end
 end
 
+local _drawRoomFloors = function(self)
+    for i, building in ipairs(self.buildings) do
+        for j, room in ipairs(building.rooms) do
+            for k, floorTile in ipairs(room.floor) do
+                love.graphics.setColor(unpack(room.debugColour))
+                love.graphics.rectangle("fill", (building.x + floorTile.x - 1) * self.cellSize, (building.y + floorTile.y - 1) * self.cellSize, self.cellDrawSize, self.cellDrawSize)
+            end
+        end
+    end
+end
+
 local _loadCanvas = function(self)
     self.canvas = love.graphics.newCanvas(self.cellSize * self.xSize, self.cellSize * self.ySize)
 
@@ -385,6 +396,7 @@ end
 local function draw(self)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(self.canvas, 0, 0)
+    _drawRoomFloors(self)
     _drawRoomCentres(self)
 end
 

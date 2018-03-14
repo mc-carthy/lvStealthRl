@@ -40,7 +40,9 @@ local _createFinalRoom = function(self, x, y, w, h)
         w = w,
         h = h,
         walls = {},
-        neighbours = {}
+        floor = {},
+        neighbours = {},
+        debugColour = { math.random(0, 255), math.random(0, 255), math.random(0, 255), 127 }
     }
     for i = x, x + w do
         for j = y, y + h do
@@ -50,6 +52,12 @@ local _createFinalRoom = function(self, x, y, w, h)
                     y = j
                 }
                 table.insert(room.walls, wall)
+            else
+                local floor = {
+                    x = i,
+                    y = j
+                }
+                table.insert(room.floor, floor)
             end
         end
     end
