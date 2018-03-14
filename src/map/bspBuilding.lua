@@ -24,15 +24,22 @@ local function _createRoom(self, x, y, w, h)
     for i = x, x + w do
         for j = y, y + h do
             if i == x or i == x + w or j == y or j == y + h then
-                if love.math.random() < 0.95 then
-                    self.grid[i][j] = tile["buildingOuterWall"]
-                else
-                    self.grid[i][j] = tile["buildingInterior"]
-                end
+                self.grid[i][j] = tile["buildingOuterWall"]
             end
         end
     end
     self._splitRoom(self, x, y, w, h)
+end
+
+local function _demoWalls(self)
+    for x = 1, self.w do
+        for y = 1, self.h do
+            local prob = bsp_rng:random(100)
+            if self.grid[x][y] == tile["buildingOuterWall"] and prob > 95 then
+                self.grid[x][y] = tile["buildingInterior"]
+            end
+        end
+    end
 end
 
 --[[
@@ -117,6 +124,7 @@ bspBuilding.create = function(w, h, minRoomSize, entranceLevel)
     inst._splitRoom = _splitRoom
 
     _createRoom(inst, 1, 1, w - 1, h - 1)
+    _demoWalls(inst)
 
     _addOuterDoor(inst, entranceLevel)
 
