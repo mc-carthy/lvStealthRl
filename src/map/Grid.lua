@@ -390,14 +390,17 @@ local _loadCanvas = function(self)
         end
     end
 
+    if gridDebugFlag then
+        _drawRoomFloors(self)
+        _drawRoomCentres(self)
+    end
+
     love.graphics.setCanvas()
 end
 
 local function draw(self)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(self.canvas, 0, 0)
-    _drawRoomFloors(self)
-    _drawRoomCentres(self)
 end
 
 function grid.create(entityManager)
