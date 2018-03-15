@@ -91,7 +91,7 @@ local function _checkForVisualBreadcrumbs(self)
     for i = 1, #visualCrumbs do
         local vc = visualCrumbs[i]
         if _canSeeTarget(self, vc) then
-            if not Utils.contains(self.visualBreadcrumbs, vc) then
+            if not Utils.tableContains(self.visualBreadcrumbs, vc) then
                 table.insert(self.visualBreadcrumbs, vc)
             end
         end

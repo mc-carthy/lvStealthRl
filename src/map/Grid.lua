@@ -8,7 +8,7 @@ local jmp = require("src.pathfinding.jmp")
 
 local grid = {}
 
-local gridDebugFlag = false
+local gridDebugFlag = true
 
 local grid_rng = love.math.newRandomGenerator(os.time())
 
@@ -351,6 +351,17 @@ local _drawRoomFloors = function(self)
     end
 end
 
+local _drawRoomLines = function(self)
+    love.graphics.setColor(255, 255, 255, 255)
+    for _, building in pairs(self.buildings) do
+        for _, room in pairs(building.rooms) do
+            for _, neighbour in pairs(room.neighbours) do
+                love.graphics.line((building.x + room.x + room.w / 2) * self.cellSize, (building.y + room.y + room.h / 2) * self.cellSize, (building.x + neighbour.x + neighbour.w / 2) * self.cellSize, (building.y + neighbour.y + neighbour.h / 2) * self.cellSize)
+            end
+        end
+    end
+end
+
 local _loadCanvas = function(self)
     self.canvas = love.graphics.newCanvas(self.cellSize * self.xSize, self.cellSize * self.ySize)
 
@@ -392,6 +403,7 @@ local _loadCanvas = function(self)
 
     if gridDebugFlag then
         _drawRoomFloors(self)
+        _drawRoomLines(self)
         _drawRoomCentres(self)
     end
 

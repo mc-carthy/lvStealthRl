@@ -1,4 +1,5 @@
 local tile = require("src.map.tileDictionary")
+local Utils = require("src.utils.utils")
 
 local bspBuilding = {}
 
@@ -87,6 +88,26 @@ local _demoRoomWalls = function(self)
             local i = math.random(1, #room.edgeWalls)
             local demoWall = room.edgeWalls[i]
             self.grid[demoWall.x][demoWall.y] = tile["buildingInterior"]
+        end
+    end
+end
+
+local _setRoomNeighbours = function(self)
+    for i, roomA in ipairs(self.rooms) do
+        for x, edgeWallA in ipairs(roomA.edgeWalls) do
+            for j, roomB in ipairs(self.rooms) do
+                if roomA ~= roomB then
+                    for y, edgeWallB in ipairs(roomB.edgeWalls) do
+                        if edgeWallA.x == edgeWallB.x and edgeWallA.y == edgeWallB.y then
+                            if not Utils.tableContains(roomA.neighbours, roomB) then
+                                table.insert(roomA.neighbours, roomB)
+                                table.insert(roomB.neighbours, roomA)
+                                -- io.write(roomA.number .. " linked to " .. roomB.number)
+                            end
+                        end
+                    end
+                end
+            end
         end
     end
 end
@@ -190,6 +211,7 @@ bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel)
     inst._splitRoom = _splitRoom
 
     _createRoom(inst, 1, 1, w - 1, h - 1)
+    _setRoomNeighbours(inst)
     -- _demoWalls(inst)
     _demoRoomWalls(inst)
     -- _printRoomStatus(inst)
