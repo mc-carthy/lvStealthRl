@@ -92,6 +92,31 @@ local _demoRoomWalls = function(self)
     end
 end
 
+local _demoNeighbourWall = function(self, room, neighbour)
+    local sharedWalls = {}
+    for _, selfWall in pairs(room.edgeWalls) do
+        for _, nWall in pairs(neighbour.edgeWalls) do
+            if selfWall.x == nWall.x and selfWall.y == nWall.y then
+                table.insert(sharedWalls, selfWall)
+            end
+        end
+    end
+    local demoWall = sharedWalls[math.random(1, #sharedWalls)]
+    self.grid[demoWall.x][demoWall.y] = tile["buildingInterior"]
+end
+
+local _demoNeighbourWalls = function(self)
+    for i, room in ipairs(self.rooms) do
+        while #room.neighbours ~= 0 do
+            for j, neighbour in ipairs(room.neighbours) do
+                Utils.tableRemove(room.neighbours, neighbour)
+                Utils.tableRemove(neighbour.neighbours, room)
+                _demoNeighbourWall(self, room, neighbour)
+            end
+        end
+    end
+end
+
 local _setRoomNeighbours = function(self)
     for i, roomA in ipairs(self.rooms) do
         for x, edgeWallA in ipairs(roomA.edgeWalls) do
@@ -213,7 +238,9 @@ bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel)
     _createRoom(inst, 1, 1, w - 1, h - 1)
     _setRoomNeighbours(inst)
     -- _demoWalls(inst)
-    _demoRoomWalls(inst)
+    -- _demoRoomWalls(inst)
+    _demoNeighbourWalls(inst)
+    _setRoomNeighbours(inst)
     -- _printRoomStatus(inst)
 
     _addOuterDoor(inst, entranceLevel)

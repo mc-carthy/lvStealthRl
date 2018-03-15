@@ -8,7 +8,7 @@ local jmp = require("src.pathfinding.jmp")
 
 local grid = {}
 
-local gridDebugFlag = true
+local gridDebugFlag = false
 
 local grid_rng = love.math.newRandomGenerator(os.time())
 
