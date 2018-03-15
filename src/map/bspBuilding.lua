@@ -205,16 +205,25 @@ local function _splitRoom(self, x, y, w, h, minRoomSize)
 end
 
 local function _addOuterDoor(self, entranceLevel)
+    local x, y = nil, nil
     local prob = bsp_rng:random(100)
     if prob < 25 then
-        self.grid[1][math.random(2, self.h - 1)] = tile["doorLevel" .. entranceLevel]
+        x, y = 1, math.random(2, self.h - 1)
     elseif prob < 50 then
-        self.grid[self.w][math.random(2, self.h - 1)] = tile["doorLevel" .. entranceLevel]
+        x, y = self.w, math.random(2, self.h - 1)
     elseif prob < 75 then
-        self.grid[math.random(2, self.w - 1)][1] = tile["doorLevel" .. entranceLevel]
+        x, y = math.random(2, self.w - 1), 1
     else
-        self.grid[math.random(2, self.w - 1)][self.h] = tile["doorLevel" .. entranceLevel]
+        x, y = math.random(2, self.w - 1), self.h
     end
+    for _, room in pairs(self.rooms) do
+        for _, corner in pairs(room.cornerWalls) do
+            if corner.x == x and corner.y == y then
+                _addOuterDoor(self, entranceLevel)
+            end
+        end
+    end
+    self.grid[x][y] = tile["doorLevel" .. entranceLevel]
 end
 
 bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel)
