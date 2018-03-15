@@ -21,57 +21,57 @@ tileDictionary["buildingOuterWall"] = {
 }
 
 tileDictionary["doorLevel1"] = {
-    walkable = false,
+    walkable = true,
     colour = { 255, 0, 0, 255}
 }
 
 tileDictionary["doorLevel2"] = {
-    walkable = false,
+    walkable = true,
     colour = { 247, 84, 0, 255}
 }
 
 tileDictionary["doorLevel2"] = {
-    walkable = false,
+    walkable = true,
     colour = { 247, 255, 0, 255}
 }
 
 tileDictionary["doorLevel3"] = {
-    walkable = false,
+    walkable = true,
     colour = { 0, 216, 13, 255}
 }
 
 tileDictionary["doorLevel4"] = {
-    walkable = false,
+    walkable = true,
     colour = { 113, 75, 255, 255}
 }
 
 tileDictionary["doorLevel5"] = {
-    walkable = false,
+    walkable = true,
     colour = { 222, 58, 255, 255}
 }
 
 tileDictionary["doorLevel6"] = {
-    walkable = false,
+    walkable = true,
     colour = { 0, 191, 191, 255}
 }
 
 tileDictionary["doorLevel7"] = {
-    walkable = false,
+    walkable = true,
     colour = { 149, 144, 149, 255}
 }
 
 tileDictionary["doorLevel8"] = {
-    walkable = false,
+    walkable = true,
     colour = { 255, 255, 255, 255}
 }
 
 tileDictionary["doorLevel9"] = {
-    walkable = false,
+    walkable = true,
     colour = { 210, 155, 191, 255}
 }
 
 tileDictionary["doorLevel10"] = {
-    walkable = false,
+    walkable = true,
     colour = { 206, 203, 206, 255}
 }
 
