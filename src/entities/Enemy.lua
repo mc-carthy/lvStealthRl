@@ -195,17 +195,16 @@ local function _checkForTargets(self, dt)
                     }
                     -- TODO: Refactor this to work of grid position, as opposed to world distance
                     -- TODO: Remove hard-coded threshold
-                    if Vector2.distance(self, self.nextPoint) < 0.1 or self.nextPathPoint == 1 then
+                    if Vector2.distance(self, self.nextPoint) < 1 or self.nextPathPoint == 1 then
                         if self.nextPathPoint < #self.path then
                             self.nextPathPoint = self.nextPathPoint + 1
                         else
                             self.priorityAudibleBreadcrumb = nil
+                            self.path = nil
                         end
                     end
                     _moveToTarget(self, self.nextPoint, dt)
                     self.alertStatus = "yellow"
-                else
-                    self.path = nil
                 end
             end
         end

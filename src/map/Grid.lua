@@ -25,54 +25,58 @@ local grassImage = love.graphics.newImage("assets/img/kenneyTest/grass.png")
 local sandImage = love.graphics.newImage("assets/img/kenneyTest/sand.png")
 local stoneImage = love.graphics.newImage("assets/img/kenneyTest/stone.png")
 
-local function _generateGrid(self)
-    for x = 1, self.xSize do
-        self[x] = {}
-        for y = 1, self.ySize do
+local function _generateGrid(grid)
+    local grid = grid
+    for x = 1, grid.xSize do
+        grid[x] = {}
+        for y = 1, grid.ySize do
             -- self[x][y] = {}
             -- TODO: This comes with a performance deficit of around 30% drop in fps
-            self[x][y] = tile["ground"]
+            grid[x][y] = tile["ground"]
         end
     end
+    return grid
 end
 
-local function _populateGrid(self)
-    local celAutGrid = CelAut.create(self.xSize / celAutGridScale, self.ySize / celAutGridScale, wallChancePercentage).grid
-    for x = 1, self.xSize / celAutGridScale do
-        for y = 1, self.ySize / celAutGridScale do
+local function _populateGrid(grid)
+    local grid = grid
+    local celAutGrid = CelAut.create(grid.xSize / celAutGridScale, grid.ySize / celAutGridScale, wallChancePercentage).grid
+    for x = 1, grid.xSize / celAutGridScale do
+        for y = 1, grid.ySize / celAutGridScale do
             -- local prob = grid_rng:random(100)
             -- if prob >= 85 then
             --     self[x][y].walkable = false
             -- end
             if celAutGrid[x][y] then
                 if celAutGridScale == 1 then
-                    self[celAutGridScale * x][celAutGridScale * y] = tile["caveWall"]
+                    grid[celAutGridScale * x][celAutGridScale * y] = tile["caveWall"]
                 elseif celAutGridScale == 2 then
-                    self[celAutGridScale * x    ][celAutGridScale * y    ] = tile["caveWall"]
-                    self[celAutGridScale * x - 1][celAutGridScale * y    ] = tile["caveWall"]
-                    self[celAutGridScale * x    ][celAutGridScale * y - 1] = tile["caveWall"]
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 1] = tile["caveWall"]
+                    grid[celAutGridScale * x    ][celAutGridScale * y    ] = tile["caveWall"]
+                    grid[celAutGridScale * x - 1][celAutGridScale * y    ] = tile["caveWall"]
+                    grid[celAutGridScale * x    ][celAutGridScale * y - 1] = tile["caveWall"]
+                    grid[celAutGridScale * x - 1][celAutGridScale * y - 1] = tile["caveWall"]
                 elseif celAutGridScale == 4 then
-                    self[celAutGridScale * x    ][celAutGridScale * y    ] = tile["caveWall"]
-                    self[celAutGridScale * x - 1][celAutGridScale * y    ] = tile["caveWall"]
-                    self[celAutGridScale * x - 2][celAutGridScale * y    ] = tile["caveWall"]
-                    self[celAutGridScale * x - 3][celAutGridScale * y    ] = tile["caveWall"]
-                    self[celAutGridScale * x    ][celAutGridScale * y - 1] = tile["caveWall"]
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 1] = tile["caveWall"]
-                    self[celAutGridScale * x - 2][celAutGridScale * y - 1] = tile["caveWall"]
-                    self[celAutGridScale * x - 3][celAutGridScale * y - 1] = tile["caveWall"]
-                    self[celAutGridScale * x    ][celAutGridScale * y - 2] = tile["caveWall"]
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 2] = tile["caveWall"]
-                    self[celAutGridScale * x - 2][celAutGridScale * y - 2] = tile["caveWall"]
-                    self[celAutGridScale * x - 3][celAutGridScale * y - 2] = tile["caveWall"]
-                    self[celAutGridScale * x    ][celAutGridScale * y - 3] = tile["caveWall"]
-                    self[celAutGridScale * x - 1][celAutGridScale * y - 3] = tile["caveWall"]
-                    self[celAutGridScale * x - 2][celAutGridScale * y - 3] = tile["caveWall"]
-                    self[celAutGridScale * x - 3][celAutGridScale * y - 3] = tile["caveWall"]
+                    grid[celAutGridScale * x    ][celAutGridScale * y    ] = tile["caveWall"]
+                    grid[celAutGridScale * x - 1][celAutGridScale * y    ] = tile["caveWall"]
+                    grid[celAutGridScale * x - 2][celAutGridScale * y    ] = tile["caveWall"]
+                    grid[celAutGridScale * x - 3][celAutGridScale * y    ] = tile["caveWall"]
+                    grid[celAutGridScale * x    ][celAutGridScale * y - 1] = tile["caveWall"]
+                    grid[celAutGridScale * x - 1][celAutGridScale * y - 1] = tile["caveWall"]
+                    grid[celAutGridScale * x - 2][celAutGridScale * y - 1] = tile["caveWall"]
+                    grid[celAutGridScale * x - 3][celAutGridScale * y - 1] = tile["caveWall"]
+                    grid[celAutGridScale * x    ][celAutGridScale * y - 2] = tile["caveWall"]
+                    grid[celAutGridScale * x - 1][celAutGridScale * y - 2] = tile["caveWall"]
+                    grid[celAutGridScale * x - 2][celAutGridScale * y - 2] = tile["caveWall"]
+                    grid[celAutGridScale * x - 3][celAutGridScale * y - 2] = tile["caveWall"]
+                    grid[celAutGridScale * x    ][celAutGridScale * y - 3] = tile["caveWall"]
+                    grid[celAutGridScale * x - 1][celAutGridScale * y - 3] = tile["caveWall"]
+                    grid[celAutGridScale * x - 2][celAutGridScale * y - 3] = tile["caveWall"]
+                    grid[celAutGridScale * x - 3][celAutGridScale * y - 3] = tile["caveWall"]
                 end
             end
         end
     end
+    return grid
 end
 
 local function _initialiseContourMap(self)
@@ -432,8 +436,8 @@ function grid.create(entityManager)
     -- inst.xSize = 420
     -- inst.ySize = 420
     gamera:setWorld(0, 0, inst.xSize * inst.cellSize, inst.ySize * inst.cellSize)
-    _generateGrid(inst)
-    _populateGrid(inst)
+    inst = _generateGrid(inst)
+    inst = _populateGrid(inst)
     
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
