@@ -133,7 +133,8 @@ local _moveToTarget = function(self, target, dt)
     end
     self.rot = self.rot + dRot
 
-    if (Vector2.distance(self, target)) > 5 then
+    -- TODO: Remove hard-coded threshold
+    if (Vector2.distance(self, target)) > 0.09 then
         self.x = self.x + dx
         self.y = self.y + dy
     else
@@ -146,14 +147,28 @@ local _moveToTarget = function(self, target, dt)
     end
 end
 
+local function _updateGridPos(self)
+    local currentGridX, currentGridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
+    if self.grid.isWalkable(self.grid, currentGridX, currentGridY) and (lastGridPos == nil or currentGridX ~= lastGridPos.x or currentGridY ~= lastGridPos.y) then
+        if self.grid.isWalkable(self.grid, currentGridX, currentGridY) then
+            self.lastGridPos = {
+                x = currentGridX,
+                y = currentGridY
+            }
+        end
+    end
+end
+
 local function _getPathToPoint(self, targetX, targetY)
     self.currentPathTarget = {
         x = targetX,
         y = targetY
     }
     local gridX, gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
+    -- local gridX, gridY = self.grid.worldSpaceToGrid(self.grid, self.lastGridPos.x, self.lastGridPos.y)
     local crumbX, crumbY = self.grid.worldSpaceToGrid(self.grid, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
     self.path = self.grid:getPath(gridX, gridY, crumbX, crumbY)
+    self.nextPathPoint = 1
 end
 
 local function _checkForTargets(self, dt)
@@ -172,29 +187,30 @@ local function _checkForTargets(self, dt)
             if self.currentPathTarget ~= nil and self.currentPathTarget.x ~= self.priorityAudibleBreadcrumb.x and self.currentPathTarget.y ~= self.priorityAudibleBreadcrumb.y then
                 _getPathToPoint(self, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
             end
-            if self.path ~= nil and self.path[self.nextPathPoint] ~= nil then
-                self.nextPoint = {
-                    x = self.path[self.nextPathPoint][1] * self.grid.cellSize,
-                    y = self.path[self.nextPathPoint][2] * self.grid.cellSize
-                }
-                -- TODO: Refactor this to work of grid position, as opposed to world distance
-                if Vector2.distance(self, self.nextPoint) < 5 or self.nextPathPoint == 1 then
-                    if self.nextPathPoint < #self.path then
-                        self.nextPathPoint = self.nextPathPoint + 1
-                    else
-                        self.priorityAudibleBreadcrumb = nil
-                        self.currentPathTarget = nil
-                        self.path = nil
-                        self.nextPathPoint = 1
+            if self.path ~= nil then
+                if self.path[self.nextPathPoint] ~= nil then
+                    self.nextPoint = {
+                        x = self.path[self.nextPathPoint][1] * self.grid.cellSize,
+                        y = self.path[self.nextPathPoint][2] * self.grid.cellSize
+                    }
+                    -- TODO: Refactor this to work of grid position, as opposed to world distance
+                    -- TODO: Remove hard-coded threshold
+                    if Vector2.distance(self, self.nextPoint) < 0.1 or self.nextPathPoint == 1 then
+                        if self.nextPathPoint < #self.path then
+                            self.nextPathPoint = self.nextPathPoint + 1
+                        else
+                            self.priorityAudibleBreadcrumb = nil
+                        end
                     end
+                    _moveToTarget(self, self.nextPoint, dt)
+                    self.alertStatus = "yellow"
+                else
+                    self.path = nil
                 end
-                _moveToTarget(self, self.nextPoint, dt)
-                self.alertStatus = "yellow"
             end
         end
     else
         self.alertStatus = "green"
-        self.nextPathPoint = 1
     end
 
     if self.alertStatus == "red" then
@@ -225,6 +241,11 @@ local _drawLos = function(self)
     for i = 1, #self.enemyVisionTiles do
         love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
     end
+end
+
+local _drawLastValidGridPos = function(self)
+    love.graphics.setColor(127, 127, 0, 127)
+    love.graphics.rectangle('fill', (self.lastGridPos.x - 1) * self.grid.cellSize, (self.lastGridPos.y - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
 end
 
 local _drawBreadcrumbInfo = function(self)
@@ -263,6 +284,7 @@ end
 local update = function(self, dt)
     self.viewDist = self.nominalViewDist * (1 + self.player:getSpeedMultiplier())
 
+    _updateGridPos(self)
     _updateCollider(self)
     _checkForAudioBreadcrumbs(self)
     _checkForVisualBreadcrumbs(self)
@@ -275,6 +297,7 @@ local draw = function(self)
         _drawBreadcrumbInfo(self)
         _drawPathfindingInfo(self)
         -- _drawDebugInfo(self)
+        -- _drawLastValidGridPos(self)
     end
 
     local focusX, focusY = Vector2.pointFromRotDist(self.rot, self.viewDist)
@@ -332,6 +355,7 @@ enemy.create = function(entityManager, x, y, rot)
     inst.path = nil
     inst.nextPathPoint = 1
     inst.nextPoint = {}
+    inst.lastGridPos = nil
     inst.currentPathTarget = {}
     inst.alertStatus = "green"
 
