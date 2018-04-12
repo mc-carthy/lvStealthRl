@@ -242,7 +242,7 @@ local function _addBuildings(self, numberOfBuildings)
     for i = 1, numberOfBuildings do
         local buildingSize, buildingX, buildingY = _findHighestContourValue(self)
         local buildingRad = math.floor(buildingSize / 2)
-        local building = _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize, i)
+        local building = _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize, numberOfBuildings - i + 1)
         table.insert(self.buildings, building)
         _zeroContourMapAroundPoint(self, buildingX, buildingY, buildingSize, buildingSize)
         _calculateContourMap(self)
