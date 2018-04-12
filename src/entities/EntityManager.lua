@@ -60,7 +60,14 @@ end
 
 local draw = function(self)
     for i = 1, #self.entities do
-        if self.entities[i].tag ~= "player" then 
+        if self.entities[i].tag == "grid" then 
+            if self.entities[i].draw then
+                self.entities[i]:draw()
+            end
+        end
+    end
+    for i = 1, #self.entities do
+        if self.entities[i].tag ~= "player" and self.entities[i].tag ~= "grid" then 
             if self.entities[i].draw then
                 self.entities[i]:draw()
             end

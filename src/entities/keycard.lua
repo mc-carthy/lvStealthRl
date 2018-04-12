@@ -31,7 +31,7 @@ function keycard.create(entityManager, x, y, level)
     inst.rot = 0
     inst.ringRad = 15
     inst.ringBaseRad = 15
-    inst.ringRadVar = 3
+    inst.ringRadVar = 3    
 
     inst.update = _update
     inst.draw = _draw

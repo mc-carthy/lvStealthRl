@@ -171,6 +171,29 @@ local function _getPathToPoint(self, targetX, targetY)
     self.nextPathPoint = 1
 end
 
+local function _wander(self, dt)
+    local gridX, gridY = self.grid.worldSpaceToGrid(self.grid, self.x, self.y)
+    local nDst, eDst, sDst, wDst = 0, 0, 0, 0
+    local dir = "north"
+    local dist = 0
+    local wallThreshold = 5
+
+    while self.grid:isWalkable(gridX, gridY - nDst) do nDst = nDst + 1 end
+    dist = nDst
+    while self.grid:isWalkable(gridX + eDst, gridY) do eDst = eDst + 1 end
+    if eDst > nDst then dir = "east" dist = eDst end
+    while self.grid:isWalkable(gridX, gridY + sDst) do sDst = sDst + 1 end
+    if sDst > nDst and sDst > eDst then dir = "south" dist = sDst end
+    while self.grid:isWalkable(gridX - wDst, gridY) do wDst = wDst + 1 end
+    if wDst > nDst and wDst > eDst and wDst > sDst then dir = "west" dist = wDst end
+
+    dist = math.random(0.8 * dist - wallThreshold, dist - wallThreshold)
+
+    
+
+    
+end
+
 local function _checkForTargets(self, dt)
     if _canSeeTarget(self, self.player) then
         _moveToTarget(self, self.player, dt)
@@ -288,6 +311,7 @@ local update = function(self, dt)
     _checkForAudioBreadcrumbs(self)
     _checkForVisualBreadcrumbs(self)
     _checkForTargets(self, dt)
+    _wander(self, dt)
 end
 
 local draw = function(self)

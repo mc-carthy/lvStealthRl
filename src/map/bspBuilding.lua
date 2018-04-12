@@ -1,5 +1,6 @@
 local tile = require("src.map.tileDictionary")
 local Utils = require("src.utils.utils")
+local Keycard = require("src.entities.keycard")
 
 local bspBuilding = {}
 
@@ -204,8 +205,9 @@ local function _splitRoom(self, x, y, w, h, minRoomSize)
 
 end
 
-local function _addOuterDoor(self, entranceLevel)
+local function _addOuterDoor(self)
     local x, y = nil, nil
+    local foundCorner = false
     local prob = bsp_rng:random(100)
     if prob < 25 then
         x, y = 1, math.random(2, self.h - 1)
@@ -219,17 +221,36 @@ local function _addOuterDoor(self, entranceLevel)
     for _, room in pairs(self.rooms) do
         for _, corner in pairs(room.cornerWalls) do
             if corner.x == x and corner.y == y then
-                _addOuterDoor(self, entranceLevel)
+                _addOuterDoor(self)
+                foundCorner = true
             end
         end
     end
-    self.grid[x][y] = tile["doorLevel" .. entranceLevel]
+    if not foundCorner then
+        self.grid[x][y] = tile["doorLevel" .. self.entranceLevel]
+    end
 end
 
-bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel)
+local function _addKeycard(self)
+    if self.entranceLevel < self.maxNumberOfBuildings then
+        while true do
+            local x = bsp_rng:random(self.w - 1)
+            local y = bsp_rng:random(self.h - 1)
+
+            if self.grid[x][y] == tile["buildingInterior"] then
+                self.parentGrid.entityManager:addEntity(Keycard.create(entityManager, (x + self.x) * self.parentGrid.cellSize - self.parentGrid.cellSize / 2, (y + self.y) * self.parentGrid.cellSize - self.parentGrid.cellSize / 2, self.entranceLevel + 1))
+                break
+            end
+        end
+    end
+end
+
+bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel, parentGrid)
     local inst = {}
 
     inst.grid = {}
+    inst.parentGrid = parentGrid
+    inst.entityManager = entityManager
     inst.rooms = {}
     inst.x = x
     inst.y = y
@@ -237,6 +258,7 @@ bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel)
     inst.h = h
     inst.minRoomSize = minRoomSize or 5
     inst.entranceLevel = entranceLevel or 1
+    inst.maxNumberOfBuildings = parentGrid.totalNumberOfBuildings or 1
     inst.numIterations = 0
 
     _createOuterWalls(inst)
@@ -252,7 +274,8 @@ bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel)
     _setRoomNeighbours(inst)
     -- _printRoomStatus(inst)
 
-    _addOuterDoor(inst, entranceLevel)
+    _addOuterDoor(inst)
+    _addKeycard(inst)
 
     return inst
 end

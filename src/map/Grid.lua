@@ -211,7 +211,7 @@ local function _findHighestContourValue(self)
 end
 
 local function _addBuilding(self, buildingX, buildingY, buildingW, buildingH, entranceLevel)
-    local bspBuilding = BspBuilding.create(buildingX, buildingY, buildingW, buildingH, 0, entranceLevel)
+    local bspBuilding = BspBuilding.create(buildingX, buildingY, buildingW, buildingH, 0, entranceLevel, self)
 
     for x = 1, bspBuilding.w do
         for y = 1, bspBuilding.h do
@@ -238,11 +238,11 @@ local function _zeroContourMapAroundPoint(self, x, y, w, h)
     end
 end
 
-local function _addBuildings(self, numberOfBuildings)
-    for i = 1, numberOfBuildings do
+local function _addBuildings(self)
+    for i = 1, self.totalNumberOfBuildings do
         local buildingSize, buildingX, buildingY = _findHighestContourValue(self)
         local buildingRad = math.floor(buildingSize / 2)
-        local building = _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize, numberOfBuildings - i + 1)
+        local building = _addBuilding(self, buildingX - buildingRad, buildingY - buildingRad, buildingSize, buildingSize, self.totalNumberOfBuildings - i + 1)
         table.insert(self.buildings, building)
         _zeroContourMapAroundPoint(self, buildingX, buildingY, buildingSize, buildingSize)
         _calculateContourMap(self)
@@ -430,13 +430,14 @@ function grid.create(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 12
+    inst.worldScaleInScreens = 6
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
     inst.ySize = love.graphics.getHeight() / inst.cellSize * inst.worldScaleInScreens
     inst.points = {}
     inst.buildings = {}
+    inst.totalNumberOfBuildings = 10
 
     -- inst.xSize = 420
     -- inst.ySize = 420
@@ -447,7 +448,7 @@ function grid.create(entityManager)
     inst.contourMap = _initialiseContourMap(inst)
     _calculateContourMap(inst)
     inst.lowestPeakX, inst.lowestPeakY = _findLowestContourPeakWorld(inst, true)
-    _addBuildings(inst, 10)
+    _addBuildings(inst, inst.numberOfBuildings)
 
     inst.worldSpaceToGrid = worldSpaceToGrid
     inst.isWalkable = isWalkable
