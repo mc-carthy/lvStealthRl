@@ -23,6 +23,7 @@ end
 function keycard.create(entityManager, x, y, level)
     local inst = {}
 
+    inst.tag = 'keycard'
     inst.entityManager = entityManager
     inst.x = x
     inst.y = y

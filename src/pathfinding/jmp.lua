@@ -19,7 +19,7 @@ function _createjmpMap(self)
     for y = 1, self.inputGrid.ySize do
         map[y] = {}
         for x = 1, self.inputGrid.xSize do
-            if self.inputGrid:isWalkable(x, y) then
+            if self.inputGrid:isWalkable(x, y, true) then
                 map[y][x] = 0
             else
                 map[y][x] = 1

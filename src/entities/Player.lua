@@ -15,10 +15,9 @@ local playerImage = love.graphics.newImage("assets/img/kenneyTest/player.png")
 local GRID_SIZE
 local mouseButtonDown = false
 local collisionBuffer = 0.05
-local keycardLevel = 5
 
-local _unlockDoors = function(self)
-    for i = 1, keycardLevel do
+local _unlockDoors = function(self, level)
+    for i = 1, level do
         if tile["doorLevel" .. i] then
             tile["doorLevel" .. i].walkable = true
         end
@@ -29,9 +28,21 @@ local _gridPosChanged = function(self, oldGridX, oldGridY)
     return oldGridX ~= self.gridX or oldGridY ~= self.gridY
 end
 
+local _checkForKeycardPickup = function(self)
+    for i = 1, #self.entityManager.entities do
+        local other = self.entityManager.entities[i]
+        if other.tag == "keycard" and Vector2.distance(self, other) < self.r then
+            other.done = true
+            if other.level > self.keycardLevel then
+                self.keycardLevel = other.level
+                _unlockDoors(self, other.level)
+            end
+        end
+    end
+end
+
 local load = function(self)
     GRID_SIZE = self.entityManager:getGrid().cellSize
-    _unlockDoors(self)
 end
 
 
@@ -159,6 +170,7 @@ end
 local update = function(self, dt)
     self.dt = dt
     self:getInput()
+    _checkForKeycardPickup(self)
 
     local oldGridX, oldGridY = self.gridX, self.gridY
 
@@ -216,6 +228,7 @@ player.create = function(entityManager, x, y)
     inst.mouseY = 0
     inst.rot = 0
     inst.r = 5
+    inst.keycardLevel = 0
     inst.nominalSpeed = 150
     inst.speedMultiplier = 1
     inst.crouchSpeedMultiplier = 0.5

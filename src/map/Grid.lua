@@ -276,9 +276,14 @@ local function worldSpaceToGrid(self, x, y)
     return gridx, gridy
 end
 
-local function isWalkable(self, gridX, gridY)
+local function isWalkable(self, gridX, gridY, pathfinding)
+    local pathfinding = pathfinding or false
     if self[gridX] and self[gridX][gridY] then
-        return self[gridX][gridY].walkable
+        if pathfinding then
+            return self[gridX][gridY].walkable or self[gridX][gridY].pathable
+        else
+            return self[gridX][gridY].walkable
+        end
     else
         return true
     end
