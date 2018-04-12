@@ -205,7 +205,12 @@ local function _splitRoom(self, x, y, w, h, minRoomSize)
 
 end
 
-local function _addOuterDoor(self)
+local function _addOuterDoor(self, x, y, attempt)
+    self.grid[x][y] = tile["doorLevel" .. self.entranceLevel]
+end
+
+local function _placeOuterDoor(self, numAttempt)
+    local attempt = numAttempt or 1
     local x, y = nil, nil
     local foundCorner = false
     local prob = bsp_rng:random(100)
@@ -221,14 +226,12 @@ local function _addOuterDoor(self)
     for _, room in pairs(self.rooms) do
         for _, corner in pairs(room.cornerWalls) do
             if corner.x == x and corner.y == y then
-                _addOuterDoor(self)
-                foundCorner = true
+                _placeOuterDoor(self, attempt + 1)
+                return
             end
         end
     end
-    if not foundCorner then
-        self.grid[x][y] = tile["doorLevel" .. self.entranceLevel]
-    end
+    _addOuterDoor(self, x, y, attempt)
 end
 
 local function _addKeycard(self)
@@ -274,7 +277,7 @@ bspBuilding.create = function(x, y, w, h, minRoomSize, entranceLevel, parentGrid
     _setRoomNeighbours(inst)
     -- _printRoomStatus(inst)
 
-    _addOuterDoor(inst)
+    _placeOuterDoor(inst)
     _addKeycard(inst)
 
     return inst
