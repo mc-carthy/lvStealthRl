@@ -190,16 +190,16 @@ local function _findLowestContourPeakGrid(self, exludeEqualNeighbours)
     return minPeakX, minPeakY
 end
 
+local function _findLowestContourPeakWorld(self, exludeEqualNeighbours)
+    local minPeakX, minPeakY = _findLowestContourPeakGrid(self, exludeEqualNeighbours)
+    return minPeakX * self.cellSize - self.cellSize / 2, minPeakY * self.cellSize - self.cellSize / 2
+end
+
 local function _recheckLowestPeak(self)
     local gridX, gridY = (self.lowestPeakX + self.cellSize / 2) / self.cellSize, (self.lowestPeakY + self.cellSize / 2) / self.cellSize
     if self.contourMap[gridX][gridY] == 0 then
         self.lowestPeakX, self.lowestPeakY = _findLowestContourPeakWorld(inst, true)
     end
-end
-
-local function _findLowestContourPeakWorld(self, exludeEqualNeighbours)
-    local minPeakX, minPeakY = _findLowestContourPeakGrid(self, exludeEqualNeighbours)
-    return minPeakX * self.cellSize - self.cellSize / 2, minPeakY * self.cellSize - self.cellSize / 2
 end
 
 local function _findHighestContourValue(self)
@@ -437,7 +437,7 @@ function grid.create(entityManager)
     inst.tag = "grid"
     inst.entityManager = entityManager
     inst.cellSize = 20
-    inst.worldScaleInScreens = 6
+    inst.worldScaleInScreens = 12
     local border = 0
     inst.cellDrawSize = inst.cellSize - border
     inst.xSize = love.graphics.getWidth() / inst.cellSize * inst.worldScaleInScreens
