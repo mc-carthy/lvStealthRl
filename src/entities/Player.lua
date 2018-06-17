@@ -16,7 +16,7 @@ local GRID_SIZE
 local mouseButtonDown = false
 local collisionBuffer = 0.05
 
-local _unlockDoors = function(self, level)
+local function _unlockDoors(self, level)
     for i = 1, level do
         if tile["doorLevel" .. i] then
             tile["doorLevel" .. i].walkable = true
@@ -24,14 +24,14 @@ local _unlockDoors = function(self, level)
     end
 end
 
-local _gridPosChanged = function(self, oldGridX, oldGridY)
+local function _gridPosChanged(self, oldGridX, oldGridY)
     return oldGridX ~= self.gridX or oldGridY ~= self.gridY
 end
 
 local _checkForKeycardPickup = function(self)
     for i = 1, #self.entityManager.entities do
         local other = self.entityManager.entities[i]
-        if other.tag == "keycard" and Vector2.distance(self, other) < self.r then
+        if other.tag == "keycard" and Vector2.distance(self, other) < self.r * 2 then
             other.done = true
             if other.level > self.keycardLevel then
                 self.keycardLevel = other.level
@@ -145,7 +145,7 @@ local getPosition = function(self)
     return self.x, self.y
 end
 
-local _updateCursor = function(self)
+local function _updateCursor(self)
     local dx = self.x - self.mouseX
     local dy = self.y - self.mouseY
     local dist = math.sqrt(math.pow(dx, 2) + math.pow(dy, 2))
@@ -167,7 +167,7 @@ local _updateCursor = function(self)
     end
 end
 
-local update = function(self, dt)
+local function update(self, dt)
     self.dt = dt
     self:getInput()
     _checkForKeycardPickup(self)
@@ -186,16 +186,27 @@ local update = function(self, dt)
     _updateCursor(self)
 end
 
-local draw = function(self)
+local function draw(self)
     if playerDebugFlag then
         love.graphics.setColor(63, 63, 63, 63)
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
+        -- Draw collision markers
         -- for _, col in ipairs(self.cornerOffsets) do
         --     love.graphics.setColor(191, 0, 191, 255)
         --     love.graphics.circle("fill", self.x + self.moveX * self.dt + col.x, self.y + self.moveY * self.dt + col.y, 5)
         -- end
-        
     end
+    -- Draw keycard indicators
+    local keycards = self.entityManager:getKeycards()
+    local nextKeycard
+    for _, keycard in pairs(keycards) do
+        if keycard.level == self.keycardLevel + 1 then
+            nextKeycard = keycard
+            break
+        end
+    end
+    love.graphics.setColor(63, 63, 63, 127)
+    love.graphics.line(self.x, self.y, nextKeycard.x, nextKeycard.y)
     -- love.graphics.setColor(0, 255, 0)
     -- love.graphics.circle("fill", self.x, self.y, self.r)
     love.graphics.setColor(unpack(self.cursorColour))
@@ -205,7 +216,7 @@ local draw = function(self)
     love.graphics.draw(playerImage, self.x, self.y, -math.rad(self.rot), 0.5, 0.5, 32, 32)
 end
 
-local drawScreenSpace = function(self)
+local function drawScreenSpace(self)
     if playerDebugFlag then
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 50, 10)
@@ -214,7 +225,7 @@ local drawScreenSpace = function(self)
     end
 end
 
-player.create = function(entityManager, x, y)
+function player.create (entityManager, x, y)
     local inst = {}
 
     inst.tag = "player"

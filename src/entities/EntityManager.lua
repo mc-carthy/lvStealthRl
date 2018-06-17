@@ -40,6 +40,14 @@ local getGrid = function(self)
     end
 end
 
+local function getKeycards(self)
+    local keycards = {}
+    for _, entity in ipairs(self:getEntities()) do
+        if entity.tag == "keycard" then table.insert(keycards, entity) end
+    end
+    return keycards
+end
+
 local _cleanUpDoneEntities = function(self)
     for i = #self.entities, 1, -1 do
         local e = self.entities[i]
@@ -100,6 +108,7 @@ entityManager.create = function()
     inst.getEntities = getEntities
     inst.getPlayer = getPlayer
     inst.getGrid = getGrid
+    inst.getKeycards = getKeycards
     inst.getAudioBreadcrumbs = getAudioBreadcrumbs
     inst.getVisualBreadcrumbs = getVisualBreadcrumbs
 
