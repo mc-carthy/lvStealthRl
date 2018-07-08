@@ -188,7 +188,7 @@ end
 
 local function draw(self)
     if playerDebugFlag then
-        love.graphics.setColor(63, 63, 63, 63)
+        love.graphics.setColor(0.25, 0.25, 0.25, 0.25)
         love.graphics.line(self.x, self.y, self.mouseX, self.mouseY)
         -- Draw collision markers
         -- for _, col in ipairs(self.cornerOffsets) do
@@ -205,20 +205,20 @@ local function draw(self)
             break
         end
     end
-    love.graphics.setColor(63, 63, 63, 127)
+    love.graphics.setColor(0.25, 0.25, 60.253, 0.5)
     love.graphics.line(self.x, self.y, nextKeycard.x, nextKeycard.y)
     -- love.graphics.setColor(0, 255, 0)
     -- love.graphics.circle("fill", self.x, self.y, self.r)
     love.graphics.setColor(unpack(self.cursorColour))
     -- love.graphics.circle("line", self.mouseX, self.mouseY, 5)
     love.graphics.circle("line", self.cursorPos.x, self.cursorPos.y, 5)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(playerImage, self.x, self.y, -math.rad(self.rot), 0.5, 0.5, 32, 32)
 end
 
 local function drawScreenSpace(self)
     if playerDebugFlag then
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(1, 1, 1, 1)
         love.graphics.print("Current grid pos: " .. self.gridX .. "-" .. self.gridY, 50, 10)
         love.graphics.print("Player rotation: " .. math.floor(self.rot), 50, 30)
         love.graphics.print("Speed multiplier: " .. string.format("%.2f", getSpeedMultiplier(self)), 50, 50)

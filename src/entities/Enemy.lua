@@ -256,9 +256,9 @@ end
 
 local _drawLos = function(self)
     if self.playerInLos then
-        love.graphics.setColor(0, 191, 0, 255)
+        love.graphics.setColor(0, 0.75, 0, 1)
     else
-        love.graphics.setColor(191, 0, 0, 255)
+        love.graphics.setColor(0.75, 0, 0, 1)
     end
     for i = 1, #self.enemyVisionTiles do
         love.graphics.rectangle('fill', (self.enemyVisionTiles[i][1] - 1) * self.grid.cellSize, (self.enemyVisionTiles[i][2] - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
@@ -266,32 +266,32 @@ local _drawLos = function(self)
 end
 
 local _drawLastValidGridPos = function(self)
-    love.graphics.setColor(127, 127, 0, 127)
+    love.graphics.setColor(0.5, 0.5, 0, 0.5)
     love.graphics.rectangle('fill', (self.lastGridPos.x - 1) * self.grid.cellSize, (self.lastGridPos.y - 1) * self.grid.cellSize, self.grid.cellDrawSize, self.grid.cellDrawSize)
 end
 
 local _drawBreadcrumbInfo = function(self)
     for _, v in pairs(self.audibleBreadcrumbs) do
-        love.graphics.setColor(255, 255, 255, 255 * v.currentLifetime / v.initialLifetime)
+        love.graphics.setColor(1, 1, 1, 1 * v.currentLifetime / v.initialLifetime)
         love.graphics.line(self.x, self.y, v.x, v.y)
     end
     for _, v in pairs(self.visualBreadcrumbs) do
-        love.graphics.setColor(191, 0, 191, 191 * v.currentLifetime / v.initialLifetime)
+        love.graphics.setColor(0.75, 0, 0.75, 0.75 * v.currentLifetime / v.initialLifetime)
         love.graphics.line(self.x, self.y, v.x, v.y)
     end
     if self.priorityAudibleBreadcrumb then
-        love.graphics.setColor(127, 127, 127, 255)
+        love.graphics.setColor(0.5, 0.5, 0.5, 1)
         love.graphics.line(self.x, self.y, self.priorityAudibleBreadcrumb.x, self.priorityAudibleBreadcrumb.y)
     end
     if self.priorityVisualBreadcrumb then
-        love.graphics.setColor(127, 0, 127, 255)
+        love.graphics.setColor(0.5, 0, 0.5, 1)
         love.graphics.line(self.x, self.y, self.priorityVisualBreadcrumb.x, self.priorityVisualBreadcrumb.y)
     end
 end
 
 local _drawPathfindingInfo = function(self)
     if self.path ~= nil then
-        love.graphics.setColor(191, 0, 191, 255)
+        love.graphics.setColor(0.75, 0, 0.75, 1)
         for i = 1, #self.path - 1 do
             love.graphics.line(
                 self.path[i][1] * self.grid.cellSize - self.grid.cellSize / 2,
@@ -328,11 +328,11 @@ local draw = function(self)
     local viewAngleX2, viewAngleY2 = Vector2.pointFromRotDist(self.rot + self.viewAngle / 2, self.viewDist)
     
     if self.alertStatus == "red" then
-        love.graphics.setColor(191, 0, 0, 127)
+        love.graphics.setColor(0.75, 0, 0, 0.5)
     elseif self.alertStatus == "yellow" then
-        love.graphics.setColor(191, 191, 0, 127)
+        love.graphics.setColor(0.75, 0.75, 0, 0.5)
     elseif self.alertStatus == "green" then
-        love.graphics.setColor(0, 127, 191, 127)
+        love.graphics.setColor(0, 0.5, 0.75, 0.5)
     end
     love.graphics.arc("fill", self.x, self.y, self.viewDist, -math.rad(self.rot + self.viewAngle / 2), -math.rad(self.rot - self.viewAngle / 2))
 
@@ -345,7 +345,7 @@ local draw = function(self)
     -- love.graphics.circle("fill", self.x, self.y, self.radius)
     -- love.graphics.setColor(0, 0, 0)
     -- love.graphics.circle("line", self.x, self.y, self.radius)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(enemyImage, self.x, self.y, -math.rad(self.rot), 0.5, 0.5, 32, 32)
     -- love.graphics.draw(drawable (Drawable), x (number), y (number), r (number), sx (number), sy (number), ox (number), oy (number), kx (number), ky (number))
 end
