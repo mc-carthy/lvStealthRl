@@ -12,12 +12,23 @@ function love.load()
     }
 
     stateMachine:change('mainMenu')
+
+    love.keyboard.keysPressed = {}
 end
 
 function love.update(dt)
     stateMachine:update(dt)
+    love.keyboard.keysPressed = {}
 end
 
 function love.draw()
     stateMachine:draw()
+end
+
+function love.keypressed(key)
+    love.keyboard.keysPressed[key] = true
+end
+
+function love.keyboard.wasPressed(key)
+    return love.keyboard.keysPressed[key]
 end
