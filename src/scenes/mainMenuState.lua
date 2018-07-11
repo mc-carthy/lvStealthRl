@@ -5,7 +5,9 @@ function MainMenuState.update(dt)
         love.event.quit()
     end
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        stateMachine:change('firstLevel')
+        stateMachine:change('firstLevel', {
+            map = readMapFromImage('assets/maps/testMap0.png')
+        })
     end
 end
 
