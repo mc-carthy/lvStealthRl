@@ -22,6 +22,8 @@ function Player:update(dt)
         dx = dx + 1
     end
 
+    dx, dy = normalise(dx, dy)
+
     self.x = self.x + (dx * speed * dt)
     self.y = self.y + (dy * speed * dt)
 end
