@@ -9,7 +9,6 @@ function readMapFromImage(filePath)
         mapData[x] = {}
         for y = 1, imageHeight do
             mapData[x][y] = { imageData:getPixel(x - 1, y - 1) }
-            print('Colour at x:' .. x .. '-y:' .. y .. ' r: ' .. mapData[x][y][1] .. ' g: ' .. mapData[x][y][2] .. ' b: ' .. mapData[x][y][3] .. ' a: ' .. mapData[x][y][4])
         end
     end
 
