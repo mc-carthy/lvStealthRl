@@ -71,8 +71,14 @@ end
 
 function Player:update(dt)
     self:fire()
-    for k, v in pairs(self.bullets) do
+    for i, v in ipairs(self.bullets) do
+        local gridX, gridY = getGridPos(v.x, v.y)
+
         v:update(dt)
+        
+        if self.map[gridX][gridY].collidable then
+            table.remove(self.bullets, i)
+        end
     end
 
     self:move(dt)
