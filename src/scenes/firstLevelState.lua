@@ -3,7 +3,8 @@ FirstLevelState = Class{ __includes = BaseState }
 function FirstLevelState:enter(params)
     self.map = params.map
     self.entityManager = EntityManager()
-    self.player = self.entityManager:add(Player(250, 250, self.map))
+    local playerX, playerY = self:findRandomFreeSpaceForPlayer()
+    self.player = self.entityManager:add(Player(playerX, playerY, self.map))
 end
 
 function FirstLevelState:update(dt)
@@ -29,6 +30,15 @@ function FirstLevelState:drawMap()
         for y = 1, #self.map[1] do
             love.graphics.setColor(self.map[x][y].drawColour)
             love.graphics.rectangle('fill', x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+        end
+    end
+end
+
+function FirstLevelState:findRandomFreeSpaceForPlayer()
+    while true do
+        local x, y = math.floor(math.random() * self.map.xSize + 1), math.floor(math.random() * self.map.ySize + 1)
+        if self.map[x][y].collidable == false then
+            return x * GRID_SIZE, y * GRID_SIZE
         end
     end
 end
