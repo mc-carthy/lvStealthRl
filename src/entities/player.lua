@@ -72,7 +72,7 @@ end
 function Player:update(dt)
     self:fire()
     for i, v in ipairs(self.bullets) do
-        local gridX, gridY = getGridPos(v.x, v.y)
+        local gridX, gridY = getGridPos(v.x + v.dx, v.y + v.dx)
 
         v:update(dt)
         

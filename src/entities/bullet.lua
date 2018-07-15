@@ -3,17 +3,18 @@ Bullet = Class{}
 function Bullet:init(params)
     self.x = params.x or 0
     self.y = params.y or 0
+    self.dx, self.dy = 0, 0
     self.rot = params.rot or 0
-    self.speed = params.speed or 150
+    self.speed = params.speed or 250
     self.rad = 5
 end
 
 function Bullet:update(dt)
-    local dx = self.speed * dt * math.cos(self.rot)
-    local dy = self.speed * dt * math.sin(self.rot)
+    self.dx = self.speed * dt * math.cos(self.rot)
+    self.dy = self.speed * dt * math.sin(self.rot)
 
-    self.x = self.x + dx
-    self.y = self.y + dy
+    self.x = self.x + self.dx
+    self.y = self.y + self.dy
 end
 
 function Bullet:draw()
