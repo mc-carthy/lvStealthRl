@@ -10,3 +10,4 @@ require('src/scenes/mainMenuState')
 require('src/scenes/firstLevelState')
 
 require('src/entities/player')
+require('src/entities/bullet')

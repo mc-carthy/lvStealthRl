@@ -13,6 +13,18 @@ function Player:init(x, y, map)
     self.speed = 1
     self.dx, self.dy = 0, 0
     self.colour = { 1, 1, 1, 1 }
+    self.bullets = {}
+end
+
+function Player:fire()
+    if love.mouse.wasPressed(1) then
+        local b = Bullet({
+            x = self.x,
+            y = self.y,
+            rot = self.rot
+        })
+        table.insert(self.bullets, b)
+    end
 end
 
 function Player:move(dt)
@@ -58,10 +70,18 @@ function Player:detectCollisions()
 end
 
 function Player:update(dt)
+    self:fire()
+    for k, v in pairs(self.bullets) do
+        v:update(dt)
+    end
+
     self:move(dt)
 end
 
 function Player:draw()
+    for k, v in pairs(self.bullets) do
+        v:draw()
+    end
     love.graphics.setColor(unpack(self.colour))
     love.graphics.draw(playerImage, self.x, self.y, self.rot, 0.5, 0.5, 32, 32)
     love.graphics.setColor(1, 1, 1, 1)

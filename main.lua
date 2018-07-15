@@ -14,11 +14,13 @@ function love.load()
     stateMachine:change('mainMenu')
 
     love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
 end
 
 function love.update(dt)
     stateMachine:update(dt)
     love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
 end
 
 function love.draw()
@@ -29,6 +31,14 @@ function love.keypressed(key)
     love.keyboard.keysPressed[key] = true
 end
 
+function love.mousepressed(x, y, button, isTouch)
+    love.mouse.buttonsPressed[button] = true
+end
+
 function love.keyboard.wasPressed(key)
     return love.keyboard.keysPressed[key]
+end
+
+function love.mouse.wasPressed(button)
+    return love.mouse.buttonsPressed[button]
 end
