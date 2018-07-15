@@ -12,7 +12,7 @@ function MainMenuState.update(dt)
                 ySize = 40,
                 percentFill = 0.45,
                 smoothingIterations = 5,
-                mapScale = 1
+                mapScale = 2
             })
         })
     end

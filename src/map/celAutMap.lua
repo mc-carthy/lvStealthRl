@@ -12,6 +12,9 @@ function CelAutMap:init(params)
     for i = 1, self.smoothingIterations do
         self:smoothGrid()
     end
+    if self.mapScale > 1 then
+        self:expandGrid()
+    end
     self:transformGridToTiles()
 end
 
@@ -68,6 +71,28 @@ function CelAutMap:smoothGrid()
             elseif neighbourCount < 4 then
                 self[x][y] = false
             end
+        end
+    end
+end
+
+function CelAutMap:expandGrid()
+    local tempGrid = {}
+    for x = 1, self.xSize * self.mapScale do
+        tempGrid[x] = {}
+        for y = 1, self.ySize * self.mapScale do
+            if self[math.floor((x + 1) / self.mapScale)] and self[math.floor((x + 1) / self.mapScale)][math.floor((y + 1) / self.mapScale)] then
+                tempGrid[x][y] = self[math.floor((x + 1) / self.mapScale)][math.floor((y + 1) / self.mapScale)]
+            end
+        end
+    end
+    
+    self.xSize = self.xSize * self.mapScale
+    self.ySize = self.ySize * self.mapScale
+
+    for x = 1, self.xSize do
+        self[x] = {}
+        for y = 1, self.ySize do
+            self[x][y] = tempGrid[x][y]     
         end
     end
 end
