@@ -1,12 +1,15 @@
 Player = Class{}
 
-local speed = 50
+local baseSpeed = 50
+local runSpeedMultiplier = 1.5
+local crouchSpeedMultiplier = 0.5
 local playerImage = love.graphics.newImage("assets/img/kenneyTest/player.png")
 
 function Player:init(x, y)
     self.x = x or 0
     self.y = y or 0
     self.rot = 0
+    self.speed = 1
 end
 
 function Player:update(dt)
@@ -25,10 +28,19 @@ function Player:update(dt)
         dx = dx + 1
     end
 
+    if love.keyboard.isDown('lshift') or love.keyboard.isDown('rshift') then
+        self.speed = baseSpeed * runSpeedMultiplier
+    elseif love.keyboard.isDown('lctrl') or love.keyboard.isDown('rctrl') then
+        self.speed = baseSpeed * crouchSpeedMultiplier
+    else 
+        self.speed = baseSpeed
+    end
+
+
     dx, dy = normalise(dx, dy)
 
-    self.x = self.x + (dx * speed * dt)
-    self.y = self.y + (dy * speed * dt)
+    self.x = self.x + (dx * self.speed * dt)
+    self.y = self.y + (dy * self.speed * dt)
     self.rot = math.atan2(mouseY - self.y, mouseX - self.x)
 end
 
