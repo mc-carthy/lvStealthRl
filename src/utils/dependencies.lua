@@ -3,6 +3,8 @@ require('src/utils/constants')
 require('src/utils/utils')
 require('src/utils/stateMachine')
 
+TileDictionary = require('src/map/tileDictionary')
+
 require('src/utils/baseState')
 require('src/scenes/mainMenuState')
 require('src/scenes/firstLevelState')
