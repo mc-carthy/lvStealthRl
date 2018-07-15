@@ -18,4 +18,10 @@ TileDictionary['interiorFloor'] = {
     drawColour = { 0.1, 0.1, 0.1, 1 }
 }
 
+TileDictionary['exteriorFloor'] = {
+    collidable = false,
+    importColour = { 0.25, 0.25, 0, 1 },
+    drawColour = { 0.25, 0.25, 0, 1 }
+}
+
 return TileDictionary

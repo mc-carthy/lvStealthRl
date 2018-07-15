@@ -3,7 +3,7 @@ FirstLevelState = Class{ __includes = BaseState }
 function FirstLevelState:enter(params)
     self.map = params.map
     self.entityManager = EntityManager()
-    self.player = self.entityManager:add(Player(100, 100, self.map))
+    self.player = self.entityManager:add(Player(250, 250, self.map))
 end
 
 function FirstLevelState:update(dt)

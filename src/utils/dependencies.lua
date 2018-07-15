@@ -10,6 +10,7 @@ require('src/scenes/mainMenuState')
 require('src/scenes/firstLevelState')
 
 require('src/map/imageMap')
+require('src/map/celAutMap')
 
 require('src/entities/entityManager')
 require('src/entities/player')
