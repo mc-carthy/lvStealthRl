@@ -20,6 +20,12 @@ function readMapFromImage(filePath)
     return mapData
 end
 
+function getGridPos(x, y)
+    local gridX = math.floor(x / CELL_SIZE)
+    local gridY = math.floor(y / CELL_SIZE)
+    return gridX, gridY
+end
+
 function table.equal(t1, t2)
     for i = 1, #t1 do
         if t2[i] == nil then return false end
