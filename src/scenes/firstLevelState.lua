@@ -22,13 +22,7 @@ end
 function FirstLevelState:drawMap()
     for x = 1, #self.map do
         for y = 1, #self.map[1] do
-            if table.equal(mapData[x][y],TileDictionary['interiorWall'].importColour) then
-                love.graphics.setColor(unpack(TileDictionary['interiorWall'].drawColour))
-            elseif table.equal(mapData[x][y], TileDictionary['outerWall'].importColour) then
-                love.graphics.setColor(unpack(TileDictionary['outerWall'].drawColour))
-            elseif table.equal(mapData[x][y], TileDictionary['interiorFloor'].importColour) then
-                love.graphics.setColor(unpack(TileDictionary['interiorFloor'].drawColour))
-            end
+            love.graphics.setColor(mapData[x][y].drawColour)
             love.graphics.rectangle('fill', x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
         end
     end

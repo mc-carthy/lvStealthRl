@@ -8,7 +8,12 @@ function readMapFromImage(filePath)
     for x = 1, imageWidth do
         mapData[x] = {}
         for y = 1, imageHeight do
-            mapData[x][y] = { imageData:getPixel(x - 1, y - 1) }
+            local colourTable = { imageData:getPixel(x - 1, y - 1) }
+            for k, v in pairs(TileDictionary) do
+                if table.equal(colourTable, v.importColour) then
+                    mapData[x][y] = v
+                end
+            end
         end
     end
 

@@ -56,13 +56,14 @@ end
 
 function Player:detectCollisions()
     local gridX, gridY = self:getGridPos()
-    if table.equal(self.map[gridX][gridY], { 0, 0, 0, 1 }) then
-        self.colour = { 1, 0, 0, 1 }
-    elseif table.equal(self.map[gridX][gridY], { 0, 0, 1, 1 }) then
-        self.colour = { 0, 0, 1, 1 }
-    else 
-        self.colour = { 1, 1, 1, 1 }
-    end
+    -- if table.equal(self.map[gridX][gridY], { 0, 0, 0, 1 }) then
+    --     self.colour = { 1, 0, 0, 1 }
+    -- elseif table.equal(self.map[gridX][gridY], { 0, 0, 1, 1 }) then
+    --     self.colour = { 0, 0, 1, 1 }
+    -- else 
+    --     self.colour = { 1, 1, 1, 1 }
+    -- end
+    self.colour = mapData[gridX][gridY].drawColour
 end
 
 function Player:update(dt)
