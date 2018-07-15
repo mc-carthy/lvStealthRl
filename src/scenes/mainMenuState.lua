@@ -1,4 +1,4 @@
-MainMenuState = Class{ __includes = BaseState}
+MainMenuState = Class{ __includes = BaseState }
 
 function MainMenuState.update(dt)
     if love.keyboard.wasPressed('escape') then
@@ -6,7 +6,7 @@ function MainMenuState.update(dt)
     end
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
         stateMachine:change('firstLevel', {
-            map = readMapFromImage('assets/maps/testMap0.png')
+            map = ImageMap('assets/maps/testMap0.png')
         })
     end
 end

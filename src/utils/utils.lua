@@ -1,28 +1,6 @@
-function readMapFromImage(filePath)
-    imageData = love.image.newImageData(filePath)
-    imageWidth = imageData:getWidth()
-    imageHeight = imageData:getHeight()
-
-    mapData = {}
-
-    for x = 1, imageWidth do
-        mapData[x] = {}
-        for y = 1, imageHeight do
-            local colourTable = { imageData:getPixel(x - 1, y - 1) }
-            for k, v in pairs(TileDictionary) do
-                if table.equal(colourTable, v.importColour) then
-                    mapData[x][y] = v
-                end
-            end
-        end
-    end
-
-    return mapData
-end
-
 function getGridPos(x, y)
-    local gridX = math.floor(x / CELL_SIZE)
-    local gridY = math.floor(y / CELL_SIZE)
+    local gridX = math.floor(x / GRID_SIZE)
+    local gridY = math.floor(y / GRID_SIZE)
     return gridX, gridY
 end
 

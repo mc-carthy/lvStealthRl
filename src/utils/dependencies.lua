@@ -9,6 +9,8 @@ require('src/utils/baseState')
 require('src/scenes/mainMenuState')
 require('src/scenes/firstLevelState')
 
+require('src/map/imageMap')
+
 require('src/entities/entityManager')
 require('src/entities/player')
 require('src/entities/bullet')
