@@ -15,7 +15,7 @@ function readMapFromImage(filePath)
     return mapData
 end
 
-function compareTables(t1, t2)
+function table.equal(t1, t2)
     for i = 1, #t1 do
         if t2[i] == nil then return false end
         if t1[i] ~= t2[i] then return false end

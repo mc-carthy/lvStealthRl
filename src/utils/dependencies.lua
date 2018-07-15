@@ -1,4 +1,5 @@
 Class = require('src/utils/class')
+require('src/utils/constants')
 require('src/utils/utils')
 require('src/utils/stateMachine')
 
