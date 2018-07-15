@@ -4,19 +4,20 @@ CELL_SIZE = 20
 
 function FirstLevelState:enter(params)
     self.map = params.map
-    self.player = Player(100, 100, self.map)
+    self.entityManager = EntityManager()
+    self.player = self.entityManager:add(Player(100, 100, self.map))
 end
 
 function FirstLevelState:update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
-    self.player:update(dt)
+    self.entityManager:update(dt)
 end
 
 function FirstLevelState:draw()
     self:drawMap()
-    self.player:draw()
+    self.entityManager:draw()
 end
 
 function FirstLevelState:drawMap()
