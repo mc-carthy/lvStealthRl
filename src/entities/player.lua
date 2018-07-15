@@ -29,7 +29,6 @@ end
 
 function Player:move(dt)
     self.dx, self.dy = 0, 0
-    local mouseX, mouseY = love.mouse.getPosition()
     if love.keyboard.isDown('up') or love.keyboard.isDown('w') then
         self.dy = self.dy - 1
     end
@@ -58,7 +57,7 @@ function Player:move(dt)
     self.x = self.x + self.dx
     self.y = self.y + self.dy
 
-    self.rot = math.atan2(mouseY - self.y, mouseX - self.x)
+    self.rot = math.atan2(MOUSE_Y - self.y, MOUSE_X - self.x)
 end
 
 function Player:detectCollisions()

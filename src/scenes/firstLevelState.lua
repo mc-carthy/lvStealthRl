@@ -12,12 +12,18 @@ function FirstLevelState:update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
+    local mX, mY = love.mouse.getPosition()
+    MOUSE_X = mX + self.player.x - SCREEN_WIDTH / 2
+    MOUSE_Y = mY + self.player.y - SCREEN_HEIGHT / 2
     self.entityManager:update(dt)
 end
 
 function FirstLevelState:draw()
+    love.graphics.push()
+    love.graphics.translate(-self.player.x + SCREEN_WIDTH / 2, -self.player.y + SCREEN_HEIGHT / 2)
     self:drawMap()
     self.entityManager:draw()
+    love.graphics.pop()
 end
 
 function FirstLevelState:drawMap()
