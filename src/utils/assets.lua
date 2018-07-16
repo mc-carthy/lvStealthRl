@@ -16,3 +16,8 @@ FONTS = {
     ['lineBeam32'] = love.graphics.newFont('assets/fonts/lineBeam.ttf', 32),
     ['sewer32'] = love.graphics.newFont('assets/fonts/sewer.ttf', 32),
 }
+
+SFX = {
+    ['shot'] = love.audio.newSource('assets/audio/sfx/shot.wav', 'static'),
+    ['bulletImpact'] = love.audio.newSource('assets/audio/sfx/bulletImpact.wav', 'static')
+}

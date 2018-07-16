@@ -18,6 +18,8 @@ end
 
 function Player:fire()
     if love.mouse.wasPressed(1) then
+        SFX['shot']:stop()
+        SFX['shot']:play()
         local b = Bullet({
             x = self.x,
             y = self.y,
@@ -76,6 +78,8 @@ function Player:update(dt)
         v:update(dt)
         
         if self.map[gridX][gridY].collidable then
+            SFX['bulletImpact']:stop()
+            SFX['bulletImpact']:play()
             table.remove(self.bullets, i)
         end
     end
