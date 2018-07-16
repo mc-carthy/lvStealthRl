@@ -17,3 +17,7 @@ function normalise(x, y)
     local ratio = 1 / math.sqrt(math.pow(x, 2) + math.pow(y, 2))
     return x * ratio, y * ratio
 end
+
+function math.clamp(value, min, max)
+    return math.max(math.min(value, max), min)
+end
