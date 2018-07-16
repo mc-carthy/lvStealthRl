@@ -1,5 +1,12 @@
 MainMenuState = Class{ __includes = BaseState }
 
+local mainMenuFont
+
+function MainMenuState:enter()
+    mainMenuFont = FONTS['lineBeam32']
+    love.graphics.setFont(mainMenuFont)
+end
+
 function MainMenuState.update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
@@ -19,6 +26,8 @@ function MainMenuState.update(dt)
 end
 
 function MainMenuState.draw()
-    love.graphics.print('Welcome to the main menu!', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    love.graphics.print('Press Start!', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 40)
+    love.graphics.setColor(1, 0, 1, 1)
+    love.graphics.printf('WELCOME TO THE MAIN MENU!', 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, 'center')
+    love.graphics.printf('PRESS ENTER!', 0, SCREEN_HEIGHT / 2 + 40, SCREEN_WIDTH, 'center')
+    love.graphics.setColor(1, 1, 1, 1)
 end
