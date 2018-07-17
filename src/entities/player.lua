@@ -91,6 +91,8 @@ function Player:draw()
     for k, v in pairs(self.bullets) do
         v:draw()
     end
+    love.graphics.setColor(0.5, 0.5, 0.5, 1)
+    love.graphics.line(self.x, self.y, MOUSE_X, MOUSE_Y)
     love.graphics.setColor(unpack(self.colour))
     love.graphics.draw(playerImage, self.x, self.y, self.rot, 0.5, 0.5, 32, 32)
     love.graphics.setColor(1, 1, 1, 1)
