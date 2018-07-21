@@ -3,9 +3,9 @@ FirstLevelState = Class{ __includes = BaseState }
 function FirstLevelState:enter(params)
     self.map = params.map
     self.entityManager = EntityManager()
-    local playerX, playerY = self:findRandomFreeSpaceForPlayer()
+    local playerX, playerY = self:findRandomFreeSpace()
     self.player = self.entityManager:add(Player(playerX, playerY, self.map))
-    self.entityManager:add(Enemy(0, 0))
+    self.entityManager:add(Enemy(self:findRandomFreeSpace()))
     self.camera = Camera({
         target = self.player
     })
@@ -36,7 +36,7 @@ function FirstLevelState:drawMap()
     end
 end
 
-function FirstLevelState:findRandomFreeSpaceForPlayer()
+function FirstLevelState:findRandomFreeSpace()
     while true do
         local x, y = math.floor(math.random() * self.map.xSize + 1), math.floor(math.random() * self.map.ySize + 1)
         if self.map[x][y].collidable == false then
