@@ -14,9 +14,13 @@ function Enemy:hit(object)
         if self.hp then
             self.hp = self.hp - object.damage
             if self.hp <= 0 then
+                SFX['enemyHit']:stop()
+                SFX['enemyHit']:play()
                 self.done = true
             end
         else
+            SFX['enemyHit']:stop()
+            SFX['enemyHit']:play()
             self.done = true
         end
     end

@@ -19,5 +19,6 @@ FONTS = {
 
 SFX = {
     ['shot'] = love.audio.newSource('assets/audio/sfx/shot.wav', 'static'),
-    ['bulletImpact'] = love.audio.newSource('assets/audio/sfx/bulletImpact.wav', 'static')
+    ['bulletImpact'] = love.audio.newSource('assets/audio/sfx/bulletImpact.wav', 'static'),
+    ['enemyHit'] = love.audio.newSource('assets/audio/sfx/enemyHit.wav', 'static')
 }
