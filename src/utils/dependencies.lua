@@ -3,6 +3,7 @@ require('src/utils/constants')
 require('src/utils/assets')
 require('src/utils/utils')
 require('src/utils/stateMachine')
+require('src/utils/camera')
 
 TileDictionary = require('src/map/tileDictionary')
 

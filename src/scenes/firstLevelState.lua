@@ -5,39 +5,25 @@ function FirstLevelState:enter(params)
     self.entityManager = EntityManager()
     local playerX, playerY = self:findRandomFreeSpaceForPlayer()
     self.player = self.entityManager:add(Player(playerX, playerY, self.map))
-    self.zoomLevel = 1
+    self.camera = Camera({
+        target = self.player
+    })
 end
 
 function FirstLevelState:update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
-    if love.keyboard.isDown('z') then
-        self.zoomLevel = self.zoomLevel / 0.99
-    end
-    if love.keyboard.isDown('x') then
-        self.zoomLevel = self.zoomLevel * 0.99
-    end
-    self.zoomLevel = math.clamp(self.zoomLevel, 0.5, 2)
-    MOUSE_X, MOUSE_Y = self:screenToWorld(love.mouse.getPosition())
+    self.camera:update(dt)
+    MOUSE_X, MOUSE_Y = self.camera:screenToWorld(love.mouse.getPosition())
     self.entityManager:update(dt)
 end
 
 function FirstLevelState:draw()
-    love.graphics.push()
-    love.graphics.translate(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    love.graphics.scale(self.zoomLevel, self.zoomLevel)
-    love.graphics.translate(-self.player.x, -self.player.y)
+    self.camera:set()
     self:drawMap()
     self.entityManager:draw()
-    love.graphics.pop()
-end
-
-function FirstLevelState:screenToWorld(x, y)
-    z = self.zoomLevel
-    x = (x / z) + self.player.x - (SCREEN_WIDTH / z / 2) 
-    y = (y / z) + self.player.y - (SCREEN_HEIGHT / z / 2)
-    return x, y
+    self.camera:unset()
 end
 
 function FirstLevelState:drawMap()
