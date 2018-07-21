@@ -21,3 +21,9 @@ end
 function math.clamp(value, min, max)
     return math.max(math.min(value, max), min)
 end
+
+Vector2 = {}
+
+function Vector2.distance(a, b)
+    return math.sqrt(math.pow(a.x - b.x, 2) + math.pow(a.y - b.y, 2))
+end
