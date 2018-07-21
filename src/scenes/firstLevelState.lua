@@ -5,6 +5,7 @@ function FirstLevelState:enter(params)
     self.entityManager = EntityManager()
     local playerX, playerY = self:findRandomFreeSpaceForPlayer()
     self.player = self.entityManager:add(Player(playerX, playerY, self.map))
+    self.entityManager:add(Enemy(0, 0))
     self.camera = Camera({
         target = self.player
     })
@@ -30,7 +31,7 @@ function FirstLevelState:drawMap()
     for x = 1, #self.map do
         for y = 1, #self.map[1] do
             love.graphics.setColor(self.map[x][y].drawColour)
-            love.graphics.rectangle('fill', x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+            love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
         end
     end
 end

@@ -108,3 +108,7 @@ function CelAutMap:transformGridToTiles()
         end
     end
 end
+
+function CelAutMap:collidable(x, y)
+    return self[x + 1][y + 1].collidable
+end

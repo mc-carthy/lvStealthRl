@@ -66,8 +66,8 @@ function Player:detectCollisions()
     local gridX, gridY = getGridPos(self.x, self.y)
     local nextGridX, nextGridY = getGridPos(self.x + self.dx, self.y + self.dy)
 
-    if self.map[nextGridX][gridY].collidable then self.dx = 0 end
-    if self.map[gridX][nextGridY].collidable then self.dy = 0 end
+    if self.map:collidable(nextGridX, gridY) then self.dx = 0 end
+    if self.map:collidable(gridX, nextGridY) then self.dy = 0 end
 end
 
 function Player:update(dt)
@@ -77,7 +77,7 @@ function Player:update(dt)
 
         v:update(dt)
         
-        if self.map[gridX][gridY].collidable then
+        if self.map:collidable(gridX, gridY) then
             SFX['bulletImpact']:stop()
             SFX['bulletImpact']:play()
             table.remove(self.bullets, i)
@@ -94,6 +94,7 @@ function Player:draw()
     love.graphics.setColor(0.5, 0.5, 0.5, 1)
     love.graphics.line(self.x, self.y, MOUSE_X, MOUSE_Y)
     love.graphics.setColor(unpack(self.colour))
+    -- TODO: Extract the image size constants below
     love.graphics.draw(playerImage, self.x, self.y, self.rot, 0.5, 0.5, 32, 32)
     love.graphics.setColor(1, 1, 1, 1)
 end

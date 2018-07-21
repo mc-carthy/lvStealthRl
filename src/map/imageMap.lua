@@ -5,6 +5,8 @@ function ImageMap:init(filePath)
     imageWidth = imageData:getWidth()
     imageHeight = imageData:getHeight()
 
+    self.xSize, self.ySize = imageWidth, imageHeight
+
     for x = 1, imageWidth do
         self[x] = {}
         for y = 1, imageHeight do
@@ -16,4 +18,8 @@ function ImageMap:init(filePath)
             end
         end
     end
+end
+
+function ImageMap:collidable(x, y)
+    return self[x + 1][y + 1].collidable
 end
