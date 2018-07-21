@@ -19,9 +19,7 @@ function FirstLevelState:update(dt)
         self.zoomLevel = self.zoomLevel * 0.99
     end
     self.zoomLevel = math.clamp(self.zoomLevel, 0.5, 2)
-    local mX, mY = love.mouse.getPosition()
-    MOUSE_X = mX + self.player.x - SCREEN_WIDTH / 2
-    MOUSE_Y = mY + self.player.y - SCREEN_HEIGHT / 2
+    MOUSE_X, MOUSE_Y = self:screenToWorld(love.mouse.getPosition())
     self.entityManager:update(dt)
 end
 
@@ -33,6 +31,13 @@ function FirstLevelState:draw()
     self:drawMap()
     self.entityManager:draw()
     love.graphics.pop()
+end
+
+function FirstLevelState:screenToWorld(x, y)
+    z = self.zoomLevel
+    x = (x / z) + self.player.x - (SCREEN_WIDTH / z / 2) 
+    y = (y / z) + self.player.y - (SCREEN_HEIGHT / z / 2)
+    return x, y
 end
 
 function FirstLevelState:drawMap()
