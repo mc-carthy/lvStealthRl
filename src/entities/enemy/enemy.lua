@@ -8,7 +8,7 @@ function Enemy:init(x, y)
     self.x = x
     self.y = y
     self.rot = 0
-    self.rad = 5
+    self.rad = 7.5
     self.stateMachine = StateMachine {
         ['idle'] = function() return IdleState() end,
         ['investigation'] = function() return InvestigationState() end,

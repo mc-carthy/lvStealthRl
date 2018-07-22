@@ -8,7 +8,7 @@ TileDictionary['interiorWall'] = {
     drawColour = { 0.5, 0.5, 0.5, 1 }
 }
 
-TileDictionary['outerWall'] = {
+TileDictionary['stoneWall'] = {
     collidable = true,
     importColour = { 0, 0, 1, 1 },
     sprite = SPRITES.stoneTile,

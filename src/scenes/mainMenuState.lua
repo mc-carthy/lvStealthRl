@@ -15,8 +15,8 @@ function MainMenuState.update(dt)
         stateMachine:change('firstLevel', {
             -- map = ImageMap('assets/maps/testMap0.png')
             map = CelAutMap({
-                xSize = 280,
-                ySize = 160,
+                xSize = 70,
+                ySize = 40,
                 percentFill = 0.45,
                 smoothingIterations = 5,
                 mapScale = 2
