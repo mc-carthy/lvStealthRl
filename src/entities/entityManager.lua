@@ -41,6 +41,14 @@ function EntityManager:getObjectsByTag(tag)
     end
 end
 
+function EntityManager:getObjectByTag(tag)
+    return self:getObjectsByTag(tag)[1]
+end
+
+function EntityManager:getPlayer()
+    return self:getObjectByTag('player')
+end
+
 function EntityManager:checkCircleCollisionsBetween(a, b)
     local tableA = self:getObjectsByTag(a)
     local tableB = self:getObjectsByTag(b)

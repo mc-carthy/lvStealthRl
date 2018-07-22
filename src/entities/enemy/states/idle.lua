@@ -5,7 +5,9 @@ function IdleState:enter(body)
 end
 
 function IdleState:update(dt)
-
+    if Vector2.distance(self.body, self.body.player) < 200 then
+        self.body.stateMachine:change('investigation', self.body)
+    end
 end
 
 function IdleState:draw()

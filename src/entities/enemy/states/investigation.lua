@@ -5,7 +5,12 @@ function InvestigationState:enter(body)
 end
 
 function InvestigationState:update(dt)
-
+    if Vector2.distance(self.body, self.body.player) < 100 then
+        self.body.stateMachine:change('caution', self.body)
+    end
+    if Vector2.distance(self.body, self.body.player) > 200 then
+        self.body.stateMachine:change('idle', self.body)
+    end
 end
 
 function InvestigationState:draw()

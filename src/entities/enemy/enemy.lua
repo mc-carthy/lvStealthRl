@@ -1,6 +1,8 @@
 Enemy = Class{}
 
+
 function Enemy:init(x, y)
+    self.player = nil
     self.tag = 'enemy'
     self.image = love.graphics.newImage('assets/img/kenneyTest/enemy.png')
     self.x = x
@@ -14,9 +16,6 @@ function Enemy:init(x, y)
         ['alert'] = function() return AlertState() end,
     }
     self.stateMachine:change('idle', self)
-    self.stateMachine:change('investigation', self)
-    -- self.stateMachine:change('caution', self)
-    -- self.stateMachine:change('alert', self)
 end
 
 function Enemy:hit(object)
@@ -37,6 +36,7 @@ function Enemy:hit(object)
 end
 
 function Enemy:update(dt)
+    if self.player == nil then self.player = self.em:getPlayer() end
     self.stateMachine:update(dt)
 end
 
