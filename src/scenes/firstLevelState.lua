@@ -58,6 +58,9 @@ function FirstLevelState:writeMapToCanvas()
                 love.graphics.setColor(self.em.map[x][y].drawColour)
                 love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
             end
+            love.graphics.setColor(0.5, 0.5, 0.5, 1)
+            love.graphics.print(self.em.map.contourMap[x][y], (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE)
+            love.graphics.setColor(1, 1, 1, 1)
         end
     end
     love.graphics.setCanvas()
