@@ -1,8 +1,8 @@
 Camera = Class{}
 
 local zoomSpeed = 0.99
-local maxZoom = 2
-local minZoom = 0.5
+local maxZoom = 20
+local minZoom = 0.1
 
 function Camera:init(params)
     self.target = params.target

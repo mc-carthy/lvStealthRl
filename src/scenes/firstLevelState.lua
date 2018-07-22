@@ -3,6 +3,7 @@ FirstLevelState = Class{ __includes = BaseState }
 function FirstLevelState:enter(params)
     self.em = EntityManager()
     self.em.map = params.map
+    self:writeMapToCanvas()
     local playerX, playerY = self:findRandomFreeSpace()
     self.player = self.em:add(Player(playerX, playerY))
     self.em:add(Enemy(self:findRandomFreeSpace()))
@@ -27,18 +28,23 @@ end
 
 function FirstLevelState:draw()
     self.camera:set()
-    self:drawMap()
+    -- self:drawMap()
+    love.graphics.draw(self.canvas, 0, 0)
     self.em:draw()
     self.camera:unset()
 end
 
-function FirstLevelState:drawMap()
+function FirstLevelState:writeMapToCanvas()
+    self.canvas = love.graphics.newCanvas(GRID_SIZE * self.em.map.xSize, GRID_SIZE * self.em.map.ySize)
+    love.graphics.setCanvas(self.canvas)
+    love.graphics.clear()
     for x = 1, #self.em.map do
         for y = 1, #self.em.map[1] do
             love.graphics.setColor(self.em.map[x][y].drawColour)
             love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
         end
     end
+    love.graphics.setCanvas()
 end
 
 function FirstLevelState:findRandomFreeSpace()

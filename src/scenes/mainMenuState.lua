@@ -4,7 +4,7 @@ local mainMenuFont
 
 function MainMenuState:enter()
     mainMenuFont = FONTS['lineBeam32']
-    love.graphics.setFont(mainMenuFont)
+    defaultFont = love.graphics.getFont()
 end
 
 function MainMenuState.update(dt)
@@ -15,8 +15,8 @@ function MainMenuState.update(dt)
         stateMachine:change('firstLevel', {
             -- map = ImageMap('assets/maps/testMap0.png')
             map = CelAutMap({
-                xSize = 70,
-                ySize = 40,
+                xSize = 280,
+                ySize = 160,
                 percentFill = 0.45,
                 smoothingIterations = 5,
                 mapScale = 2
@@ -27,7 +27,9 @@ end
 
 function MainMenuState.draw()
     love.graphics.setColor(1, 0, 1, 1)
+    love.graphics.setFont(mainMenuFont)
     love.graphics.printf('WELCOME TO THE MAIN MENU!', 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, 'center')
     love.graphics.printf('PRESS ENTER!', 0, SCREEN_HEIGHT / 2 + 40, SCREEN_WIDTH, 'center')
     love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setFont(defaultFont)
 end
