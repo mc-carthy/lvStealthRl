@@ -16,6 +16,7 @@ end
 function EntityManager:add(entity)
     entity.em = self
     table.insert(self.entities, entity)
+    self:sortTableByDrawingDepth()
     return entity
 end
 
@@ -65,6 +66,18 @@ function EntityManager:checkCircleCollisionsBetween(a, b)
             end
         end
     end
+end
+
+function EntityManager:sortTableByDrawingDepth()
+    for _, v in pairs(self.entities) do
+        assert(tonumber(v.depth), v.tag .. ' entity must have a depth value')
+    end
+    local sortFunc = function(a, b)
+        if a.depth and b.depth then
+            return a.depth > b.depth
+        end
+    end
+    table.sort(self.entities, sortFunc)
 end
 
 function EntityManager:update(dt)

@@ -16,6 +16,7 @@ function Enemy:init(x, y)
         ['alert'] = function() return AlertState() end,
     }
     self.stateMachine:change('idle', self)
+    self.depth = 10
 end
 
 function Enemy:hit(object)
@@ -41,6 +42,5 @@ function Enemy:update(dt)
 end
 
 function Enemy:draw()
-    -- love.graphics.draw(self.image, self.x, self.y, self.rot, 0.5, 0.5, 32, 32)
     self.stateMachine:draw()
 end

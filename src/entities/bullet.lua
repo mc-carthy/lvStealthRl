@@ -9,6 +9,7 @@ function Bullet:init(params)
     self.speed = params.speed or 500
     self.rad = 2.5
     self.damage = 10
+    self.depth = 0
 end
 
 function Bullet:gridCollisionCheck()
