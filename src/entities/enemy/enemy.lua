@@ -4,7 +4,7 @@ Enemy = Class{}
 function Enemy:init(x, y)
     self.player = nil
     self.tag = 'enemy'
-    self.image = love.graphics.newImage('assets/img/kenneyTest/enemy.png')
+    self.image = SPRITES.enemy
     self.x = x
     self.y = y
     self.rot = 0

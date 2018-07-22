@@ -4,7 +4,7 @@ function FirstLevelState:enter(params)
     self.em = EntityManager()
     self.em.map = params.map
     self:writeMapToCanvas()
-    writeCanvasToFileSystem(self.canvas, 'celAutMap.png', 'png')
+    -- writeCanvasToFileSystem(self.canvas, 'celAutMap.png', 'png')
     local playerX, playerY = self:findRandomFreeSpace()
     self.player = self.em:add(Player(playerX, playerY))
     self.em:add(Enemy(self:findRandomFreeSpace()))
@@ -29,10 +29,10 @@ end
 
 function FirstLevelState:draw()
     self.camera:set()
-    -- self:drawMap()
     love.graphics.draw(self.canvas, 0, 0)
     self.em:draw()
     self.camera:unset()
+    love.graphics.print('Zoom level: x' .. string.format("%.2f", self.camera.zoomLevel), 10, 30)
 end
 
 function FirstLevelState:writeMapToCanvas()
@@ -41,8 +41,14 @@ function FirstLevelState:writeMapToCanvas()
     love.graphics.clear()
     for x = 1, #self.em.map do
         for y = 1, #self.em.map[1] do
-            love.graphics.setColor(self.em.map[x][y].drawColour)
-            love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+            if self.em.map[x][y].sprite then
+                local spriteW, spriteH = self.em.map[x][y].sprite:getDimensions()
+                local scaleX, scaleY = GRID_SIZE / spriteW, GRID_SIZE / spriteH
+                love.graphics.draw(self.em.map[x][y].sprite, (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, 0, scaleX, scaleY)
+            else
+                love.graphics.setColor(self.em.map[x][y].drawColour)
+                love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+            end
         end
     end
     love.graphics.setCanvas()

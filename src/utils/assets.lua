@@ -22,3 +22,12 @@ SFX = {
     ['bulletImpact'] = love.audio.newSource('assets/audio/sfx/bulletImpact.wav', 'static'),
     ['enemyHit'] = love.audio.newSource('assets/audio/sfx/enemyHit.wav', 'static')
 }
+
+SPRITES = {
+    ['player'] = love.graphics.newImage("assets/img/entities/player.png"),
+    ['enemy'] = love.graphics.newImage("assets/img/entities/enemy.png"),
+    ['dirtTile'] = love.graphics.newImage("assets/img/tiles/dirt.png"),
+    ['grassTile'] = love.graphics.newImage("assets/img/tiles/grass.png"),
+    ['sandTile'] = love.graphics.newImage("assets/img/tiles/sand.png"),
+    ['stoneTile'] = love.graphics.newImage("assets/img/tiles/stone.png"),
+}

@@ -3,7 +3,7 @@ Player = Class{}
 local baseSpeed = 100
 local runSpeedMultiplier = 1.5
 local crouchSpeedMultiplier = 0.5
-local playerImage = love.graphics.newImage("assets/img/kenneyTest/player.png")
+local playerImage = SPRITES.player
 
 function Player:init(x, y)
     self.tag = 'player'
