@@ -27,3 +27,9 @@ Vector2 = {}
 function Vector2.distance(a, b)
     return math.sqrt(math.pow(a.x - b.x, 2) + math.pow(a.y - b.y, 2))
 end
+
+function writeCanvasToFileSystem(canvas, filePath, extension)
+    local imageData = canvas:newImageData()
+    local imageFile = imageData:encode(extension, filePath)
+    print(imageFile:getFilename())
+end

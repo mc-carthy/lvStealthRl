@@ -4,6 +4,7 @@ function FirstLevelState:enter(params)
     self.em = EntityManager()
     self.em.map = params.map
     self:writeMapToCanvas()
+    writeCanvasToFileSystem(self.canvas, 'celAutMap.png', 'png')
     local playerX, playerY = self:findRandomFreeSpace()
     self.player = self.em:add(Player(playerX, playerY))
     self.em:add(Enemy(self:findRandomFreeSpace()))
