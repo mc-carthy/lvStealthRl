@@ -44,7 +44,16 @@ function FirstLevelState:writeMapToCanvas()
             if self.em.map[x][y].sprite then
                 local spriteW, spriteH = self.em.map[x][y].sprite:getDimensions()
                 local scaleX, scaleY = GRID_SIZE / spriteW, GRID_SIZE / spriteH
-                love.graphics.draw(self.em.map[x][y].sprite, (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, 0, scaleX, scaleY)
+                if self.em.map[x][y].tintColour then
+                    love.graphics.setColor(1, 1, 1, 1)
+                    love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+                    love.graphics.setColor(unpack(self.em.map[x][y].tintColour))
+                    -- love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+                    love.graphics.draw(self.em.map[x][y].sprite, (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, 0, scaleX, scaleY)
+                    love.graphics.setColor(1, 1, 1, 1)
+                else
+                    love.graphics.draw(self.em.map[x][y].sprite, (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, 0, scaleX, scaleY)
+                end
             else
                 love.graphics.setColor(self.em.map[x][y].drawColour)
                 love.graphics.rectangle('fill', (x - 1) * GRID_SIZE, (y - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
