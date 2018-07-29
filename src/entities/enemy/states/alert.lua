@@ -2,6 +2,8 @@ AlertState = Class{ __includes = BaseState }
 
 function AlertState:enter(body)
     self.body = body
+    self.body.alertSfx:stop()
+    self.body.alertSfx:play()
 end
 
 function AlertState:update(dt)

@@ -17,6 +17,7 @@ function Enemy:init(x, y)
     }
     self.stateMachine:change('idle', self)
     self.depth = 10
+    self.alertSfx = love.audio.newSource('assets/audio/sfx/alert.wav', 'static')
 end
 
 function Enemy:hit(object)
