@@ -17,6 +17,7 @@ function CelAutMap:init(params)
     end
     self:generateContourMap()
     self:transformGridToTiles()
+    self:addBuildings(4)
 end
 
 function CelAutMap:createGrid()
@@ -99,8 +100,6 @@ function CelAutMap:expandGrid()
 end
 
 function CelAutMap:generateContourMap()
-    local currentContourValue = 0
-
     self.contourMap = {}
     for x = 1, self.xSize do
         self.contourMap[x] = {}
@@ -112,7 +111,11 @@ function CelAutMap:generateContourMap()
             end
         end
     end
+    self:calculateContourMap()
+end
 
+function CelAutMap:calculateContourMap()
+    local currentContourValue = 0
     while not self:countourMapComplete() do
         local contourMapLocal = {}
         for x = 1, self.xSize do
@@ -147,6 +150,45 @@ function CelAutMap:generateContourMap()
     end
 end
 
+function CelAutMap:transformGridToTiles()
+    for x = 1, self.xSize do
+        for y = 1, self.ySize do
+            if self[x][y] then
+                self[x][y] = TileDictionary['stoneWall']
+            else
+                self[x][y] = TileDictionary['exteriorFloor']
+            end
+        end
+    end
+end
+
+function CelAutMap:addBuildings(numBuildings)
+    for i = 1, numBuildings do
+        local peakContour, peakX, peakY = _findHighestContourValue(self)
+        local buildingDimension = math.floor((peakContour - 1) / 2) * 2
+        for x = -buildingDimension / 2, buildingDimension / 2 do
+            for y = -buildingDimension / 2, buildingDimension / 2 do
+                if math.abs(x) == buildingDimension / 2 or math.abs(y) == buildingDimension / 2 then
+                    self[x + peakX][y + peakY] = TileDictionary['stoneWall']
+                end
+                self.contourMap[x + peakX][y + peakY] = 0
+            end
+        end
+
+        -- Reset contour map around building
+        for x = -buildingDimension, buildingDimension do
+            for y = -buildingDimension, buildingDimension do
+                if self.contourMap[x + peakX][y + peakY] > 0 then
+                    self.contourMap[x + peakX][y + peakY] = -1
+                end
+            end
+        end
+
+        -- Recalculate contour map
+        self:calculateContourMap()
+    end
+end
+
 function CelAutMap:countourMapComplete()
     for x = 1, self.xSize do
         for y = 1, self.ySize do
@@ -162,18 +204,20 @@ function CelAutMap:isInGridRange(x, y)
     return x > 0 and x < self.xSize and y > 0 and y < self.ySize
 end
 
-function CelAutMap:transformGridToTiles()
+function CelAutMap:collidable(x, y)
+    return self[x + 1][y + 1].collidable
+end
+
+function _findHighestContourValue(self)
+    local maxVal, maxX, maxY = 0, 0, 0
     for x = 1, self.xSize do
         for y = 1, self.ySize do
-            if self[x][y] then
-                self[x][y] = TileDictionary['stoneWall']
-            else
-                self[x][y] = TileDictionary['exteriorFloor']
+            if self.contourMap[x][y] > maxVal then
+                maxVal = self.contourMap[x][y]
+                maxX = x
+                maxY = y
             end
         end
     end
-end
-
-function CelAutMap:collidable(x, y)
-    return self[x + 1][y + 1].collidable
+    return maxVal, maxX, maxY
 end
