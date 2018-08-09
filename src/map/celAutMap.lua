@@ -154,7 +154,7 @@ function CelAutMap:transformGridToTiles()
     for x = 1, self.xSize do
         for y = 1, self.ySize do
             if self[x][y] then
-                self[x][y] = TileDictionary['stoneWall']
+                self[x][y] = TileDictionary['exteriorWall']
             else
                 self[x][y] = TileDictionary['exteriorFloor']
             end
