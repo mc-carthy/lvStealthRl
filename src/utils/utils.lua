@@ -4,6 +4,23 @@ function getGridPos(x, y)
     return gridX, gridY
 end
 
+function table.contains(tbl, element)
+    for _, value in pairs(tbl) do
+        if value == element then
+            return true
+        end
+    end
+    return false
+end
+
+function table.removeElement(tbl, element)
+    for i, value in ipairs(tbl) do
+        if value == element then
+            table.remove(tbl, i)
+        end
+    end
+end
+
 function table.equal(t1, t2)
     for i = 1, #t1 do
         if t2[i] == nil then return false end

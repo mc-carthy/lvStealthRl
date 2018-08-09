@@ -22,6 +22,11 @@ end
 function Building:generate()
     self:createFoundation()
     self:createRooms(1, 1, self.w - 1, self.h - 1)
+    self:setRoomNeighbours()
+    self:demoNeighbourWalls()
+    self:setRoomNeighbours()
+    self:placeOuterDoor()
+    self:layInteriorFloor()
 end
 
 function Building:createFoundation()
@@ -135,4 +140,92 @@ function Building:createRoom(x, y, w, h)
     end
     self.currentRoomNumber = self.currentRoomNumber + 1
     table.insert(self.rooms, room)
+end
+
+function Building:setRoomNeighbours()
+    for i, roomA in ipairs(self.rooms) do
+        for x, edgeWallA in ipairs(roomA.edgeWalls) do
+            for j, roomB in ipairs(self.rooms) do
+                if roomA ~= roomB then
+                    for y, edgeWallB in ipairs(roomB.edgeWalls) do
+                        if edgeWallA.x == edgeWallB.x and edgeWallA.y == edgeWallB.y then
+                            if not table.contains(roomA.neighbours, roomB) then
+                                table.insert(roomA.neighbours, roomB)
+                                table.insert(roomB.neighbours, roomA)
+                                -- io.write(roomA.number .. " linked to " .. roomB.number)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function Building:demoNeighbourWalls()
+    for i, room in ipairs(self.rooms) do
+        while #room.neighbours ~= 0 do
+            for j, neighbour in ipairs(room.neighbours) do
+                table.removeElement(room.neighbours, neighbour)
+                table.removeElement(neighbour.neighbours, room)
+                self:demoNeighbourWall(room, neighbour)
+            end
+        end
+    end
+end
+
+function Building:demoNeighbourWall(room, neighbour)
+    local sharedWalls = {}
+    for _, selfWall in pairs(room.edgeWalls) do
+        for _, nWall in pairs(neighbour.edgeWalls) do
+            if selfWall.x == nWall.x and selfWall.y == nWall.y then
+                table.insert(sharedWalls, selfWall)
+            end
+        end
+    end
+    local demoWall = sharedWalls[math.random(1, #sharedWalls)]
+    -- TODO: Consider replacing with interiot doors
+    self[demoWall.x][demoWall.y] = TileDictionary["interiorFloor"]
+end
+
+function Building:addOuterDoor(x, y, attempt)
+    -- TODO: Add doors to TileDictionary
+    -- self[x][y] = TileDictionary["doorLevel" .. self.entranceLevel]
+    self[x][y] = TileDictionary["exteriorFloor"]
+end
+
+function Building:placeOuterDoor(numAttempt)
+    -- TODO: Ensure door is not blocked by level walls
+    local attempt = numAttempt or 1
+    local x, y = nil, nil
+    local foundCorner = false
+    local prob = math.random() * 100
+    if prob < 25 then
+        x, y = 1, math.random(2, self.h - 1)
+    elseif prob < 50 then
+        x, y = self.w, math.random(2, self.h - 1)
+    elseif prob < 75 then
+        x, y = math.random(2, self.w - 1), 1
+    else
+        x, y = math.random(2, self.w - 1), self.h
+    end
+    for _, room in pairs(self.rooms) do
+        for _, corner in pairs(room.cornerWalls) do
+            if corner.x == x and corner.y == y then
+                self:placeOuterDoor(attempt + 1)
+                return
+            end
+        end
+    end
+    self:addOuterDoor(x, y, attempt)
+end
+
+function Building:layInteriorFloor()
+    for x = 1, self.w do
+        for y = 1, self.h do
+            if not self[x][y] then
+                self[x][y] = TileDictionary['interiorFloor']
+            end
+        end
+    end
 end
