@@ -1,6 +1,6 @@
 local TileDictionary = {}
 
-TileDictionary['interiorWall'] = {
+TileDictionary['interiorBuildingWall'] = {
     collidable = true,
     importColour = { 0, 0, 0, 1 },
     sprite = SPRITES.stoneTile,
@@ -8,11 +8,19 @@ TileDictionary['interiorWall'] = {
     drawColour = { 0.5, 0.5, 0.5, 1 }
 }
 
-TileDictionary['exteriorWall'] = {
+TileDictionary['exteriorBuildingWall'] = {
     collidable = true,
     importColour = { 0, 0, 1, 1 },
     sprite = SPRITES.stoneTile,
     tintColour = { 0.5, 0.5, 0.5, 1 },
+    drawColour = { 0, 0.5, 0.5, 1 }
+}
+
+TileDictionary['exteriorWall'] = {
+    collidable = true,
+    importColour = { 0, 0, 1, 1 },
+    sprite = SPRITES.stoneTile,
+    tintColour = { 0.25, 0.25, 0.25, 1 },
     drawColour = { 0, 0.5, 0.5, 1 }
 }
 

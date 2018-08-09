@@ -35,7 +35,7 @@ function Building:createFoundation()
         for y = 1, self.h do
             self[x][y] = {}
             if x == 1 or x == self.w or y == 1 or y == self.h then
-                self[x][y] = TileDictionary['exteriorWall']
+                self[x][y] = TileDictionary['exteriorBuildingWall']
             else
                 self[x][y] = nil
             end
@@ -47,7 +47,7 @@ function Building:createRooms(x, y, w, h)
     for i = x, x + w do
         for j = y, y + h do
             if i == x or i == x + w or j == y or j == y + h then
-                if not self[i][j] then self[i][j] = TileDictionary['interiorWall'] end
+                if not self[i][j] then self[i][j] = TileDictionary['interiorBuildingWall'] end
             end
         end
     end
