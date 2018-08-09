@@ -3,11 +3,17 @@ CelAutMap = Class{}
 local borderThickness = 2
 
 function CelAutMap:init(params)
+    self.tag = 'map'
+    self.depth = 1000
     self.xSize = params.xSize or 70
     self.ySize = params.ySize or 40
     self.percentFill = params.percentFill or 0.45
     self.smoothingIterations = params.smoothingIterations or 5
     self.mapScale = params.mapScale or 1
+    self.numBuildings = params.numBuildings or 4
+
+    self.buildings = {}
+
     self:createGrid()
     for i = 1, self.smoothingIterations do
         self:smoothGrid()
@@ -17,7 +23,7 @@ function CelAutMap:init(params)
     end
     self:generateContourMap()
     self:transformGridToTiles()
-    self:addBuildings(4)
+    self:addBuildings()
 end
 
 function CelAutMap:createGrid()
@@ -162,8 +168,8 @@ function CelAutMap:transformGridToTiles()
     end
 end
 
-function CelAutMap:addBuildings(numBuildings)
-    for i = 1, numBuildings do
+function CelAutMap:addBuildings()
+    for i = 1, self.numBuildings do
         local peakContour, peakX, peakY = _findHighestContourValue(self)
         local buildingDimension = math.floor((peakContour - 1) / 2) * 2
         local buildingW = buildingDimension
@@ -193,8 +199,21 @@ function CelAutMap:addBuildings(numBuildings)
             end
         end
 
+        table.insert(self.buildings, building)
+
         -- Recalculate contour map
         self:calculateContourMap()
+    end
+end
+
+function CelAutMap:addKeycards()
+    for _, b in pairs(self.buildings) do
+        local keycard = Keycard({
+            x = b.keycard.x,
+            y = b.keycard.y,
+            level = b.keycard.level
+        })
+        self.em:add(keycard)
     end
 end
 

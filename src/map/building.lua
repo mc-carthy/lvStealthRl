@@ -15,6 +15,7 @@ function Building:init(parentGrid, params)
     self.rooms = {}
     self.numIterations = 0
     self.currentRoomNumber = 1
+    self.maxNumberOfBuildings = self.parentGrid.numBuildings
 
     self:generate()
 end
@@ -27,6 +28,7 @@ function Building:generate()
     self:setRoomNeighbours()
     self:placeOuterDoor()
     self:layInteriorFloor()
+    self:addKeycard()
 end
 
 function Building:createFoundation()
@@ -225,6 +227,24 @@ function Building:layInteriorFloor()
         for y = 1, self.h do
             if not self[x][y] then
                 self[x][y] = TileDictionary['interiorFloor']
+            end
+        end
+    end
+end
+
+function Building:addKeycard()
+    if self.entranceLevel < self.maxNumberOfBuildings then
+        while true do
+            local x = math.random(self.w - 1)
+            local y = math.random(self.h - 1)
+
+            if self[x][y] == TileDictionary['interiorFloor'] then
+                self.keycard = {
+                    x = (x + self.x) * GRID_SIZE - GRID_SIZE / 2, 
+                    y = (y + self.y) * GRID_SIZE - GRID_SIZE / 2, 
+                    level = self.entranceLevel + 1
+                }
+                break
             end
         end
     end

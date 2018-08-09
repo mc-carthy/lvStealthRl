@@ -22,6 +22,7 @@ require('src/entities/entityManager')
 
 require('src/entities/player')
 require('src/entities/bullet')
+require('src/entities/keycard')
 
 require('src/entities/enemy/enemy')
 require('src/entities/enemy/states/idle')

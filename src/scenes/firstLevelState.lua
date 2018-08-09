@@ -2,7 +2,19 @@ FirstLevelState = Class{ __includes = BaseState }
 
 function FirstLevelState:enter(params)
     self.em = EntityManager()
-    self.em.map = params.map
+    if params.map.type == 'ImageMap' then
+        self.em.map = self.em:add(ImageMap(params.map.filePath))
+    elseif params.map.type == 'CelAutMap' then
+        self.em.map = self.em:add(CelAutMap({
+            xSize = params.map.xSize,
+            ySize = params.map.ySize,
+            percentFill = params.map.percentFill,
+            smoothingIterations = params.map.smoothingIterations,
+            mapScale = params.map.mapScale
+        }))
+        self.em.map:addKeycards()
+    end
+
     self:writeMapToCanvas()
     -- writeCanvasToFileSystem(self.canvas, 'celAutMap.png', 'png')
     local playerX, playerY = self:findRandomFreeSpace()
@@ -29,6 +41,7 @@ end
 
 function FirstLevelState:draw()
     self.camera:set()
+    -- TODO: Consider moving map drawing function to map
     love.graphics.draw(self.canvas, 0, 0)
     self.em:draw()
     self.camera:unset()

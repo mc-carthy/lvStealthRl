@@ -48,5 +48,5 @@ end
 function writeCanvasToFileSystem(canvas, filePath, extension)
     local imageData = canvas:newImageData()
     local imageFile = imageData:encode(extension, filePath)
-    print(imageFile:getFilename())
+    -- print(imageFile:getFilename())
 end
