@@ -16,6 +16,7 @@ require('src/scenes/firstLevelState')
 
 require('src/map/imageMap')
 require('src/map/celAutMap')
+require('src/map/building')
 
 require('src/entities/entityManager')
 

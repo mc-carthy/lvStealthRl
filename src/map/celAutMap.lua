@@ -166,18 +166,27 @@ function CelAutMap:addBuildings(numBuildings)
     for i = 1, numBuildings do
         local peakContour, peakX, peakY = _findHighestContourValue(self)
         local buildingDimension = math.floor((peakContour - 1) / 2) * 2
-        for x = -buildingDimension / 2, buildingDimension / 2 do
-            for y = -buildingDimension / 2, buildingDimension / 2 do
-                if math.abs(x) == buildingDimension / 2 or math.abs(y) == buildingDimension / 2 then
-                    self[x + peakX][y + peakY] = TileDictionary['stoneWall']
-                end
-                self.contourMap[x + peakX][y + peakY] = 0
+        local buildingW = buildingDimension
+        local buildingH = buildingDimension
+
+        local building = Building(self, {
+            x = peakX - buildingW / 2,
+            y = peakY - buildingH / 2,
+            w = peakContour,
+            h = peakContour
+        })
+
+        -- Copy tiles from building to grid
+        for x = 1, building.w do
+            for y = 1, building.h do
+                self[x + building.x][y + building.y] = building[x][y] or self[x + building.x][y + building.y]
+                self.contourMap[x + building.x][y + building.y] = 0
             end
         end
 
         -- Reset contour map around building
-        for x = -buildingDimension, buildingDimension do
-            for y = -buildingDimension, buildingDimension do
+        for x = -buildingW, buildingW do
+            for y = -buildingH, buildingH do
                 if self.contourMap[x + peakX][y + peakY] > 0 then
                     self.contourMap[x + peakX][y + peakY] = -1
                 end
