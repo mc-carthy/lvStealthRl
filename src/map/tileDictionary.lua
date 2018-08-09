@@ -38,4 +38,71 @@ TileDictionary['exteriorFloor'] = {
     drawColour = { 0.25, 0.25, 0, 1 }
 }
 
+TileDictionary["doorLevel1"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 255, 0, 0, 255}
+}
+
+-- TODO: Investigate duplication here
+TileDictionary["doorLevel2"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 247, 84, 0, 255}
+}
+
+TileDictionary["doorLevel2"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 247, 255, 0, 255}
+}
+
+TileDictionary["doorLevel3"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 0, 216, 13, 255}
+}
+
+TileDictionary["doorLevel4"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 113, 75, 255, 255}
+}
+
+TileDictionary["doorLevel5"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 222, 58, 255, 255}
+}
+
+TileDictionary["doorLevel6"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 0, 191, 191, 255}
+}
+
+TileDictionary["doorLevel7"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 149, 144, 149, 255}
+}
+
+TileDictionary["doorLevel8"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 255, 255, 255, 255}
+}
+
+TileDictionary["doorLevel9"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 210, 155, 191, 255}
+}
+
+TileDictionary["doorLevel10"] = {
+    walkable = false,
+    pathable = true,
+    drawColour = { 206, 203, 206, 255}
+}
+
 return TileDictionary

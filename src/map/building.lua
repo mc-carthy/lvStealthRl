@@ -191,9 +191,7 @@ function Building:demoNeighbourWall(room, neighbour)
 end
 
 function Building:addOuterDoor(x, y, attempt)
-    -- TODO: Add doors to TileDictionary
-    -- self[x][y] = TileDictionary["doorLevel" .. self.entranceLevel]
-    self[x][y] = TileDictionary["exteriorFloor"]
+    self[x][y] = TileDictionary["doorLevel" .. self.entranceLevel]
 end
 
 function Building:placeOuterDoor(numAttempt)

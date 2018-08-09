@@ -179,7 +179,9 @@ function CelAutMap:addBuildings()
             x = peakX - buildingW / 2,
             y = peakY - buildingH / 2,
             w = peakContour,
-            h = peakContour
+            h = peakContour,
+            -- TODO: Investigate why the '- 1' is required
+            entranceLevel = i - 1
         })
 
         -- Copy tiles from building to grid

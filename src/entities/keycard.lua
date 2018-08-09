@@ -14,7 +14,7 @@ function Keycard:init(params)
 end
 
 function Keycard:draw()
-    love.graphics.setColor(0.75, 0, 0, 1)
+    love.graphics.setColor(TileDictionary["doorLevel" .. self.level].drawColour)
     love.graphics.setLineWidth(1)
     love.graphics.circle("line", self.x, self.y, self.ringRad)
     love.graphics.rectangle('fill', self.x - self.w / 2, self.y - self.h / 2, self.w, self.h)
