@@ -21,11 +21,12 @@ function MainMenuState.update(dt)
             ]]--
             map = {
                 type = 'CelAutMap',
-                xSize = 70,
-                ySize = 40,
+                xSize = 140,
+                ySize = 80,
                 percentFill = 0.45,
                 smoothingIterations = 5,
-                mapScale = 2
+                mapScale = 2,
+                numBuildings = 10
             }
         })
     end

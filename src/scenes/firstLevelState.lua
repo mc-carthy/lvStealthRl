@@ -10,7 +10,8 @@ function FirstLevelState:enter(params)
             ySize = params.map.ySize,
             percentFill = params.map.percentFill,
             smoothingIterations = params.map.smoothingIterations,
-            mapScale = params.map.mapScale
+            mapScale = params.map.mapScale,
+            numBuildings = params.map.numBuildings or 5
         }))
         self.em.map:addKeycards()
     end

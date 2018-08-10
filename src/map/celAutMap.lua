@@ -88,8 +88,8 @@ function CelAutMap:expandGrid()
     for x = 1, self.xSize * self.mapScale do
         tempGrid[x] = {}
         for y = 1, self.ySize * self.mapScale do
-            if self[math.floor((x + 1) / self.mapScale)] and self[math.floor((x + 1) / self.mapScale)][math.floor((y + 1) / self.mapScale)] then
-                tempGrid[x][y] = self[math.floor((x + 1) / self.mapScale)][math.floor((y + 1) / self.mapScale)]
+            if self[math.floor((x - 1) / self.mapScale) + 1] and self[math.floor((x - 1) / self.mapScale) + 1][math.floor((y - 1) / self.mapScale) + 1] then
+                tempGrid[x][y] = self[math.floor((x - 1) / self.mapScale) + 1][math.floor((y - 1) / self.mapScale) + 1]
             end
         end
     end
