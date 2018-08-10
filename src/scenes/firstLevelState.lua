@@ -2,6 +2,7 @@ FirstLevelState = Class{ __includes = BaseState }
 
 function FirstLevelState:enter(params)
     self.em = EntityManager()
+    map.lockAllDoors()
     if params.map.type == 'ImageMap' then
         self.em.map = self.em:add(ImageMap(params.map.filePath))
     elseif params.map.type == 'CelAutMap' then

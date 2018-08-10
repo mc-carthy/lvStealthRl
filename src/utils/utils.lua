@@ -39,14 +39,26 @@ function math.clamp(value, min, max)
     return math.max(math.min(value, max), min)
 end
 
-Vector2 = {}
-
-function Vector2.distance(a, b)
-    return math.sqrt(math.pow(a.x - b.x, 2) + math.pow(a.y - b.y, 2))
-end
-
 function writeCanvasToFileSystem(canvas, filePath, extension)
     local imageData = canvas:newImageData()
     local imageFile = imageData:encode(extension, filePath)
     -- print(imageFile:getFilename())
+end
+
+map = {}
+
+function map.lockAllDoors()
+    local level = 1
+    while TileDictionary["doorLevel" .. level] do
+        TileDictionary["doorLevel" .. level].collidable = true
+        level = level + 1
+    end
+end
+
+function map.unlockDoors(level)
+    for i = 1, level do
+        if TileDictionary["doorLevel" .. i] then
+            TileDictionary["doorLevel" .. i].collidable = false
+        end
+    end
 end

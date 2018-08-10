@@ -4,6 +4,7 @@ local baseSpeed = 100
 local runSpeedMultiplier = 1.5
 local crouchSpeedMultiplier = 0.5
 local playerImage = SPRITES.player
+local pickupRadius = 10
 
 function Player:init(x, y)
     self.tag = 'player'
@@ -14,6 +15,8 @@ function Player:init(x, y)
     self.dx, self.dy = 0, 0
     self.colour = { 1, 1, 1, 1 }
     self.depth = 5
+    self.keycardLevel = 1
+    map.unlockDoors(self.keycardLevel)
 end
 
 function Player:fire()
@@ -70,9 +73,22 @@ function Player:detectCollisions()
     if self.em.map:collidable(gridX, nextGridY) then self.dy = 0 end
 end
 
+function Player:checkForKeycardPickup()
+    for i = 1, #self.em.entities do
+        local other = self.em.entities[i]
+        if other.tag == "keycard" and Vector2.distance(self, other) < pickupRadius then
+            other.done = true
+            if other.level > self.keycardLevel then
+                self.keycardLevel = other.level
+                map.unlockDoors(self.keycardLevel)
+            end
+        end
+    end
+end
+
 function Player:update(dt)
     self:fire()
-
+    self:checkForKeycardPickup()
     self:move(dt)
 end
 
