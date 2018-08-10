@@ -180,8 +180,7 @@ function CelAutMap:addBuildings()
             y = peakY - buildingH / 2,
             w = peakContour,
             h = peakContour,
-            -- TODO: Investigate why the '- 1' is required
-            entranceLevel = i - 1
+            entranceLevel = self.numBuildings - i + 1
         })
 
         -- Copy tiles from building to grid
@@ -210,12 +209,14 @@ end
 
 function CelAutMap:addKeycards()
     for _, b in pairs(self.buildings) do
-        local keycard = Keycard({
-            x = b.keycard.x,
-            y = b.keycard.y,
-            level = b.keycard.level
-        })
-        self.em:add(keycard)
+        if b.keycard then
+            local keycard = Keycard({
+                x = b.keycard.x,
+                y = b.keycard.y,
+                level = b.keycard.level
+            })
+            self.em:add(keycard)
+        end
     end
 end
 
