@@ -35,10 +35,10 @@ function FirstLevelState:update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
-    MOUSE_X, MOUSE_Y = self.camera:screenToWorld(love.mouse.getPosition())
     self.em:update(dt)
     self:checkCollisions()
     self.camera:update(dt)
+    MOUSE_X, MOUSE_Y = self.camera:screenToWorld(love.mouse.getPosition())
 end
 
 function FirstLevelState:draw()

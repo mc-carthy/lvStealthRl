@@ -5,7 +5,7 @@ function love.conf(t)
     -- t.window.height = 360
     t.window.title = "LÖVE stealth RL prototype"
     t.window.icon = "assets/img/footprints.png"
-    t.window.vsync = false
+    t.window.vsync = true
 
     t.modules.audio = true
     t.modules.event = true
