@@ -20,6 +20,7 @@ function FirstLevelState:enter(params)
     self:writeMapToCanvas()
     -- writeCanvasToFileSystem(self.canvas, 'celAutMap.png', 'png')
     local playerX, playerY = self:findRandomFreeSpace()
+    self.em.map.playerX, self.em.map.playerY = playerX, playerY
     self.player = self.em:add(Player(playerX, playerY))
     self.em:add(Enemy(self:findRandomFreeSpace()))
     self.camera = Camera({

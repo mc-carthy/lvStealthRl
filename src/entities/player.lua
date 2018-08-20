@@ -78,9 +78,14 @@ function Player:checkForKeycardPickup()
         local other = self.em.entities[i]
         if other.tag == "keycard" and Vector2.distance(self, other) < pickupRadius then
             other.done = true
-            if other.level > self.keycardLevel then
-                self.keycardLevel = other.level
-                map.unlockDoors(self.keycardLevel)
+            if other.level == 'exit' then
+                -- TODO: Generate level exit (at self.em.map.playerX, self.em.map.playerY) instead of just going to main menu
+                stateMachine:change('mainMenu')
+            else
+                if other.level > self.keycardLevel then
+                    self.keycardLevel = other.level
+                    map.unlockDoors(self.keycardLevel)
+                end
             end
         end
     end

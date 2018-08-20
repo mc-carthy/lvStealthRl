@@ -35,8 +35,8 @@ end
 function MainMenuState.draw()
     love.graphics.setColor(1, 0, 1, 1)
     love.graphics.setFont(mainMenuFont)
-    love.graphics.printf('WELCOME TO THE MAIN MENU!', 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, 'center')
-    love.graphics.printf('PRESS ENTER!', 0, SCREEN_HEIGHT / 2 + 40, SCREEN_WIDTH, 'center')
+    love.graphics.printf('MAIN MENU', 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, 'center')
+    love.graphics.printf('PRESS ENTER TO BEGIN', 0, SCREEN_HEIGHT / 2 + 40, SCREEN_WIDTH, 'center')
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(defaultFont)
 end
