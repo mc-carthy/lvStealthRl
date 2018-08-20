@@ -1,8 +1,8 @@
 Camera = Class{}
 
 local zoomSpeed = 0.99
-local maxZoom = 2.5
-local minZoom = 0.1
+local maxZoom = 2
+local minZoom = 0.2
 
 function Camera:init(params)
     self.target = params.target
@@ -26,10 +26,10 @@ function Camera:update(dt)
     self.x = self.target.x
     self.y = self.target.y
     if love.keyboard.isDown('z') then
-        self.zoomLevel = self.zoomLevel / zoomSpeed
+        self.zoomLevel = self.zoomLevel - (zoomSpeed * dt)
     end
     if love.keyboard.isDown('x') then
-        self.zoomLevel = self.zoomLevel * zoomSpeed
+        self.zoomLevel = self.zoomLevel + (zoomSpeed * dt)
     end
     self.zoomLevel = math.clamp(self.zoomLevel, minZoom, maxZoom)
 end
