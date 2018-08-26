@@ -23,6 +23,11 @@ function Player:fire()
     if love.mouse.wasPressed(1) then
         SFX['shot']:stop()
         SFX['shot']:play()
+
+        Shack:setShake(10)
+        Shack:setRotation(.01)
+        Shack:zoom(1.05)
+
         local b = Bullet({
             x = self.x,
             y = self.y,

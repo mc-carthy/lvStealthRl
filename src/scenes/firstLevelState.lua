@@ -26,6 +26,7 @@ function FirstLevelState:enter(params)
     self.camera = Camera({
         target = self.player
     })
+    Shack:setTarget(self.player)
 end
 
 function FirstLevelState:checkCollisions()
@@ -36,6 +37,7 @@ function FirstLevelState:update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
+    Shack:update(dt)
     self.em:update(dt)
     self:checkCollisions()
     self.camera:update(dt)
@@ -45,6 +47,7 @@ end
 function FirstLevelState:draw()
     self.camera:set()
     -- TODO: Consider moving map drawing function to map
+    Shack:apply()
     love.graphics.draw(self.canvas, 0, 0)
     self.em:draw()
     self.camera:unset()
