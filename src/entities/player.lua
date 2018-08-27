@@ -24,10 +24,10 @@ function Player:fire()
         SFX['shot']:stop()
         SFX['shot']:play()
 
-        Shack:setShake(15)
-        Shack:setShear(5)
-        Shack:setRotation(.01)
-        Shack:zoom(1.025)
+        self.em.camera:setShakeTranslation(30)
+        self.em.camera:setShakeRotation(0.15)
+        self.em.camera:setShakeScale(1.25)
+        -- self.em.camera:setShakeShear(5)
 
         local b = Bullet({
             x = self.x,

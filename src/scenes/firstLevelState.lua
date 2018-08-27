@@ -23,10 +23,9 @@ function FirstLevelState:enter(params)
     self.em.map.playerX, self.em.map.playerY = playerX, playerY
     self.player = self.em:add(Player(playerX, playerY))
     self.em:add(Enemy(self:findRandomFreeSpace()))
-    self.camera = Camera({
+    self.em.camera = Camera({
         target = self.player
     })
-    Shack:setTarget(self.player)
 end
 
 function FirstLevelState:checkCollisions()
@@ -37,21 +36,19 @@ function FirstLevelState:update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
-    Shack:update(dt)
     self.em:update(dt)
     self:checkCollisions()
-    self.camera:update(dt)
-    MOUSE_X, MOUSE_Y = self.camera:screenToWorld(love.mouse.getPosition())
+    self.em.camera:update(dt)
+    MOUSE_X, MOUSE_Y = self.em.camera:screenToWorld(love.mouse.getPosition())
 end
 
 function FirstLevelState:draw()
-    self.camera:set()
+    self.em.camera:set()
     -- TODO: Consider moving map drawing function to map
-    Shack:apply()
     love.graphics.draw(self.canvas, 0, 0)
     self.em:draw()
-    self.camera:unset()
-    love.graphics.print('Zoom level: x' .. string.format("%.2f", self.camera.zoomLevel), 10, 30)
+    self.em.camera:unset()
+    love.graphics.print('Zoom level: x' .. string.format("%.2f", self.em.camera.zoomLevel), 10, 30)
 end
 
 function FirstLevelState:writeMapToCanvas()
