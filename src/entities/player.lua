@@ -24,9 +24,10 @@ function Player:fire()
         SFX['shot']:stop()
         SFX['shot']:play()
 
-        Shack:setShake(10)
+        Shack:setShake(15)
+        Shack:setShear(5)
         Shack:setRotation(.01)
-        Shack:zoom(1.05)
+        Shack:zoom(1.025)
 
         local b = Bullet({
             x = self.x,

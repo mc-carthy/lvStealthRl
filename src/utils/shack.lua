@@ -46,7 +46,7 @@ end
 
 function shack:update(dt)
   
-  local _speed = 7
+  local _speed = 10
   
   self.shaking = lerp(self.shaking, self.shakingTarget, _speed*dt)
   self.rotation = lerp(self.rotation, self.rotationTarget, _speed*dt)
@@ -63,11 +63,11 @@ function shack:apply()
   love.graphics.translate(self.target.x, self.target.y)
   love.graphics.rotate((math.random()-.5)*self.rotation)
   love.graphics.scale(self.scale.x, self.scale.y)
+  love.graphics.shear(self.shear.x*.01, self.shear.y*.01)
   love.graphics.translate(-self.target.x, -self.target.y)
   
   love.graphics.translate((math.random()-.5)*self.shaking, (math.random()-.5)*self.shaking)
   
-  love.graphics.shear(self.shear.x*.01, self.shear.y*.01)
   
   return self
 end
