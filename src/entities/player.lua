@@ -25,9 +25,9 @@ function Player:fire()
         SFX['shot']:play()
 
         self.em.camera:setShakeTranslation(30)
-        self.em.camera:setShakeRotation(0.15)
-        self.em.camera:setShakeScale(1.25)
-        -- self.em.camera:setShakeShear(5)
+        self.em.camera:setShakeRotation(0.075)
+        self.em.camera:setShakeScale(0.1)
+        self.em.camera:setShakeShear(2.5)
 
         local b = Bullet({
             x = self.x,

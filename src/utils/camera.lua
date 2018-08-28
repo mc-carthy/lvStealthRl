@@ -65,7 +65,7 @@ function Camera:setShakeRotation(value)
 end
 
 function Camera:setShakeScale(value)
-    self.shakeScale = value or 0
+    self.shakeScale = 1 + value or 1
 end
 
 
