@@ -5,6 +5,7 @@ local runSpeedMultiplier = 1.5
 local crouchSpeedMultiplier = 0.5
 local playerImage = SPRITES.player
 local pickupRadius = 10
+local shotAccuracyInRad = math.rad(5)
 
 function Player:init(x, y)
     self.tag = 'player'
@@ -32,7 +33,7 @@ function Player:fire()
         local b = Bullet({
             x = self.x,
             y = self.y,
-            rot = self.rot
+            rot = self.rot + ((math.random() - 0.5) * shotAccuracyInRad)
         })
         self.em:add(b)
     end
