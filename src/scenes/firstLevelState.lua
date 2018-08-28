@@ -1,6 +1,7 @@
 FirstLevelState = Class{ __includes = BaseState }
 
 function FirstLevelState:enter(params)
+    love.mouse.setVisible(false)
     self.em = EntityManager()
     map.lockAllDoors()
     if params.map.type == 'ImageMap' then
@@ -28,6 +29,10 @@ function FirstLevelState:enter(params)
     })
 end
 
+function FirstLevelState:exit()
+    love.mouse.setVisible(true)
+end
+
 function FirstLevelState:checkCollisions()
     self.em:checkCircleCollisionsBetween('bullet', 'enemy')
 end
@@ -49,6 +54,7 @@ function FirstLevelState:draw()
     self.em:draw()
     self.em.camera:unset()
     love.graphics.print('Zoom level: x' .. string.format("%.2f", self.em.camera.zoomLevel), 10, 30)
+    self:drawCursor()
 end
 
 function FirstLevelState:writeMapToCanvas()
@@ -80,4 +86,12 @@ function FirstLevelState:writeMapToCanvas()
         end
     end
     love.graphics.setCanvas()
+end
+
+function FirstLevelState:drawCursor()
+    local mouse_x, mouse_y = love.mouse.getPosition()
+    love.graphics.setLineWidth(2)
+    
+    love.graphics.circle('line', mouse_x, mouse_y, 5)
+    love.graphics.setLineWidth(1)
 end
