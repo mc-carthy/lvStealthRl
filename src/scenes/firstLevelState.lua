@@ -19,10 +19,10 @@ function FirstLevelState:enter(params)
 
     self:writeMapToCanvas()
     -- writeCanvasToFileSystem(self.canvas, 'celAutMap.png', 'png')
-    local playerX, playerY = self:findRandomFreeSpace()
+    local playerX, playerY = self:findRandomTile('interiorFloor')
     self.em.map.playerX, self.em.map.playerY = playerX, playerY
     self.player = self.em:add(Player(playerX, playerY))
-    self.em:add(Enemy(self:findRandomFreeSpace()))
+    self.em:add(Enemy(self:findRandomTile('exteriorFloor')))
     self.em.camera = Camera({
         target = self.player
     })
@@ -87,6 +87,15 @@ function FirstLevelState:findRandomFreeSpace()
         local x, y = math.floor(math.random() * self.em.map.xSize + 1), math.floor(math.random() * self.em.map.ySize + 1)
         if self.em.map[x][y].collidable == false then
             return x * GRID_SIZE, y * GRID_SIZE
+        end
+    end
+end
+
+function FirstLevelState:findRandomTile(tileType)
+    while true do
+        local x, y = math.floor(math.random() * self.em.map.xSize + 1), math.floor(math.random() * self.em.map.ySize + 1)
+        if self.em.map[x][y] == TileDictionary[tileType] then
+            return x * GRID_SIZE + GRID_SIZE / 2, y * GRID_SIZE + GRID_SIZE / 2
         end
     end
 end
