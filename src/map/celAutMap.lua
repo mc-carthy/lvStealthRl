@@ -252,3 +252,13 @@ function _findHighestContourValue(self)
     end
     return maxVal, maxX, maxY
 end
+
+-- TODO: Consider extracting this to a 'map' base class
+function CelAutMap:findRandomTileOfType(tileType)
+    while true do
+        local x, y = math.floor(math.random() * self.xSize + 1), math.floor(math.random() * self.ySize + 1)
+        if self[x][y] == TileDictionary[tileType] then
+            return x * GRID_SIZE - GRID_SIZE / 2, y * GRID_SIZE - GRID_SIZE / 2
+        end
+    end
+end
