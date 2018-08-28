@@ -20,7 +20,7 @@ function FirstLevelState:enter(params)
 
     self:writeMapToCanvas()
     -- writeCanvasToFileSystem(self.canvas, 'celAutMap.png', 'png')
-    local playerX, playerY = self.em.map:findRandomTileOfType('interiorFloor')
+    local playerX, playerY = self.em.map:findRandomTileOfType('exteriorFloor')
     self.em.map.playerX, self.em.map.playerY = playerX, playerY
     self.player = self.em:add(Player(playerX, playerY))
     self.em:add(Enemy(self.em.map:findRandomTileOfType('exteriorFloor')))
@@ -53,7 +53,7 @@ function FirstLevelState:draw()
     love.graphics.draw(self.canvas, 0, 0)
     self.em:draw()
     self.em.camera:unset()
-    love.graphics.print('Zoom level: x' .. string.format("%.2f", self.em.camera.zoomLevel), 10, 30)
+    -- love.graphics.print('Zoom level: x' .. string.format("%.2f", self.em.camera.zoomLevel), 10, 30)
     self:drawCursor()
 end
 

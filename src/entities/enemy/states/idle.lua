@@ -13,7 +13,7 @@ function IdleState:update(dt)
 end
 
 function IdleState:draw()
-    love.graphics.setColor(0.5, 1, 0.5, 0.5)
+    love.graphics.setColor(unpack(COLOURS['enemyIdleState']))
     love.graphics.arc("fill", self.body.x, self.body.y, self.viewDist, self.body.rot + self.viewAngle / 2, -self.body.rot - self.viewAngle / 2)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(self.body.image, self.body.x, self.body.y, self.body.rot, 0.5, 0.5, 32, 32)
