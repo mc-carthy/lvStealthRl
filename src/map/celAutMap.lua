@@ -236,7 +236,7 @@ function CelAutMap:isInGridRange(x, y)
 end
 
 function CelAutMap:collidable(x, y)
-    return self[x + 1][y + 1].collidable
+    return self[x][y].collidable
 end
 
 function _findHighestContourValue(self)

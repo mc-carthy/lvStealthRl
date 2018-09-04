@@ -1,6 +1,6 @@
 function getGridPos(x, y)
-    local gridX = math.floor(x / GRID_SIZE)
-    local gridY = math.floor(y / GRID_SIZE)
+    local gridX = math.ceil(x / GRID_SIZE)
+    local gridY = math.ceil(y / GRID_SIZE)
     return gridX, gridY
 end
 

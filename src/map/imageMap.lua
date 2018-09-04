@@ -21,7 +21,7 @@ function ImageMap:init(filePath)
 end
 
 function ImageMap:collidable(x, y)
-    return self[x + 1][y + 1].collidable
+    return self[x][y].collidable
 end
 
 -- TODO: Consider extracting this to a 'map' base class

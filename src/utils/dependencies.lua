@@ -7,6 +7,7 @@ require('src/utils/utils')
 require('src/utils/stateMachine')
 require('src/utils/camera')
 require('src/utils/vector2')
+require('src/utils/bresenham')
 
 TileDictionary = require('src/map/tileDictionary')
 
