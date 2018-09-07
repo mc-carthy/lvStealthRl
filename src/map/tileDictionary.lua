@@ -26,13 +26,14 @@ TileDictionary['exteriorWall'] = {
 
 TileDictionary['interiorFloor'] = {
     collidable = false,
-    importColour = { 1, 1, 1, 1 },
+    importColour = { 0.25, 0.25, 0, 1 },
     drawColour = { 0.1, 0.1, 0.1, 1 }
 }
 
 TileDictionary['exteriorFloor'] = {
     collidable = false,
-    importColour = { 0.25, 0.25, 0, 1 },
+    -- TODO: Temp fix for player/enemy placement, switch with interior floor after map image is changed
+    importColour = { 1, 1, 1, 1 },
     -- tintColour = { 0.5, 0.5, 0, 0.5 },
     sprite = SPRITES.sandTile,
     drawColour = { 0.25, 0.25, 0, 1 }

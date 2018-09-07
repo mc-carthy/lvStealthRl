@@ -1,6 +1,8 @@
 ImageMap = Class{}
 
 function ImageMap:init(filePath)
+    self.tag = 'map'
+    self.depth = 1000
     imageData = love.image.newImageData(filePath)
     imageWidth = imageData:getWidth()
     imageHeight = imageData:getHeight()
@@ -12,8 +14,10 @@ function ImageMap:init(filePath)
         for y = 1, imageHeight do
             local colourTable = { imageData:getPixel(x - 1, y - 1) }
             for k, v in pairs(TileDictionary) do
-                if table.equal(colourTable, v.importColour) then
-                    self[x][y] = v
+                if v.importColour then
+                    if table.equal(colourTable, v.importColour) then
+                        self[x][y] = v
+                    end
                 end
             end
         end
