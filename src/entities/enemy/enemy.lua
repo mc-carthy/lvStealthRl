@@ -6,7 +6,7 @@ function Enemy:init(x, y)
     self.image = SPRITES.enemy
     self.x = x
     self.y = y
-    self.rot = 0
+    self.rot = 0--math.random() * 2 * math.pi
     self.rad = 7.5
     self.stateMachine = StateMachine {
         ['idle'] = function() return IdleState() end,
@@ -49,22 +49,64 @@ function Enemy:lineOfSightPoints(target)
     return points, success
 end
 
+function Enemy:lineOfSight(target)
+    local startX, startY = getGridPos(self.x, self.y)
+    local endX, endY = getGridPos(target.x, target.y)
+    local success = Bresenham.los(startX, startY, endX, endY, function(x, y)
+        return not self.em.map:collidable(x, y)
+    end)
+    return success
+end
+
+function Enemy:getDistanceToPlayer()
+    return Vector2.distance(self, self.player)
+end
+
+function Enemy:getAngleToPlayer()
+    local absoluteAngleToPlayer = Vector2.angle(self, self.player)
+    local relativeAngleToPlayer = (absoluteAngleToPlayer - self.rot) % (2 * math.pi)
+    if relativeAngleToPlayer > math.pi then relativeAngleToPlayer = relativeAngleToPlayer - (2 * math.pi) end
+    relativeAngleToPlayer = math.abs(relativeAngleToPlayer)
+
+    return relativeAngleToPlayer
+end
+
+function Enemy:canSeePlayer()
+    if self.player ~= nil then
+        if self:getDistanceToPlayer() < self.viewDist then
+            if self:getAngleToPlayer() < self.viewAngle / 2 then
+                if self:lineOfSight(self.player) then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
 function Enemy:update(dt)
     if self.player == nil then self.player = self.em:getPlayer() end
     self.stateMachine:update(dt)
     self.losPoints, self.playerInLos = self:lineOfSightPoints(self.player)
+    self:canSeePlayer()
 end
 
 function Enemy:draw()
-    if self.playerInLos then
-        love.graphics.setColor(1, 0, 0, 0.5)
-    else
-        love.graphics.setColor(0, 1, 0, 0.5)
-    end
+    -- DEBUG info for player in sight
+    -- if self.playerInLos then
+    --     love.graphics.setColor(1, 0, 0, 0.5)
+    -- else
+    --     love.graphics.setColor(0, 1, 0, 0.5)
+    -- end
 
-    for i = 1, #self.losPoints do
-        love.graphics.rectangle('fill', (self.losPoints[i][1] - 1) * GRID_SIZE, (self.losPoints[i][2] - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
-    end
+    -- for i = 1, #self.losPoints do
+    --     love.graphics.rectangle('fill', (self.losPoints[i][1] - 1) * GRID_SIZE, (self.losPoints[i][2] - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
+    -- end
+    
+    love.graphics.print('Can see player: ' .. tostring(self:canSeePlayer()), self.x + 20, self.y + 80)
 
-    self.stateMachine:draw()
+    love.graphics.setColor(unpack(self.coneColour))
+    love.graphics.arc("fill", self.x, self.y, self.viewDist, self.rot + self.viewAngle / 2, -self.rot - self.viewAngle / 2)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.image, self.x, self.y, self.rot, 0.5, 0.5, 32, 32)
 end

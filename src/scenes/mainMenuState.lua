@@ -14,20 +14,20 @@ function MainMenuState.update(dt)
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
         stateMachine:change('firstLevel', {
             
-            map = {
-                type = 'ImageMap',
-                filePath = 'assets/maps/testMap0.png'
-            }
-            
             -- map = {
-            --     type = 'CelAutMap',
-            --     xSize = 140,
-            --     ySize = 80,
-            --     percentFill = 0.45,
-            --     smoothingIterations = 5,
-            --     mapScale = 2,
-            --     numBuildings = 10
+            --     type = 'ImageMap',
+            --     filePath = 'assets/maps/testMap0.png'
             -- }
+            
+            map = {
+                type = 'CelAutMap',
+                xSize = 35,
+                ySize = 20,
+                percentFill = 0.45,
+                smoothingIterations = 5,
+                mapScale = 2,
+                numBuildings = 0
+            }
         })
     end
 end
