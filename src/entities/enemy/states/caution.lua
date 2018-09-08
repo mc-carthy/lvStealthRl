@@ -1,9 +1,14 @@
 CautionState = Class{ __includes = BaseState }
 
+local cautionViewDist = 120
+local cautionViewAngle = 140
+local cautionConeColour = COLOURS['enemyCautionState']
+
 function CautionState:enter(body)
     self.body = body
-    self.viewDist = 120
-    self.viewAngle = math.rad(140)
+    self.body.viewDist = cautionViewDist
+    self.body.viewAngle = math.rad(cautionViewAngle)
+    self.body.coneColour = cautionConeColour
 end
 
 function CautionState:update(dt)
@@ -13,11 +18,4 @@ function CautionState:update(dt)
     if Vector2.distance(self.body, self.body.player) > 100 then
         self.body.stateMachine:change('investigation', self.body)
     end
-end
-
-function CautionState:draw()
-    love.graphics.setColor(unpack(COLOURS['enemyCautionState']))
-    love.graphics.arc("fill", self.body.x, self.body.y, self.viewDist, self.body.rot + self.viewAngle / 2, -self.body.rot - self.viewAngle / 2)
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(self.body.image, self.body.x, self.body.y, self.body.rot, 0.5, 0.5, 32, 32)
 end
