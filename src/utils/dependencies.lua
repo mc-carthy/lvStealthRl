@@ -17,6 +17,7 @@ require('src/scenes/mainMenuState')
 require('src/scenes/firstLevelState')
 
 require('src/map/map')
+require('src/map/pathfinder')
 require('src/map/imageMap')
 require('src/map/celAutMap')
 require('src/map/building')

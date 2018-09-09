@@ -24,6 +24,8 @@ function CelAutMap:init(params)
     self:generateContourMap()
     self:transformGridToTiles()
     self:addBuildings()
+
+    self.pathfinder = Pathfinder(self)
 end
 
 function CelAutMap:createGrid()

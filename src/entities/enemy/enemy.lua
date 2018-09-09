@@ -20,6 +20,7 @@ function Enemy:init(x, y)
     
     self.losPoints = {}
     self.playerInLos = false
+    self.pathWaypoints = {}
 end
 
 function Enemy:hit(object)
@@ -89,6 +90,23 @@ function Enemy:update(dt)
     self.stateMachine:update(dt)
     self.losPoints, self.playerInLos = self:lineOfSightPoints(self.player)
     self:canSeePlayer()
+
+    self:checkForPathToTarget(self.player)
+end
+
+function Enemy:checkForPathToTarget(target)
+    local points = {}
+    if love.keyboard.wasPressed('p') then
+        local selfGridX, selfGridY = getGridPos(self.x, self.y)
+        local targetGridX, targetGridY = getGridPos(target.x, target.y)
+        success, points = self.em.map:getPath({ x = selfGridX, y = selfGridY },  { x = targetGridX, y = targetGridY })
+        if success then
+            self.pathWaypoints = points
+            for i = 1, #points do
+                -- print(points[i][1] .. '-', points[i][2])
+            end
+        end
+    end
 end
 
 function Enemy:draw()
@@ -102,7 +120,19 @@ function Enemy:draw()
     -- for i = 1, #self.losPoints do
     --     love.graphics.rectangle('fill', (self.losPoints[i][1] - 1) * GRID_SIZE, (self.losPoints[i][2] - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
     -- end
-    
+
+    if self.pathWaypoints ~= nil then
+        love.graphics.setColor(0, 0, 0, 1)
+        for i = 1, #self.pathWaypoints - 1 do
+            love.graphics.line(
+                self.pathWaypoints[i][1] * GRID_SIZE - GRID_SIZE / 2,
+                self.pathWaypoints[i][2] * GRID_SIZE - GRID_SIZE / 2,
+                self.pathWaypoints[i + 1][1] * GRID_SIZE - GRID_SIZE / 2,
+                self.pathWaypoints[i + 1][2] * GRID_SIZE - GRID_SIZE / 2
+            )
+        end
+    end
+
     love.graphics.print('Can see player: ' .. tostring(self:canSeePlayer()), self.x + 20, self.y + 80)
 
     love.graphics.setColor(unpack(self.coneColour))

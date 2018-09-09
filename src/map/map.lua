@@ -16,3 +16,8 @@ function Map:findRandomTileOfType(tileType)
         end
     end
 end
+
+function Map:getPath(start, target)
+    success, points = self.pathfinder:findPath(start.x, start.y, target.x, target.y)
+    return success, points
+end
