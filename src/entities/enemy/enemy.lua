@@ -42,6 +42,10 @@ function Enemy:hit(object)
     end
 end
 
+function Enemy:hearNoise(noise)
+    -- print('Heard noise of type ' .. noise.type .. ' coming from ' .. noise.x .. '-' .. noise.y)
+end
+
 -- TODO: Create 'map' base class for celAutMap and imageMap to derive from and move this function there
 function Enemy:lineOfSightPoints(target)
     local startX, startY = getGridPos(self.x, self.y)
@@ -106,7 +110,7 @@ function Enemy:checkForPathToTarget(target)
         if success then
             self.pathWaypoints = points
             for i = 1, #points do
-                print('x: ' .. points[i][1] .. ' y: ', points[i][2])
+                -- print('x: ' .. points[i][1] .. ' y: ', points[i][2])
             end
         end
     end

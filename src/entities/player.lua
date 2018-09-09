@@ -24,6 +24,13 @@ function Player:fire()
     if love.mouse.wasPressed(1) then
         SFX['shot']:stop()
         SFX['shot']:play()
+        local n = Noise({
+            x = self.x,
+            y = self.y,
+            rad = 300,
+            type = 'playerGunshotNoise'
+        })
+        self.em:add(n)
 
         self.em.camera:setShakeTranslation(30)
         self.em.camera:setShakeRotation(0.075)

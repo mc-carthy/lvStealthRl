@@ -71,6 +71,7 @@ end
 function EntityManager:sortTableByDrawingDepth()
     for _, v in pairs(self.entities) do
         assert(tonumber(v.depth), v.tag .. ' entity must have a depth value')
+        -- print('Entity: ' .. v.tag .. ' Depth: ' .. v.depth)
     end
     local sortFunc = function(a, b)
         if a.depth and b.depth then
