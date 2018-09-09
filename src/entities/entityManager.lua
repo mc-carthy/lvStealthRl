@@ -1,7 +1,9 @@
 EntityManager = Class{}
 
 function EntityManager:init()
+    -- TODO: Consider removing drawnEntities table and instead sorting and unsorting entities table prior to drawing.
     self.entities = {}
+    self.drawnEntities = {}
 end
 
 function EntityManager:cleanupEntities()
@@ -11,17 +13,31 @@ function EntityManager:cleanupEntities()
             table.remove(self.entities, i)
         end
     end
+
+    for i = #self.drawnEntities, 1, -1 do
+        local e = self.drawnEntities[i]
+        if e.done then
+            table.remove(self.drawnEntities, i)
+        end
+    end
 end
 
 function EntityManager:add(entity)
     entity.em = self
     table.insert(self.entities, entity)
+    table.insert(self.drawnEntities, entity)
     self:sortTableByDrawingDepth()
     return entity
 end
 
 function EntityManager:remove(entity)
     for _, e in pairs(self.entities) do
+        if e == entity then
+            e.done = true
+        end
+    end
+
+    for _, e in pairs(self.drawnEntities) do
         if e == entity then
             e.done = true
         end
@@ -69,7 +85,7 @@ function EntityManager:checkCircleCollisionsBetween(a, b)
 end
 
 function EntityManager:sortTableByDrawingDepth()
-    for _, v in pairs(self.entities) do
+    for _, v in pairs(self.drawnEntities) do
         assert(tonumber(v.depth), v.tag .. ' entity must have a depth value')
         -- print('Entity: ' .. v.tag .. ' Depth: ' .. v.depth)
     end
@@ -78,7 +94,7 @@ function EntityManager:sortTableByDrawingDepth()
             return a.depth > b.depth
         end
     end
-    table.sort(self.entities, sortFunc)
+    table.sort(self.drawnEntities, sortFunc)
 end
 
 function EntityManager:update(dt)
@@ -91,7 +107,7 @@ function EntityManager:update(dt)
 end
 
 function EntityManager:draw()
-    for _, v in pairs(self.entities) do
+    for _, v in pairs(self.drawnEntities) do
         if v.draw then
             v:draw()
         end
