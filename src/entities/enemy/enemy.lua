@@ -105,7 +105,6 @@ function Enemy:checkForPathToTarget(target)
         success, points = self.em.map:getPath({ x = selfGridX, y = selfGridY },  { x = targetGridX, y = targetGridY })
         if success then
             self.pathWaypoints = points
-            self.nextPathPoint = 1
             for i = 1, #points do
                 print('x: ' .. points[i][1] .. ' y: ', points[i][2])
             end
@@ -115,15 +114,12 @@ end
 
 function Enemy:pathfind(dt)
     if #self.pathWaypoints > 0 then
-        local nextX, nextY = self.pathWaypoints[self.nextPathPoint][1] * GRID_SIZE - GRID_SIZE / 2, self.pathWaypoints[self.nextPathPoint][2] * GRID_SIZE - GRID_SIZE / 2
+        local nextX, nextY = self.pathWaypoints[1][1] * GRID_SIZE - GRID_SIZE / 2, self.pathWaypoints[1][2] * GRID_SIZE - GRID_SIZE / 2
         local bearing = math.atan2(nextY - self.y, nextX - self.x)
         self:move(dt, bearing)
 
         if Vector2.distance(self, { x = nextX, y = nextY }) < pathfindingPrecision then
-            self.nextPathPoint = self.nextPathPoint + 1
-            if self.nextPathPoint > #self.pathWaypoints then
-                self.pathWaypoints = {}
-            end
+            _, self.pathWaypoints = table.dequeue(self.pathWaypoints)
         end
     end
 end
@@ -148,7 +144,7 @@ function Enemy:draw()
     --     love.graphics.rectangle('fill', (self.losPoints[i][1] - 1) * GRID_SIZE, (self.losPoints[i][2] - 1) * GRID_SIZE, GRID_SIZE, GRID_SIZE)
     -- end
 
-    if self.pathWaypoints ~= nil then
+    if #self.pathWaypoints > 0 then
         love.graphics.setColor(0, 0, 0, 1)
         for i = 1, #self.pathWaypoints - 1 do
             love.graphics.line(
@@ -158,6 +154,12 @@ function Enemy:draw()
                 self.pathWaypoints[i + 1][2] * GRID_SIZE - GRID_SIZE / 2
             )
         end
+        love.graphics.line(
+            self.x,
+            self.y,
+            self.pathWaypoints[1][1] * GRID_SIZE - GRID_SIZE / 2,
+            self.pathWaypoints[1][2] * GRID_SIZE - GRID_SIZE / 2
+        )
     end
 
     love.graphics.print('Can see player: ' .. tostring(self:canSeePlayer()), self.x + 20, self.y + 80)

@@ -21,6 +21,16 @@ function table.removeElement(tbl, element)
     end
 end
 
+function table.dequeue(tbl)
+    local newTbl = {}
+    local firstElement = tbl[1]
+    for i = 1, #tbl - 1 do
+        table.insert(newTbl, tbl[i + 1])
+    end
+
+    return firstElement, newTbl
+end
+
 function table.equal(t1, t2)
     for i = 1, #t1 do
         if t2[i] == nil then return false end
