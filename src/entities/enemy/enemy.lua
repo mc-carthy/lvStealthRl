@@ -165,7 +165,7 @@ function Enemy:draw()
     love.graphics.print('Can see player: ' .. tostring(self:canSeePlayer()), self.x + 20, self.y + 80)
 
     love.graphics.setColor(unpack(self.coneColour))
-    love.graphics.arc("fill", self.x, self.y, self.viewDist, self.rot + self.viewAngle / 2, -self.rot - self.viewAngle / 2)
+    love.graphics.arc("fill", self.x, self.y, self.viewDist, self.rot + self.viewAngle / 2, self.rot - self.viewAngle / 2)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(self.image, self.x, self.y, self.rot, 0.5, 0.5, 32, 32)
 end
