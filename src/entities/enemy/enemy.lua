@@ -1,5 +1,7 @@
 Enemy = Class{}
 
+local pathfindingPrecision = 1
+
 function Enemy:init(x, y)
     self.player = nil
     self.tag = 'enemy'
@@ -92,6 +94,7 @@ function Enemy:update(dt)
     self:canSeePlayer()
 
     self:checkForPathToTarget(self.player)
+    self:pathfind(dt)
 end
 
 function Enemy:checkForPathToTarget(target)
@@ -102,11 +105,35 @@ function Enemy:checkForPathToTarget(target)
         success, points = self.em.map:getPath({ x = selfGridX, y = selfGridY },  { x = targetGridX, y = targetGridY })
         if success then
             self.pathWaypoints = points
+            self.nextPathPoint = 1
             for i = 1, #points do
-                -- print(points[i][1] .. '-', points[i][2])
+                print('x: ' .. points[i][1] .. ' y: ', points[i][2])
             end
         end
     end
+end
+
+function Enemy:pathfind(dt)
+    if #self.pathWaypoints > 0 then
+        local nextX, nextY = self.pathWaypoints[self.nextPathPoint][1] * GRID_SIZE - GRID_SIZE / 2, self.pathWaypoints[self.nextPathPoint][2] * GRID_SIZE - GRID_SIZE / 2
+        local bearing = math.atan2(nextY - self.y, nextX - self.x)
+        self:move(dt, bearing)
+
+        if Vector2.distance(self, { x = nextX, y = nextY }) < pathfindingPrecision then
+            self.nextPathPoint = self.nextPathPoint + 1
+            if self.nextPathPoint > #self.pathWaypoints then
+                self.pathWaypoints = {}
+            end
+        end
+    end
+end
+
+function Enemy:move(dt, bearing)
+    self.rot = bearing
+    local dx = math.cos(bearing) * self.movementSpeed * dt
+    local dy = math.sin(bearing) * self.movementSpeed * dt
+    self.x = self.x + dx
+    self.y = self.y + dy
 end
 
 function Enemy:draw()

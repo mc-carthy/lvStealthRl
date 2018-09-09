@@ -3,9 +3,11 @@ IdleState = Class{ __includes = BaseState }
 local idleViewDist = 60
 local idleViewAngle = 100
 local idleConeColour = COLOURS['enemyIdleState']
+local idleMovementSpeed = 75
 
 function IdleState:enter(body)
     self.body = body
+    self.body.movementSpeed = idleMovementSpeed
     self.body.viewDist = idleViewDist
     self.body.viewAngle = math.rad(idleViewAngle)
     self.body.coneColour = idleConeColour
