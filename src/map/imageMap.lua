@@ -1,4 +1,4 @@
-ImageMap = Class{}
+ImageMap = Class{ __includes = Map }
 
 function ImageMap:init(filePath)
     self.tag = 'map'
@@ -20,20 +20,6 @@ function ImageMap:init(filePath)
                     end
                 end
             end
-        end
-    end
-end
-
-function ImageMap:collidable(x, y)
-    return self[x][y].collidable
-end
-
--- TODO: Consider extracting this to a 'map' base class
-function ImageMap:findRandomTileOfType(tileType)
-    while true do
-        local x, y = math.floor(math.random() * self.xSize + 1), math.floor(math.random() * self.ySize + 1)
-        if self[x][y] == TileDictionary[tileType] then
-            return x * GRID_SIZE - GRID_SIZE / 2, y * GRID_SIZE - GRID_SIZE / 2
         end
     end
 end

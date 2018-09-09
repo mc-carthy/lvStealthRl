@@ -1,4 +1,4 @@
-CelAutMap = Class{}
+CelAutMap = Class{ __includes = Map}
 
 local borderThickness = 2
 
@@ -231,14 +231,6 @@ function CelAutMap:countourMapComplete()
     return true
 end
 
-function CelAutMap:isInGridRange(x, y)
-    return x > 0 and x < self.xSize and y > 0 and y < self.ySize
-end
-
-function CelAutMap:collidable(x, y)
-    return self[x][y].collidable
-end
-
 function _findHighestContourValue(self)
     local maxVal, maxX, maxY = 0, 0, 0
     for x = 1, self.xSize do
@@ -251,14 +243,4 @@ function _findHighestContourValue(self)
         end
     end
     return maxVal, maxX, maxY
-end
-
--- TODO: Consider extracting this to a 'map' base class
-function CelAutMap:findRandomTileOfType(tileType)
-    while true do
-        local x, y = math.floor(math.random() * self.xSize + 1), math.floor(math.random() * self.ySize + 1)
-        if self[x][y] == TileDictionary[tileType] then
-            return x * GRID_SIZE - GRID_SIZE / 2, y * GRID_SIZE - GRID_SIZE / 2
-        end
-    end
 end
