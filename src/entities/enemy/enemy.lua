@@ -44,6 +44,11 @@ end
 
 function Enemy:hearNoise(noise)
     -- print('Heard noise of type ' .. noise.type .. ' coming from ' .. noise.x .. '-' .. noise.y)
+    if noise.type == 'playerGunshotNoise' then
+        self.stateMachine:change('caution', self)
+    elseif noise.type == 'bulletImpactNoise' then
+        self.stateMachine:change('investigation', self)
+    end
 end
 
 -- TODO: Create 'map' base class for celAutMap and imageMap to derive from and move this function there

@@ -20,6 +20,15 @@ function Bullet:gridCollisionCheck()
 end
 
 function Bullet:hit(object)
+    if object.tag == 'map' then
+        local n = Noise({
+            x = self.x,
+            y = self.y,
+            rad = 150,
+            type = 'bulletImpactNoise'
+        })
+        self.em:add(n)
+    end
     SFX['bulletImpact']:stop()
     SFX['bulletImpact']:play()
     self.done = true
