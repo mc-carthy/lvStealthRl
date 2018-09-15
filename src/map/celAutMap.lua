@@ -3,7 +3,7 @@ CelAutMap = Class{ __includes = Map}
 local borderThickness = 2
 
 function CelAutMap:init(params)
-    self.tag = 'map'
+    self.tag = TAG.MAP
     self.depth = 1000
     self.xSize = params.xSize or 70
     self.ySize = params.ySize or 40

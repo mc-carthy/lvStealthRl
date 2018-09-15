@@ -34,7 +34,7 @@ function FirstLevelState:exit()
 end
 
 function FirstLevelState:checkCollisions()
-    self.em:checkCircleCollisionsBetween('bullet', 'enemy')
+    self.em:checkCircleCollisionsBetween(TAG.BULLET, TAG.ENEMY)
 end
 
 function FirstLevelState:update(dt)

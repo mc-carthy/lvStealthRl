@@ -1,7 +1,7 @@
 Bullet = Class{}
 
 function Bullet:init(params)
-    self.tag = 'bullet'
+    self.tag = TAG.BULLET
     self.x = params.x or 0
     self.y = params.y or 0
     self.dx, self.dy = 0, 0
@@ -20,7 +20,7 @@ function Bullet:gridCollisionCheck()
 end
 
 function Bullet:hit(object)
-    if object.tag == 'map' then
+    if object.tag == TAG.MAP then
         local n = Noise({
             x = self.x,
             y = self.y,

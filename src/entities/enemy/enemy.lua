@@ -4,7 +4,7 @@ local pathfindingPrecision = 1
 
 function Enemy:init(x, y)
     self.player = nil
-    self.tag = 'enemy'
+    self.tag = TAG.ENEMY
     self.image = SPRITES.enemy
     self.x = x
     self.y = y

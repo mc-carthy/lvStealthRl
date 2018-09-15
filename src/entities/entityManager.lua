@@ -63,7 +63,7 @@ function EntityManager:getObjectByTag(tag)
 end
 
 function EntityManager:getPlayer()
-    return self:getObjectByTag('player')
+    return self:getObjectByTag(TAG.PLAYER)
 end
 
 function EntityManager:checkCircleCollisionsBetween(a, b)

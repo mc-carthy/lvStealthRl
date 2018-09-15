@@ -8,3 +8,12 @@ COLOURS = {
     ['enemyCautionState'] = { 1, 1, 0.5, 0.5 },
     ['enemyAlertState'] = { 1, 0, 0, 0.5 },
 }
+
+TAG = {
+    ['PLAYER'] = 'player',
+    ['BULLET'] = 'bullet',
+    ['ENEMY'] = 'enemy',
+    ['KEYCARD'] = 'keycard',
+    ['NOISE'] = 'noise',
+    ['MAP'] = 'map',
+}

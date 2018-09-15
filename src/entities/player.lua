@@ -8,7 +8,7 @@ local pickupRadius = 10
 local shotAccuracyInRad = math.rad(5)
 
 function Player:init(x, y)
-    self.tag = 'player'
+    self.tag = TAG.PLAYER
     self.x = x or 0
     self.y = y or 0
     self.rot = 0
@@ -90,7 +90,7 @@ end
 function Player:checkForKeycardPickup()
     for i = 1, #self.em.entities do
         local other = self.em.entities[i]
-        if other.tag == "keycard" and Vector2.distance(self, other) < pickupRadius then
+        if other.tag == TAG.KEYCARD and Vector2.distance(self, other) < pickupRadius then
             other.done = true
             if other.level == 'exit' then
                 -- TODO: Generate level exit (at self.em.map.playerX, self.em.map.playerY) instead of just going to main menu

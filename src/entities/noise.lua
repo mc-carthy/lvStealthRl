@@ -1,7 +1,7 @@
 Noise = Class{}
 
 function Noise:init(params)
-    self.tag = 'noise'
+    self.tag = TAG.NOISE
     self.depth = 11
     self.x = 1000
     self.y = 1000
@@ -10,11 +10,11 @@ function Noise:init(params)
     self.x = params.x or 0
     self.y = params.y or 0
     self.rad = params.rad or 0
-    self.type = params.type or 'noise'
+    self.type = params.type or TAG.NOISE
 end
 
 function Noise:collisionCheck()
-    local enemies = self.em:getObjectsByTag('enemy')
+    local enemies = self.em:getObjectsByTag(TAG.ENEMY)
     if enemies ~= nil then
         for _, e in pairs(enemies) do
             if Vector2.distance(self, e) < self.rad then
