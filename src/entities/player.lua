@@ -15,7 +15,6 @@ function Player:init(x, y)
     self.speed = 1
     self.dx, self.dy = 0, 0
     self.colour = { 1, 1, 1, 1 }
-    self.depth = 5
     self.keycardLevel = 1
     map.unlockDoors(self.keycardLevel)
 end

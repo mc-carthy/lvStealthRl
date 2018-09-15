@@ -2,7 +2,6 @@ Noise = Class{}
 
 function Noise:init(params)
     self.tag = TAG.NOISE
-    self.depth = 11
     self.x = 1000
     self.y = 1000
     self.rad = 100

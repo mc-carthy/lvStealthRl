@@ -17,3 +17,12 @@ TAG = {
     ['NOISE'] = 'noise',
     ['MAP'] = 'map',
 }
+
+DEPTH = {
+    'noise',
+    'bullet',
+    'player',
+    'enemy',
+    'keycard',
+    'map',
+}

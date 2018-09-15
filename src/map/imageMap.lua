@@ -2,7 +2,6 @@ ImageMap = Class{ __includes = Map }
 
 function ImageMap:init(filePath)
     self.tag = TAG.MAP
-    self.depth = 1000
     imageData = love.image.newImageData(filePath)
     imageWidth = imageData:getWidth()
     imageHeight = imageData:getHeight()

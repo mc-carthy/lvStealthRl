@@ -24,6 +24,7 @@ end
 
 function EntityManager:add(entity)
     entity.em = self
+    entity.depth = table.getIndex(DEPTH, entity.tag)
     table.insert(self.entities, entity)
     table.insert(self.drawnEntities, entity)
     self:sortTableByDrawingDepth()

@@ -17,7 +17,6 @@ function Enemy:init(x, y)
         ['alert'] = function() return AlertState() end,
     }
     self.stateMachine:change('idle', self)
-    self.depth = 10
     self.alertSfx = love.audio.newSource('assets/audio/sfx/alert.wav', 'static')
     
     self.losPoints = {}

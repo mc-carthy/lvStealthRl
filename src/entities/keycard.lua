@@ -4,7 +4,6 @@ function Keycard:init(params)
     assert(type(params) == 'table', 'Params table required')
     assert(type(params.x) == 'number', 'Parameter "x" must be a number, not ' .. type(params.x))
     self.tag = TAG.KEYCARD
-    self.depth = 900
     self.x = params.x
     self.y = params.y
     self.w = 10

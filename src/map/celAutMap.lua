@@ -4,7 +4,6 @@ local borderThickness = 2
 
 function CelAutMap:init(params)
     self.tag = TAG.MAP
-    self.depth = 1000
     self.xSize = params.xSize or 70
     self.ySize = params.ySize or 40
     self.percentFill = params.percentFill or 0.45
