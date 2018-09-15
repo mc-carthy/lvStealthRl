@@ -102,7 +102,11 @@ function Enemy:update(dt)
     self:canSeePlayer()
 
     self:checkForPathToTarget(self.player)
-    self:pathfind(dt)
+    if #self.pathWaypoints > 0 then
+        self:pathfind(dt)
+    else
+        self:wander(dt)
+    end
 end
 
 function Enemy:checkForPathToTarget(target)
@@ -121,14 +125,24 @@ function Enemy:checkForPathToTarget(target)
 end
 
 function Enemy:pathfind(dt)
-    if #self.pathWaypoints > 0 then
-        local nextX, nextY = self.pathWaypoints[1][1] * GRID_SIZE - GRID_SIZE / 2, self.pathWaypoints[1][2] * GRID_SIZE - GRID_SIZE / 2
-        local bearing = math.atan2(nextY - self.y, nextX - self.x)
-        self:move(dt, bearing)
+    local nextX, nextY = self.pathWaypoints[1][1] * GRID_SIZE - GRID_SIZE / 2, self.pathWaypoints[1][2] * GRID_SIZE - GRID_SIZE / 2
+    local bearing = math.atan2(nextY - self.y, nextX - self.x)
+    self:move(dt, bearing)
 
-        if Vector2.distance(self, { x = nextX, y = nextY }) < pathfindingPrecision then
-            _, self.pathWaypoints = table.dequeue(self.pathWaypoints)
-        end
+    if Vector2.distance(self, { x = nextX, y = nextY }) < pathfindingPrecision then
+        _, self.pathWaypoints = table.dequeue(self.pathWaypoints)
+    end
+end
+
+function Enemy:wander(dt)
+    local dx = math.cos(self.rot) * (self.movementSpeed * dt)
+    local dy = math.sin(self.rot) * (self.movementSpeed * dt)
+    local nextGridX, nextGridY = getGridPos(self.x + dx, self.y + dy)
+    if self.em.map:collidable(nextGridX, nextGridY) then
+        self.rot = self.rot + (math.floor(math.random() * 4) * math.pi / 2)
+    else
+        self.x = self.x + dx
+        self.y = self.y + dy
     end
 end
 
