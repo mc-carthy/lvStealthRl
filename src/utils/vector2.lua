@@ -18,7 +18,8 @@ end
 function Vector2.angle(a, b)
     local x1, y1 = a.x, a.y
     local x2, y2 = b.x, b.y
-    local ang = -math.atan2(y2 - y1, x2 - x1)
+    -- TODO: Verify the inverted y terms
+    local ang = -math.atan2(y1 - y2, x2 - x1)
 
     if ang < 0 then ang = ang + (2 * PI) end
 
