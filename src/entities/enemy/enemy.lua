@@ -135,9 +135,11 @@ function Enemy:pathfind(dt)
 end
 
 function Enemy:wander(dt)
+    local whiskerLength = GRID_SIZE * 4
+    local whiskerX, whiskerY = math.cos(self.rot) * whiskerLength, math.sin(self.rot) * whiskerLength
     local dx = math.cos(self.rot) * (self.movementSpeed * dt)
     local dy = math.sin(self.rot) * (self.movementSpeed * dt)
-    local nextGridX, nextGridY = getGridPos(self.x + dx, self.y + dy)
+    local nextGridX, nextGridY = getGridPos(self.x + dx + whiskerX, self.y + dy + whiskerY)
     if self.em.map:collidable(nextGridX, nextGridY) then
         self.rot = self.rot + (math.floor(math.random() * 4) * math.pi / 2)
     else
@@ -183,8 +185,6 @@ function Enemy:draw()
             self.pathWaypoints[1][2] * GRID_SIZE - GRID_SIZE / 2
         )
     end
-
-    love.graphics.print('Can see player: ' .. tostring(self:canSeePlayer()), self.x + 20, self.y + 80)
 
     love.graphics.setColor(unpack(self.coneColour))
     love.graphics.arc("fill", self.x, self.y, self.viewDist, self.rot + self.viewAngle / 2, self.rot - self.viewAngle / 2)
