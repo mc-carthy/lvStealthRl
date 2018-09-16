@@ -12,10 +12,7 @@ function CautionState:enter(body)
 end
 
 function CautionState:update(dt)
-    -- if Vector2.distance(self.body, self.body.player) < 50 then
-    --     self.body.stateMachine:change('alert', self.body)
-    -- end
-    -- if Vector2.distance(self.body, self.body.player) > 100 then
-    --     self.body.stateMachine:change('investigation', self.body)
-    -- end
+    if self.body:canSeePlayer() then
+        self.body.stateMachine:change('alert', self.body)
+    end
 end

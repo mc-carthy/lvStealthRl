@@ -15,7 +15,7 @@ function AlertState:enter(body)
 end
 
 function AlertState:update(dt)
-    if Vector2.distance(self.body, self.body.player) > 50 then
+    if not self.body:canSeePlayer() then
         self.body.stateMachine:change('caution', self.body)
     end
 end

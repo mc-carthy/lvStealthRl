@@ -14,7 +14,7 @@ function IdleState:enter(body)
 end
 
 function IdleState:update(dt)
-    -- if Vector2.distance(self.body, self.body.player) < 200 then
-    --     self.body.stateMachine:change('investigation', self.body)
-    -- end
+    if self.body:canSeePlayer() then
+        self.body.stateMachine:change('alert', self.body)
+    end
 end
