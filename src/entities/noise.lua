@@ -10,6 +10,7 @@ function Noise:init(params)
     self.y = params.y or 0
     self.rad = params.rad or 0
     self.type = params.type or TAG.NOISE
+    self.id = math.floor(love.timer.getTime() * 1000)
 end
 
 function Noise:collisionCheck()

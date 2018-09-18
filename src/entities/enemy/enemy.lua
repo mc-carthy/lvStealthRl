@@ -22,6 +22,7 @@ function Enemy:init(x, y)
     self.losPoints = {}
     self.playerInLos = false
     self.pathWaypoints = {}
+    self.heardNoises = {}
 end
 
 function Enemy:hit(object)
@@ -43,7 +44,12 @@ end
 
 function Enemy:hearNoise(noise)
     -- print('Heard noise of type ' .. noise.type .. ' coming from ' .. noise.x .. '-' .. noise.y)
-    self.heardNoise = noise
+    -- TODO: Consider a method to prevent this table from getting too large
+    -- Perhaps remove each noise from the table after a given time period
+    if not table.contains(self.heardNoises, noise.id) then
+        self.heardNoise = noise
+        table.insert(self.heardNoises, noise.id)
+    end
 end
 
 -- TODO: Create 'map' base class for celAutMap and imageMap to derive from and move this function there
