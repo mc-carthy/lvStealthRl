@@ -140,8 +140,8 @@ function Enemy:wander(dt)
     local dx = math.cos(self.rot) * (self.movementSpeed * dt)
     local dy = math.sin(self.rot) * (self.movementSpeed * dt)
     local nextGridX, nextGridY = getGridPos(self.x + dx + whiskerX, self.y + dy + whiskerY)
-    if self.em.map:collidable(nextGridX, nextGridY) then
-        self.rot = self.rot + (math.floor(math.random() * 4) * math.pi / 2)
+    if self.em.map[nextGridX][nextGridY] == nil or self.em.map:collidable(nextGridX, nextGridY) then
+        self.rot = math.floor(math.random() * 4) * math.pi / 2
     else
         self.x = self.x + dx
         self.y = self.y + dy

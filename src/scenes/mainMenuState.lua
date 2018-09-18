@@ -26,7 +26,8 @@ function MainMenuState.update(dt)
                 percentFill = 0.45,
                 smoothingIterations = 5,
                 mapScale = 2,
-                numBuildings = 10
+                numBuildings = 10,
+                numEnemies = 40
             }
         })
     end
