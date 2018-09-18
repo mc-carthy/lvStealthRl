@@ -20,4 +20,18 @@ function CautionState:update(dt)
     if self.cautionTimer < 0 then
         self.body.stateMachine:change('idle', self.body)
     end
+
+    if self.body.heardNoise then
+        self:hearNoise(self.body.heardNoise)
+    end
+end
+
+function CautionState:hearNoise(noise)
+    self.body.heardNoise = nil
+    if noise.type == 'playerGunshotNoise' then
+        self.body.stateMachine:change('alert', self.body)
+        self.body:findPathToTarget(noise)
+    elseif noise.type == 'bulletImpactNoise' then
+        self.body:findPathToTarget(noise)
+    end
 end

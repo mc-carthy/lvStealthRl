@@ -21,3 +21,7 @@ function AlertState:update(dt)
         self.body.stateMachine:change('caution', self.body)
     end
 end
+
+function AlertState:hearNoise(noise)
+    self.body.heardNoise = nil
+end

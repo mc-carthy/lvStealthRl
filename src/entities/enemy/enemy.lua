@@ -43,11 +43,7 @@ end
 
 function Enemy:hearNoise(noise)
     -- print('Heard noise of type ' .. noise.type .. ' coming from ' .. noise.x .. '-' .. noise.y)
-    if noise.type == 'playerGunshotNoise' then
-        self.stateMachine:change('caution', self)
-    elseif noise.type == 'bulletImpactNoise' then
-        self.stateMachine:change('investigation', self)
-    end
+    self.heardNoise = noise
 end
 
 -- TODO: Create 'map' base class for celAutMap and imageMap to derive from and move this function there
@@ -101,7 +97,6 @@ function Enemy:update(dt)
     self.losPoints, self.playerInLos = self:lineOfSightPoints(self.player)
     self:canSeePlayer()
 
-    self:checkForPathToTarget(self.player)
     if #self.pathWaypoints > 0 then
         self:pathfind(dt)
     else
@@ -109,9 +104,9 @@ function Enemy:update(dt)
     end
 end
 
-function Enemy:checkForPathToTarget(target)
+function Enemy:findPathToTarget(target)
     local points = {}
-    if love.keyboard.wasPressed('p') then
+    -- if love.keyboard.wasPressed('p') then
         local selfGridX, selfGridY = getGridPos(self.x, self.y)
         local targetGridX, targetGridY = getGridPos(target.x, target.y)
         success, points = self.em.map:getPath({ x = selfGridX, y = selfGridY },  { x = targetGridX, y = targetGridY })
@@ -121,7 +116,7 @@ function Enemy:checkForPathToTarget(target)
                 -- print('x: ' .. points[i][1] .. ' y: ', points[i][2])
             end
         end
-    end
+    -- end
 end
 
 function Enemy:pathfind(dt)
@@ -140,7 +135,7 @@ function Enemy:wander(dt)
     local dx = math.cos(self.rot) * (self.movementSpeed * dt)
     local dy = math.sin(self.rot) * (self.movementSpeed * dt)
     local nextGridX, nextGridY = getGridPos(self.x + dx + whiskerX, self.y + dy + whiskerY)
-    if self.em.map[nextGridX][nextGridY] == nil or self.em.map:collidable(nextGridX, nextGridY) then
+    if self.em.map[nextGridX] == nil or self.em.map[nextGridX][nextGridY] == nil or self.em.map:collidable(nextGridX, nextGridY) then
         self.rot = math.floor(math.random() * 4) * math.pi / 2
     else
         self.x = self.x + dx

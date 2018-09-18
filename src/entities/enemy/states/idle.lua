@@ -17,4 +17,20 @@ function IdleState:update(dt)
     if self.body:canSeePlayer() then
         self.body.stateMachine:change('alert', self.body)
     end
+
+    if self.body.heardNoise then
+        self:hearNoise(self.body.heardNoise)
+    end
+end
+
+function IdleState:hearNoise(noise)
+    self.body.heardNoise = nil
+    if noise.type == 'playerGunshotNoise' then
+        -- TODO: When the state is changed to caution, it still finds the heardNoise on the body and goes to alert. Investigate.
+        self.body.stateMachine:change('caution', self.body)
+        self.body:findPathToTarget(noise)
+    elseif noise.type == 'bulletImpactNoise' then
+        self.body.stateMachine:change('investigation', self.body)
+        self.body:findPathToTarget(noise)
+    end
 end
