@@ -25,8 +25,8 @@ function InvestigationState:hearNoise(noise)
     self.body.heardNoise = nil
     if noise.type == 'playerGunshotNoise' then
         self.body.stateMachine:change('caution', self.body)
-        self:findPathToTarget(noise)
+        self.body:findPathToTarget(noise)
     elseif noise.type == 'bulletImpactNoise' then
-        self:findPathToTarget(noise)
+        self.body:findPathToTarget(noise)
     end
 end

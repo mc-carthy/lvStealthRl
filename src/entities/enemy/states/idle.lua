@@ -27,6 +27,9 @@ function IdleState:hearNoise(noise)
     self.body.heardNoise = nil
     if noise.type == 'playerGunshotNoise' then
         -- TODO: When the state is changed to caution, it still finds the heardNoise on the body and goes to alert. Investigate.
+        -- This is because the noise is triggering hearNoise on the body when it is within range, so when the body's heardNoise
+        -- is set to nil above, if the noise radius is still greater than the distance from body, it will set itself as the body's
+        -- heard noise again.
         self.body.stateMachine:change('caution', self.body)
         self.body:findPathToTarget(noise)
     elseif noise.type == 'bulletImpactNoise' then
