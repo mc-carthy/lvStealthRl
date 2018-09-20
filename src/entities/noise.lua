@@ -8,7 +8,8 @@ function Noise:init(params)
     self.type = 'test'
     self.x = params.x or 0
     self.y = params.y or 0
-    self.rad = params.rad or 0
+    self.maxRad = params.rad or 0
+    self.rad = 0
     self.type = params.type or TAG.NOISE
     self.id = math.floor(love.timer.getTime() * 1000)
 end
@@ -28,9 +29,9 @@ end
 
 function Noise:update(dt)
     local decayRate = 1000
-    self.rad = self.rad - decayRate * dt
+    self.rad = self.rad + decayRate * dt
     self:collisionCheck()
-    if self.rad <= 0 then self.done = true end
+    if self.rad > self.maxRad then self.done = true end
 end
 
 function Noise:draw()

@@ -52,11 +52,7 @@ function EntityManager:getObjectsByTag(tag)
             table.insert(taggedEntites, e)
         end
     end
-    if #taggedEntites == 0 then
-        return
-    else
-        return taggedEntites
-    end
+    return taggedEntites
 end
 
 function EntityManager:getObjectByTag(tag)

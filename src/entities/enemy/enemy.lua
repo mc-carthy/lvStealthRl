@@ -46,6 +46,7 @@ function Enemy:hearNoise(noise)
     -- print('Heard noise of type ' .. noise.type .. ' coming from ' .. noise.x .. '-' .. noise.y)
     -- TODO: Consider a method to prevent this table from getting too large
     -- Perhaps remove each noise from the table after a given time period
+    -- Noise now has created at time, remove noises with a delta greater than a defined value
     if not table.contains(self.heardNoises, noise.id) then
         self.heardNoise = noise
         table.insert(self.heardNoises, noise.id)
