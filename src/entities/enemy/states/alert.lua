@@ -20,6 +20,9 @@ function AlertState:update(dt)
     if self.alertTimer < 0 then 
         self.body.state:change('caution', self.body)
     end
+    if self.body:canSeeTarget(self.body.player) then
+        self.body.rot = Vector2.angle(self.body, self.body.player)
+    end
 end
 
 function AlertState:hearNoise(noise)
