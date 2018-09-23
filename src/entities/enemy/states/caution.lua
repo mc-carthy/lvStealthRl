@@ -15,10 +15,10 @@ end
 function CautionState:update(dt)
     self.cautionTimer = self.cautionTimer - dt
     if self.body:canSeePlayer() then
-        self.body.stateMachine:change('alert', self.body)
+        self.body.state:change('alert', self.body)
     end
     if self.cautionTimer < 0 then
-        self.body.stateMachine:change('idle', self.body)
+        self.body.state:change('idle', self.body)
     end
 
     if self.body.heardNoise then
@@ -29,9 +29,16 @@ end
 function CautionState:hearNoise(noise)
     self.body.heardNoise = nil
     if noise.type == 'playerGunshotNoise' then
-        self.body.stateMachine:change('alert', self.body)
+        self.body.state:change('alert', self.body)
         self.body:findPathToTarget(noise)
     elseif noise.type == 'bulletImpactNoise' then
         self.body:findPathToTarget(noise)
     end
+end
+
+function CautionState:draw()
+    love.graphics.setColor(unpack(self.body.coneColour))
+    love.graphics.arc("fill", self.body.x, self.body.y, self.body.viewDist, self.body.rot + self.body.viewAngle / 2, self.body.rot - self.body.viewAngle / 2)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.body.image, self.body.x, self.body.y, self.body.rot, 0.5, 0.5, 32, 32)
 end

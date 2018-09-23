@@ -18,10 +18,17 @@ end
 function AlertState:update(dt)
     self.alertTimer = self.alertTimer - dt
     if self.alertTimer < 0 then 
-        self.body.stateMachine:change('caution', self.body)
+        self.body.state:change('caution', self.body)
     end
 end
 
 function AlertState:hearNoise(noise)
     self.body.heardNoise = nil
+end
+
+function AlertState:draw()
+    love.graphics.setColor(unpack(self.body.coneColour))
+    love.graphics.arc("fill", self.body.x, self.body.y, self.body.viewDist, self.body.rot + self.body.viewAngle / 2, self.body.rot - self.body.viewAngle / 2)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.body.image, self.body.x, self.body.y, self.body.rot, 0.5, 0.5, 32, 32)
 end

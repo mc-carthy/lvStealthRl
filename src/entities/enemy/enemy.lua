@@ -10,13 +10,14 @@ function Enemy:init(x, y)
     self.y = y
     self.rot = 0--math.random() * 2 * math.pi
     self.rad = 7.5
-    self.stateMachine = StateMachine {
+    self.state = StateMachine {
         ['idle'] = function() return IdleState() end,
         ['investigation'] = function() return InvestigationState() end,
         ['caution'] = function() return CautionState() end,
         ['alert'] = function() return AlertState() end,
+        ['dead'] = function() return DeadState() end,
     }
-    self.stateMachine:change('idle', self)
+    self.state:change('idle', self)
     self.alertSfx = love.audio.newSource('assets/audio/sfx/alert.wav', 'static')
     
     self.losPoints = {}
@@ -32,12 +33,14 @@ function Enemy:hit(object)
             if self.hp <= 0 then
                 SFX['enemyHit']:stop()
                 SFX['enemyHit']:play()
-                self.done = true
+                -- self.done = true
+                self.state:change('dead', self)
             end
         else
             SFX['enemyHit']:stop()
             SFX['enemyHit']:play()
-            self.done = true
+            -- self.done = true
+            self.state:change('dead', self)
         end
     end
 end
@@ -100,7 +103,7 @@ end
 
 function Enemy:update(dt)
     if self.player == nil then self.player = self.em:getPlayer() end
-    self.stateMachine:update(dt)
+    self.state:update(dt)
     self.losPoints, self.playerInLos = self:lineOfSightPoints(self.player)
     self:canSeePlayer()
 
@@ -188,8 +191,5 @@ function Enemy:draw()
         )
     end
 
-    love.graphics.setColor(unpack(self.coneColour))
-    love.graphics.arc("fill", self.x, self.y, self.viewDist, self.rot + self.viewAngle / 2, self.rot - self.viewAngle / 2)
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(self.image, self.x, self.y, self.rot, 0.5, 0.5, 32, 32)
+    self.state:draw()
 end
