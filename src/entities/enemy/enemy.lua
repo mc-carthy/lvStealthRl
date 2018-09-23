@@ -66,7 +66,7 @@ function Enemy:lineOfSightPoints(target)
     return points, success
 end
 
-function Enemy:lineOfSight(target)
+function Enemy:lineOfSightToTarget(target)
     local startX, startY = getGridPos(self.x, self.y)
     local endX, endY = getGridPos(target.x, target.y)
     local success = Bresenham.los(startX, startY, endX, endY, function(x, y)
@@ -75,24 +75,24 @@ function Enemy:lineOfSight(target)
     return success
 end
 
-function Enemy:getDistanceToPlayer()
-    return Vector2.distance(self, self.player)
+function Enemy:getDistanceToTarget(target)
+    return Vector2.distance(self, target)
 end
 
-function Enemy:getAngleToPlayer()
-    local absoluteAngleToPlayer = Vector2.angle(self, self.player)
-    local relativeAngleToPlayer = (absoluteAngleToPlayer - self.rot) % (2 * math.pi)
-    if relativeAngleToPlayer > math.pi then relativeAngleToPlayer = relativeAngleToPlayer - (2 * math.pi) end
-    relativeAngleToPlayer = math.abs(relativeAngleToPlayer)
+function Enemy:getAngleToTarget(target)
+    local absoluteAngleToTarget = Vector2.angle(self, target)
+    local relativeAngleToTarget = (absoluteAngleToTarget - self.rot) % (2 * math.pi)
+    if relativeAngleToTarget > math.pi then relativeAngleToTarget = relativeAngleToTarget - (2 * math.pi) end
+    relativeAngleToTarget = math.abs(relativeAngleToTarget)
 
-    return relativeAngleToPlayer
+    return relativeAngleToTarget
 end
 
-function Enemy:canSeePlayer()
-    if self.player ~= nil then
-        if self:getDistanceToPlayer() < self.viewDist then
-            if self:getAngleToPlayer() < self.viewAngle / 2 then
-                if self:lineOfSight(self.player) then
+function Enemy:canSeeTarget(target)
+    if target ~= nil then
+        if self:getDistanceToTarget(target) < self.viewDist then
+            if self:getAngleToTarget(target) < self.viewAngle / 2 then
+                if self:lineOfSightToTarget(target) then
                     return true
                 end
             end
@@ -101,11 +101,26 @@ function Enemy:canSeePlayer()
     return false
 end
 
+function Enemy:canSeeCorpse()
+    local enemies = self.em:getObjectsByTag('enemy')
+
+    for k, v in pairs(enemies) do
+        if v.dead then
+            if self:canSeeTarget(v) then
+                return v
+            end
+        end
+    end
+
+    return nil
+end
+
 function Enemy:update(dt)
     if self.player == nil then self.player = self.em:getPlayer() end
     self.state:update(dt)
     self.losPoints, self.playerInLos = self:lineOfSightPoints(self.player)
-    self:canSeePlayer()
+    self:canSeeTarget(self.player)
+    self:canSeeCorpse()
 
     if #self.pathWaypoints > 0 then
         self:pathfind(dt)

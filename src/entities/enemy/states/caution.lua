@@ -14,7 +14,7 @@ end
 
 function CautionState:update(dt)
     self.cautionTimer = self.cautionTimer - dt
-    if self.body:canSeePlayer() then
+    if self.body:canSeeTarget(self.body.player) then
         self.body.state:change('alert', self.body)
     end
     if self.cautionTimer < 0 then

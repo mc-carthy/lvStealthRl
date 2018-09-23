@@ -14,8 +14,13 @@ function IdleState:enter(body)
 end
 
 function IdleState:update(dt)
-    if self.body:canSeePlayer() then
+    if self.body:canSeeTarget(self.body.player) then
         self.body.state:change('alert', self.body)
+    end
+
+    if self.body:canSeeCorpse() then
+        self.body.state:change('caution', self.body)
+        self.body:findPathToTarget(self.body:canSeeCorpse())
     end
 
     if self.body.heardNoise then

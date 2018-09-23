@@ -12,7 +12,7 @@ function InvestigationState:enter(body)
 end
 
 function InvestigationState:update(dt)
-    if self.body:canSeePlayer() then
+    if self.body:canSeeTarget(self.body.player) then
         self.body.state:change('alert', self.body)
     end
 

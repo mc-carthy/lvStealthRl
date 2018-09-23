@@ -5,6 +5,7 @@ function DeadState:enter(body)
     self.body.movementSpeed = 0
     self.body.viewDist = 0
     self.body.viewAngle = 0
+    self.body.dead = true
 end
 
 function DeadState:update(dt)
