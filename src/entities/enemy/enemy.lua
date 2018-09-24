@@ -190,6 +190,9 @@ function Enemy:pathfind(dt)
     if Vector2.distance(self, { x = nextX, y = nextY }) < pathfindingPrecision then
         -- _, self.pathWaypoints = table.dequeue(self.pathWaypoints)
         self.nextPatrolPoint = self.nextPatrolPoint + 1
+        if self.nextPatrolPoint > #self.patrolWaypoints then
+            self.nextPatrolPoint = 1
+        end
     end
 end
 
@@ -245,16 +248,23 @@ function Enemy:draw()
         )
     end
 
-    if #self.patrolWaypoints > 0 then
-        love.graphics.setColor(0, 0, 0, 1)
-        for i = 1, #self.patrolWaypoints - 1 do
-            love.graphics.line(
-                self.patrolWaypoints[i][1] * GRID_SIZE - GRID_SIZE / 2,
-                self.patrolWaypoints[i][2] * GRID_SIZE - GRID_SIZE / 2,
-                self.patrolWaypoints[i + 1][1] * GRID_SIZE - GRID_SIZE / 2,
-                self.patrolWaypoints[i + 1][2] * GRID_SIZE - GRID_SIZE / 2
-            )
-        end
+    -- if #self.patrolWaypoints > 0 then
+    --     love.graphics.setColor(0, 0, 0, 0.25)
+    --     for i = 1, #self.patrolWaypoints - 1 do
+    --         love.graphics.line(
+    --             self.patrolWaypoints[i][1] * GRID_SIZE - GRID_SIZE / 2,
+    --             self.patrolWaypoints[i][2] * GRID_SIZE - GRID_SIZE / 2,
+    --             self.patrolWaypoints[i + 1][1] * GRID_SIZE - GRID_SIZE / 2,
+    --             self.patrolWaypoints[i + 1][2] * GRID_SIZE - GRID_SIZE / 2
+    --         )
+    --     end
+    --     love.graphics.setColor(1, 0, 1, 1)
+    --     love.graphics.line(
+    --         self.x,
+    --         self.y,
+    --         self.patrolWaypoints[self.nextPatrolPoint][1] * GRID_SIZE - GRID_SIZE / 2,
+    --         self.patrolWaypoints[self.nextPatrolPoint][2] * GRID_SIZE - GRID_SIZE / 2
+    --     )
     end
 
     self.state:draw()

@@ -21,13 +21,13 @@ function MainMenuState.update(dt)
             
             map = {
                 type = 'CelAutMap',
-                xSize = 140,
-                ySize = 80,
+                xSize = 70,
+                ySize = 40,
                 percentFill = 0.45,
                 smoothingIterations = 5,
                 mapScale = 2,
                 numBuildings = 10,
-                numEnemies = 40
+                numEnemies = 10
             }
         })
     end
