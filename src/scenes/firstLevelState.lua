@@ -24,8 +24,9 @@ function FirstLevelState:enter(params)
     self.em.map.playerX, self.em.map.playerY = playerX, playerY
     self.player = self.em:add(Player(playerX, playerY))
     
-    for i = 1, params.numEnemies or 10 do
-        self.em:add(Enemy(self.em.map:findRandomTileOfType('exteriorFloor')))
+    for i = 1, params.map.numEnemies or 10 do
+        local e = self.em:add(Enemy(self.em.map:findRandomTileOfType('exteriorFloor')))
+        e:createRandomPath()
     end
     self.em.camera = Camera({
         target = self.player

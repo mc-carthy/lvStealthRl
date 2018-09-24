@@ -1,7 +1,13 @@
-function getGridPos(x, y)
+function worldToGrid(x, y)
     local gridX = math.ceil(x / GRID_SIZE)
     local gridY = math.ceil(y / GRID_SIZE)
     return gridX, gridY
+end
+
+function gridToWorld(x, y)
+    local worldX = x * GRID_SIZE - GRID_SIZE / 2
+    local worldY = y * GRID_SIZE - GRID_SIZE / 2
+    return worldX, worldY
 end
 
 function table.contains(tbl, element)

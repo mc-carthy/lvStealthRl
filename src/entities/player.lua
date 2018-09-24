@@ -79,8 +79,8 @@ function Player:move(dt)
 end
 
 function Player:detectCollisions()
-    local gridX, gridY = getGridPos(self.x, self.y)
-    local nextGridX, nextGridY = getGridPos(self.x + self.dx, self.y + self.dy)
+    local gridX, gridY = worldToGrid(self.x, self.y)
+    local nextGridX, nextGridY = worldToGrid(self.x + self.dx, self.y + self.dy)
 
     if self.em.map:collidable(nextGridX, gridY) then self.dx = 0 end
     if self.em.map:collidable(gridX, nextGridY) then self.dy = 0 end

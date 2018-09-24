@@ -12,7 +12,7 @@ function Bullet:init(params)
 end
 
 function Bullet:gridCollisionCheck()
-    local gridX, gridY = getGridPos(self.x + self.rad * math.cos(self.rot), self.y + self.rad * math.sin(self.rot))                        
+    local gridX, gridY = worldToGrid(self.x + self.rad * math.cos(self.rot), self.y + self.rad * math.sin(self.rot))                        
     if self.em.map:collidable(gridX, gridY) then
         self:hit(self.em.map)
     end
