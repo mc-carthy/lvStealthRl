@@ -79,7 +79,8 @@ function Enemy:createRandomPath()
                 table.insert(allWaypoints, v)
             end
         else
-            self:createRandomPath()
+            -- self:createRandomPath()
+            assert(false, 'Path could not be created')
         end
     end
     local success, points = self.em.map:getPath(mainWaypoints[#mainWaypoints], mainWaypoints[1])
@@ -88,7 +89,8 @@ function Enemy:createRandomPath()
             table.insert(allWaypoints, v)
         end
     else
-        self:createRandomPath()
+        -- self:createRandomPath()
+        assert(false, 'Path could not be created')
     end
 
     self.patrolWaypoints = allWaypoints
@@ -248,23 +250,23 @@ function Enemy:draw()
         )
     end
 
-    -- if #self.patrolWaypoints > 0 then
-    --     love.graphics.setColor(0, 0, 0, 0.25)
-    --     for i = 1, #self.patrolWaypoints - 1 do
-    --         love.graphics.line(
-    --             self.patrolWaypoints[i][1] * GRID_SIZE - GRID_SIZE / 2,
-    --             self.patrolWaypoints[i][2] * GRID_SIZE - GRID_SIZE / 2,
-    --             self.patrolWaypoints[i + 1][1] * GRID_SIZE - GRID_SIZE / 2,
-    --             self.patrolWaypoints[i + 1][2] * GRID_SIZE - GRID_SIZE / 2
-    --         )
-    --     end
-    --     love.graphics.setColor(1, 0, 1, 1)
-    --     love.graphics.line(
-    --         self.x,
-    --         self.y,
-    --         self.patrolWaypoints[self.nextPatrolPoint][1] * GRID_SIZE - GRID_SIZE / 2,
-    --         self.patrolWaypoints[self.nextPatrolPoint][2] * GRID_SIZE - GRID_SIZE / 2
-    --     )
+    if #self.patrolWaypoints > 0 then
+        love.graphics.setColor(0, 0, 0, 0.25)
+        for i = 1, #self.patrolWaypoints - 1 do
+            love.graphics.line(
+                self.patrolWaypoints[i][1] * GRID_SIZE - GRID_SIZE / 2,
+                self.patrolWaypoints[i][2] * GRID_SIZE - GRID_SIZE / 2,
+                self.patrolWaypoints[i + 1][1] * GRID_SIZE - GRID_SIZE / 2,
+                self.patrolWaypoints[i + 1][2] * GRID_SIZE - GRID_SIZE / 2
+            )
+        end
+        love.graphics.setColor(1, 0, 1, 1)
+        love.graphics.line(
+            self.x,
+            self.y,
+            self.patrolWaypoints[self.nextPatrolPoint][1] * GRID_SIZE - GRID_SIZE / 2,
+            self.patrolWaypoints[self.nextPatrolPoint][2] * GRID_SIZE - GRID_SIZE / 2
+        )
     end
 
     self.state:draw()
