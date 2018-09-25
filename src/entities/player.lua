@@ -19,7 +19,7 @@ function Player:init(x, y)
 end
 
 function Player:afterInit()
-    self.weapon = self.em:add(Pistol{
+    self.weapon = self.em:add(Shotgun{
         x = self.x,
         y = self.y
     })

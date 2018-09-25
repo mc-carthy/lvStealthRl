@@ -29,6 +29,7 @@ require('src/entities/bullet')
 require('src/entities/noise')
 require('src/entities/keycard')
 require('src/entities/weapons/pistol')
+require('src/entities/weapons/shotgun')
 
 require('src/entities/enemy/enemy')
 require('src/entities/enemy/states/idle')

@@ -1,6 +1,6 @@
-Pistol = Class{}
+Shotgun = Class{}
 
-function Pistol:init(params)
+function Shotgun:init(params)
     self.tag = TAG.WEAPON
     self.x = params.x
     self.y = params.y
@@ -8,12 +8,11 @@ function Pistol:init(params)
     self.fireRate = 1
     self.coolDown = 0
     self.canFire = true
-    self.noiseRad = 300
-    self.shotAccuracyInRad = math.rad(5)
-    print('Pistol init')
+    self.noiseRad = 450
+    self.shotAccuracyInRad = math.rad(30)
 end
 
-function Pistol:update(dt)
+function Shotgun:update(dt)
     if self.canFire == false then
         self.coolDown = self.coolDown - dt
         if self.coolDown <= 0 then
@@ -22,9 +21,9 @@ function Pistol:update(dt)
     end
 end
 
-function Pistol:fire()
-    print('Pistol fire')
+function Shotgun:fire()
     if self.canFire then
+        -- TODO: Get different SFX for different weapons
         SFX['shot']:stop()
         SFX['shot']:play()
 
@@ -38,17 +37,20 @@ function Pistol:fire()
         })
         self.em:add(n)
 
-        self.em.camera:setShakeTranslation(30)
-        self.em.camera:setShakeRotation(0.075)
-        self.em.camera:setShakeScale(0.1)
-        self.em.camera:setShakeShear(2.5)
+        self.em.camera:setShakeTranslation(45)
+        self.em.camera:setShakeRotation(0.1)
+        self.em.camera:setShakeScale(0.15)
+        self.em.camera:setShakeShear(3.5)
 
-        local b = Bullet({
-            x = self.x,
-            y = self.y,
-            rot = self.rot + ((math.random() - 0.5) * self.shotAccuracyInRad)
-        })
-        self.em:add(b)
+        for i = 1, 5 do
+            local b = Bullet({
+                x = self.x,
+                y = self.y,
+                rot = self.rot + ((math.random() - 0.5) * self.shotAccuracyInRad)
+            })
+            self.em:add(b)
+        end
+
         self.canFire = false
         self.coolDown = 1
     end
