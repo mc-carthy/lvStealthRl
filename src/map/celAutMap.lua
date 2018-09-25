@@ -179,8 +179,8 @@ function CelAutMap:addBuildings()
         local building = Building(self, {
             x = peakX - buildingW / 2,
             y = peakY - buildingH / 2,
-            w = peakContour,
-            h = peakContour,
+            w = buildingW,
+            h = buildingH,
             entranceLevel = self.numBuildings - i + 1
         })
 
