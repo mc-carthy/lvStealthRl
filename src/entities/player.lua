@@ -5,7 +5,6 @@ local runSpeedMultiplier = 1.5
 local crouchSpeedMultiplier = 0.5
 local playerImage = SPRITES.player
 local pickupRadius = 10
-local shotAccuracyInRad = math.rad(5)
 
 function Player:init(x, y)
     self.tag = TAG.PLAYER
@@ -19,29 +18,21 @@ function Player:init(x, y)
     map.unlockDoors(self.keycardLevel)
 end
 
-function Player:fire()
+function Player:afterInit()
+    self.weapon = self.em:add(Pistol{
+        x = self.x,
+        y = self.y
+    })
+    self.afterInitCalled = true
+end
+
+function Player:updateWeapon()
+    self.weapon.x = self.x
+    self.weapon.y = self.y
+    self.weapon.rot = self.rot
+
     if love.mouse.wasPressed(1) then
-        SFX['shot']:stop()
-        SFX['shot']:play()
-        local n = Noise({
-            x = self.x,
-            y = self.y,
-            rad = 300,
-            type = 'playerGunshotNoise'
-        })
-        self.em:add(n)
-
-        self.em.camera:setShakeTranslation(30)
-        self.em.camera:setShakeRotation(0.075)
-        self.em.camera:setShakeScale(0.1)
-        self.em.camera:setShakeShear(2.5)
-
-        local b = Bullet({
-            x = self.x,
-            y = self.y,
-            rot = self.rot + ((math.random() - 0.5) * shotAccuracyInRad)
-        })
-        self.em:add(b)
+        self.weapon:fire()
     end
 end
 
@@ -105,7 +96,10 @@ function Player:checkForKeycardPickup()
 end
 
 function Player:update(dt)
-    self:fire()
+    if not self.afterInitCalled then
+        self:afterInit()
+    end
+    self:updateWeapon()
     self:checkForKeycardPickup()
     self:move(dt)
 end

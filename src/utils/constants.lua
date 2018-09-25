@@ -13,6 +13,7 @@ TAG = {
     ['PLAYER'] = 'player',
     ['BULLET'] = 'bullet',
     ['ENEMY'] = 'enemy',
+    ['WEAPON'] = 'weapon',
     ['KEYCARD'] = 'keycard',
     ['NOISE'] = 'noise',
     ['MAP'] = 'map',
@@ -23,6 +24,7 @@ DEPTH = {
     'bullet',
     'player',
     'enemy',
+    'weapon',
     'keycard',
     'map',
 }
