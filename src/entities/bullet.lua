@@ -7,7 +7,7 @@ function Bullet:init(params)
     self.dx, self.dy = 0, 0
     self.rot = params.rot or 0
     self.speed = params.speed or 500
-    self.rad = 2.5
+    self.rad = params.rad or 2.5
     self.damage = 10
 end
 

@@ -9,7 +9,7 @@ function Shotgun:init(params)
     self.coolDown = 0
     self.canFire = true
     self.noiseRad = 450
-    self.shotAccuracyInRad = math.rad(30)
+    self.shotAccuracyInRad = math.rad(45)
 end
 
 function Shotgun:update(dt)
@@ -46,7 +46,8 @@ function Shotgun:fire()
             local b = Bullet({
                 x = self.x,
                 y = self.y,
-                rot = self.rot + ((math.random() - 0.5) * self.shotAccuracyInRad)
+                rot = self.rot + ((math.random() - 0.5) * self.shotAccuracyInRad),
+                rad = 1
             })
             self.em:add(b)
         end
